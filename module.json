@@ -15,5 +15,8 @@
         "compatibility": {}
       }
     ]
-  }
+  },
+  "url": "https://github.com/dukeotaku/tov-enhanced-sheet",
+  "manifest": "https://raw.githubusercontent.com/dukeotaku/tov-enhanced-sheet/main/module.json",
+  "download": "https://github.com/dukeotaku/tov-enhanced-sheet/releases/download/v0.1.0/tov-enhanced-sheet.zip"
 }
