@@ -1,0 +1,8 @@
+/* Tales of the Valiant Enhanced Sheet
+   Initial stylesheet test
+*/
+
+body {
+  outline: 6px solid #1677ff !important;
+  outline-offset: -6px;
+}
