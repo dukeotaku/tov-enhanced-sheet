@@ -1,0 +1,19 @@
+{
+  "id": "tov-enhanced-sheet",
+  "title": "Tales of the Valiant Enhanced Sheet",
+  "description": "A custom character sheet enhancement for the Black Flag system.",
+  "version": "0.1.0",
+  "compatibility": {
+    "minimum": "14",
+    "verified": "14"
+  },
+  "relationships": {
+    "systems": [
+      {
+        "id": "black-flag",
+        "type": "system",
+        "compatibility": {}
+      }
+    ]
+  }
+}
