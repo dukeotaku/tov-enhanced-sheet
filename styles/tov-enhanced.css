@@ -2068,3 +2068,6 @@
 .application.sheet.black-flag.actor.pc.tov-enhanced-ready > .window-content > .tov-static-collapse {
   top: calc(var(--tov-header-height) - 60px);
 }
+
+/* Native progression control replaces the play-mode XP meter when editing. */
+.application.sheet.black-flag.actor.pc .tov-header-editing .tov-header-play-xp { display: none; }
