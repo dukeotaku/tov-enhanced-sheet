@@ -192,14 +192,13 @@ Hooks.on("renderApplicationV2", (app, html) => {
   const deathWrap = document.createElement("section");
   deathWrap.className = "tov-death-saves";
   deathWrap.innerHTML = `
+    <div class="tov-death-panel">
+      <blackFlag-deathSaves></blackFlag-deathSaves>
+    </div>
     <button type="button" class="tov-death-toggle" aria-expanded="false"
       title="Show Death Saves" aria-label="Show Death Saves">
       <i class="fa-solid fa-skull" aria-hidden="true"></i>
-    </button>
-    <div class="tov-death-panel" hidden>
-      <div class="tov-death-title">Death Saves</div>
-      <blackFlag-deathSaves></blackFlag-deathSaves>
-    </div>`;
+    </button>`;
   health.append(deathWrap);
 
   const deathToggle = deathWrap.querySelector(".tov-death-toggle");
@@ -207,8 +206,7 @@ Hooks.on("renderApplicationV2", (app, html) => {
   deathToggle.addEventListener("click", event => {
     event.preventDefault();
     event.stopPropagation();
-    const open = deathPanel.hasAttribute("hidden");
-    deathPanel.toggleAttribute("hidden", !open);
+    const open = !deathWrap.classList.contains("open");
     deathToggle.setAttribute("aria-expanded", String(open));
     deathToggle.title = open ? "Hide Death Saves" : "Show Death Saves";
     deathToggle.setAttribute("aria-label", deathToggle.title);
