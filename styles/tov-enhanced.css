@@ -1179,3 +1179,23 @@
   72% { transform: translateY(75px); }
   100% { transform: translateY(70px); }
 }
+
+
+/* =========================================================
+   Checkpoint 6D - larger portrait-overlap AC shield
+   ========================================================= */
+.application.sheet.black-flag.actor.pc .tov-ac-medallion {
+  width: 82px;
+  height: 92px;
+  margin-top: -24px;
+  margin-bottom: -7px;
+  z-index: 12;
+  overflow: visible;
+}
+.application.sheet.black-flag.actor.pc .tov-ac-value {
+  margin-top: -5px;
+  font-size: 29px;
+}
+.application.sheet.black-flag.actor.pc .tov-static-vitals {
+  margin-top: 0;
+}
