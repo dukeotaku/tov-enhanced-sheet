@@ -750,3 +750,56 @@
   font-size: 25px;
 }
 .application.sheet.black-flag.actor.pc .tov-ac-label { display:none !important; }
+
+
+/* Checkpoint 6 - hidden Death Saves */
+.application.sheet.black-flag.actor.pc .tov-death-saves {
+  position: relative;
+  min-height: 15px;
+  margin: 0 0 1px;
+  border-bottom: 1px solid rgb(201 180 124 / 45%);
+}
+.application.sheet.black-flag.actor.pc .tov-death-toggle {
+  position: absolute;
+  left: 50%;
+  bottom: -10px;
+  translate: -50% 0;
+  z-index: 6;
+  width: 24px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: var(--tov-gold);
+  background: #11161d;
+  border: 1px solid rgb(201 180 124 / 55%);
+  border-radius: 0 0 10px 10px;
+  cursor: pointer;
+}
+.application.sheet.black-flag.actor.pc .tov-death-toggle:hover,
+.application.sheet.black-flag.actor.pc .tov-death-saves.open .tov-death-toggle {
+  color: #fff;
+  background: #173d5e;
+}
+.application.sheet.black-flag.actor.pc .tov-death-toggle i { font-size: 9px; }
+.application.sheet.black-flag.actor.pc .tov-death-panel {
+  padding: 5px 8px 11px;
+  background: #0d1218;
+  border-top: 1px solid rgb(201 180 124 / 35%);
+}
+.application.sheet.black-flag.actor.pc .tov-death-panel[hidden] { display: none !important; }
+.application.sheet.black-flag.actor.pc .tov-death-title {
+  margin-bottom: 3px;
+  color: var(--tov-gold);
+  font-size: 8px;
+  font-weight: 900;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.application.sheet.black-flag.actor.pc .tov-death-panel blackFlag-deathSaves {
+  width: 100%;
+  min-height: 34px;
+}
+.application.sheet.black-flag.actor.pc .tov-death-saves.open { min-height: 58px; }
+.application.sheet.black-flag.actor.pc .tov-death-saves.open .tov-death-toggle { bottom: -9px; }
