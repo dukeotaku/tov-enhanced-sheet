@@ -100,6 +100,45 @@ Hooks.on("renderApplicationV2", (app, html) => {
       }
       controls.append(originalProgression);
     }
+    // Show XP in play mode, matching the 5e reference; only for XP leveling.
+    // Display only: native Black Flag progression remains responsible for XP editing.
+    const xpMode = game.settings.get(game.system.id, "levelingMode") === "xp";
+    const xp = progression?.xp;
+    if (xpMode && xp) {
+      const xpDisplay = document.createElement("div");
+      xpDisplay.className = "tov-header-play-xp";
+      xpDisplay.setAttribute("role", "group");
+      xpDisplay.setAttribute("aria-label", "Experience points");
+      const xpValues = document.createElement("span");
+      xpValues.className = "tov-header-play-xp-values";
+      const xpTrack = document.createElement("div");
+      xpTrack.className = "tov-header-play-xp-track";
+      xpTrack.setAttribute("role", "progressbar");
+      const xpFill = document.createElement("span");
+      xpTrack.append(xpFill);
+      const refreshXP = () => {
+        const current = actorForHeader.system?.progression?.xp;
+        if (!current) return;
+        const value = Number(current.value) || 0;
+        const max = Number(current.max) || 0;
+        const min = Number(current.min) || 0;
+        const percentage = Math.max(0, Math.min(100,
+          Number.isFinite(Number(current.percentage)) ? Number(current.percentage) :
+          (max > min ? (value - min) / (max - min) * 100 : 0)));
+        xpValues.textContent = value.toLocaleString() + " / " + max.toLocaleString();
+        xpFill.style.width = percentage + "%";
+        xpTrack.setAttribute("aria-valuenow", String(value));
+        xpTrack.setAttribute("aria-valuemin", String(min));
+        xpTrack.setAttribute("aria-valuemax", String(max));
+      };
+      refreshXP();
+      const xpHook = Hooks.on("updateActor", updated => {
+        if (updated.id === actorForHeader.id && xpDisplay.isConnected) refreshXP();
+        else if (!xpDisplay.isConnected) Hooks.off("updateActor", xpHook);
+      });
+      xpDisplay.append(xpValues, xpTrack);
+      right.append(xpDisplay);
+    }
     right.append(level, controls);
     top.append(left, right);
     // Six abilities stay visible on every tab and use Black Flag's own roll action.
