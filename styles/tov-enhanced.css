@@ -1414,3 +1414,83 @@
   justify-content: center;
   gap: 8px;
 }
+
+
+/* v0.1.31 visual refinements against supplied 5e reference. */
+.application.sheet.black-flag.actor.pc .tov-header-abilities {
+  width: min(51%, 465px);
+  margin: 0 4.5% 0 auto;
+  gap: 6px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability {
+  height: 53px;
+  padding: 0 2px 7px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability::before { inset: 0 0 5px; }
+.application.sheet.black-flag.actor.pc .tov-header-ability::after { inset: 2px 2px 7px; }
+.application.sheet.black-flag.actor.pc .tov-header-ability-label {
+  font-size: 10px;
+  line-height: 12px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-roll {
+  font-size: 21px;
+  min-height: 25px;
+  line-height: 24px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-score {
+  bottom: -1px;
+  font-size: 11px;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype,
+.application.sheet.black-flag.actor.pc.tov-header-prototype:has(.tov-header-editing) {
+  --tov-header-height: 155px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-top {
+  height: 77px;
+  min-height: 77px;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype.tov-enhanced-ready .tov-static-panel {
+  position: relative;
+  z-index: 3;
+  margin-top: -46px;
+  min-height: calc(100% + 46px);
+  overflow-y: auto;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .tov-header-edit-toggle {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  box-sizing: border-box;
+  width: 29px;
+  min-width: 29px;
+  height: 16px;
+  min-height: 16px;
+  padding: 2px !important;
+  line-height: 1;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .tov-header-edit-toggle > span {
+  flex: 0 0 9px;
+  margin: 0 !important;
+  transform: translateX(0);
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .tov-header-edit-toggle[aria-checked="true"] > span {
+  transform: translateX(13px);
+}
+.application.sheet.black-flag.actor.pc .tov-header-progression-controls .progression {
+  position: relative;
+}
+.application.sheet.black-flag.actor.pc .tov-header-progression-controls .progression > legend {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+.application.sheet.black-flag.actor.pc .tov-header-progression-controls .progression [data-action="toggleProgression"] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+.application.sheet.black-flag.actor.pc .tov-header-progression-controls .tov-progression-notice {
+  color: #f0c94d !important;
+}
