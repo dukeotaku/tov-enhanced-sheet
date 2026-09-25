@@ -88,7 +88,18 @@ Hooks.on("renderApplicationV2", (app, html) => {
     level.append(badge);
     const controls = document.createElement("div");
     controls.className = "tov-header-progression-controls";
-    if (originalProgression) controls.append(originalProgression);
+    if (originalProgression) {
+      // Replace Black Flag's intrusive badge with a status color on its native action icon.
+      const progressionLegend = originalProgression.querySelector("legend");
+      const hasProgressionNotice = Boolean(progressionLegend?.querySelector("*"));
+      if (progressionLegend) progressionLegend.textContent = "PROGRESSION";
+      const actionIcon = originalProgression.querySelector('[data-action="toggleProgression"] .icon');
+      if (actionIcon) {
+        actionIcon.classList.toggle("tov-progression-notice", hasProgressionNotice);
+        actionIcon.title = hasProgressionNotice ? "Character progression needs attention" : "Open character progression";
+      }
+      controls.append(originalProgression);
+    }
     right.append(level, controls);
     top.append(left, right);
     // Six abilities stay visible on every tab and use Black Flag's own roll action.
