@@ -171,17 +171,24 @@ Hooks.on("renderApplicationV2", (app, html) => {
     }
     shell.append(top, abilities);
     nativeHeader.append(shell);
-    if (app._tovHeaderEditing) {
+    // Preserve the switch through Black Flag's first unlock/re-render.
+    const initialEditing = app._tovHeaderEditing ?? (sheet.dataset.tovHeaderEditing === "true");
+    if (initialEditing) {
       shell.classList.add("tov-header-editing");
       toggle.setAttribute("aria-checked", "true");
       toggle.title = "Hide character progression";
     }
-    toggle.addEventListener("click", () => {
+    toggle.addEventListener("click", event => {
+      // This custom control is not a native Black Flag sheet action.
+      event.preventDefault();
+      event.stopPropagation();
       const editing = shell.classList.toggle("tov-header-editing");
       app._tovHeaderEditing = editing;
+      sheet.dataset.tovHeaderEditing = String(editing);
       toggle.setAttribute("aria-checked", String(editing));
       toggle.title = editing ? "Hide character progression" : "Show character progression";
     });
+    sheet.dataset.tovHeaderEditing = String(Boolean(initialEditing));
     sheet.classList.add("tov-header-prototype");
   }
 
