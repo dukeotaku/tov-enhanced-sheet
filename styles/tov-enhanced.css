@@ -1308,3 +1308,109 @@
 .application.sheet.black-flag.actor.pc .tov-header-progression-controls .progression {
   margin: 0;
 }
+
+
+/* v0.1.30: 5e-reference shield silhouettes, located beneath right header region. */
+.application.sheet.black-flag.actor.pc.tov-header-prototype,
+.application.sheet.black-flag.actor.pc.tov-header-prototype:has(.tov-header-editing) {
+  --tov-header-height: 165px;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .sheet-header {
+  padding: 8px 17px 9px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-shell {
+  gap: 0;
+}
+.application.sheet.black-flag.actor.pc .tov-header-top {
+  height: 79px;
+  min-height: 79px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-abilities {
+  width: min(64%, 565px);
+  margin: 0 5% 0 auto;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 7px;
+  align-items: start;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability {
+  position: relative;
+  height: 67px;
+  padding: 5px 2px 9px;
+  gap: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  isolation: isolate;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 7px;
+  z-index: -2;
+  background: #a99b7c;
+  clip-path: polygon(50% 0, 100% 21%, 100% 85%, 50% 100%, 0 85%, 0 21%);
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability::after {
+  content: "";
+  position: absolute;
+  inset: 2px 2px 9px;
+  z-index: -1;
+  background: #1b2c3d;
+  clip-path: polygon(50% 0, 100% 21%, 100% 84%, 50% 100%, 0 84%, 0 21%);
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-label {
+  font-size: 10px;
+  line-height: 14px;
+  color: #d8c79d;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-roll {
+  min-height: 27px;
+  font-size: 21px;
+  line-height: 25px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-score {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 31px;
+  padding: 2px 6px;
+  background: #0c1118;
+  border: 1px solid #b4a783;
+  border-radius: 3px;
+  color: #e8d6a9;
+  font-size: 11px;
+  line-height: 13px;
+  text-align: center;
+}
+.application.sheet.black-flag.actor.pc .tov-header-right > .tov-header-progression-controls {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.application.sheet.black-flag.actor.pc .tov-header-progression-controls .progression {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-progression-controls .progression > legend {
+  width: 100%;
+  text-align: center;
+}
+.application.sheet.black-flag.actor.pc .tov-header-progression-controls .progression > legend blackflag-notification-badge,
+.application.sheet.black-flag.actor.pc .tov-header-progression-controls .progression > legend .notification-badge {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.application.sheet.black-flag.actor.pc .tov-header-progression-controls .progression > button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
