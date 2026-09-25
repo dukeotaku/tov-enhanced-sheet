@@ -753,56 +753,15 @@
 
 
 /* Checkpoint 6 - hidden Death Saves */
-.application.sheet.black-flag.actor.pc .tov-death-saves {
-  position: relative;
-  min-height: 15px;
-  margin: 0 0 1px;
-  border-bottom: 1px solid rgb(201 180 124 / 45%);
-}
-.application.sheet.black-flag.actor.pc .tov-death-toggle {
-  position: absolute;
-  left: 50%;
-  bottom: -10px;
-  translate: -50% 0;
-  z-index: 6;
-  width: 24px;
-  height: 20px;
-  display: grid;
-  place-items: center;
-  padding: 0;
-  color: var(--tov-gold);
-  background: #11161d;
-  border: 1px solid rgb(201 180 124 / 55%);
-  border-radius: 0 0 10px 10px;
-  cursor: pointer;
-}
-.application.sheet.black-flag.actor.pc .tov-death-toggle:hover,
-.application.sheet.black-flag.actor.pc .tov-death-saves.open .tov-death-toggle {
-  color: #fff;
-  background: #173d5e;
-}
-.application.sheet.black-flag.actor.pc .tov-death-toggle i { font-size: 9px; }
-.application.sheet.black-flag.actor.pc .tov-death-panel {
-  padding: 5px 8px 11px;
-  background: #0d1218;
-  border-top: 1px solid rgb(201 180 124 / 35%);
-}
-.application.sheet.black-flag.actor.pc .tov-death-panel[hidden] { display: none !important; }
-.application.sheet.black-flag.actor.pc .tov-death-title {
-  margin-bottom: 3px;
-  color: var(--tov-gold);
-  font-size: 8px;
-  font-weight: 900;
-  text-align: center;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-}
-.application.sheet.black-flag.actor.pc .tov-death-panel blackFlag-deathSaves {
-  width: 100%;
-  min-height: 34px;
-}
-.application.sheet.black-flag.actor.pc .tov-death-saves.open { min-height: 58px; }
-.application.sheet.black-flag.actor.pc .tov-death-saves.open .tov-death-toggle { bottom: -9px; }
+.
+.
+.
+.
+.
+.
+.
+.
+.
 
 
 /* =========================================================
@@ -823,93 +782,19 @@
 }
 
 /* The drawer occupies no normal layout height: it physically slides over Favorites. */
-.application.sheet.black-flag.actor.pc .tov-death-saves {
-  position: absolute;
-  z-index: 5;
-  left: 8px;
-  right: 8px;
-  bottom: -18px;
-  height: 18px;
-  min-height: 0;
-  margin: 0;
-  border: 0;
-  pointer-events: none;
-}
 
-.application.sheet.black-flag.actor.pc .tov-death-panel {
-  position: absolute;
-  z-index: 1;
-  left: 0;
-  right: 0;
-  top: -47px;
-  height: 47px;
-  padding: 7px 10px 6px;
-  overflow: hidden;
-  opacity: 0;
-  background: #07090c;
-  border: 1px solid var(--tov-gold);
-  border-radius: 0 0 4px 4px;
-  box-shadow: 0 6px 10px rgb(0 0 0 / 55%);
-  transform: translateY(0);
-  transition:
-    transform 190ms cubic-bezier(.22,.8,.28,1),
-    opacity 100ms ease;
-  pointer-events: none;
-}
-.application.sheet.black-flag.actor.pc .tov-death-panel[hidden] {
-  display: block !important;
-}
-.application.sheet.black-flag.actor.pc .tov-death-title { display: none; }
+.
+.
+.
 
-.application.sheet.black-flag.actor.pc .tov-death-toggle {
-  position: absolute;
-  z-index: 3;
-  left: 50%;
-  top: -1px;
-  bottom: auto;
-  translate: -50% 0;
-  width: 31px;
-  height: 19px;
-  padding: 0;
-  display: grid;
-  place-items: center;
-  color: var(--tov-gold);
-  background: #2a2e34;
-  border: 0;
-  border-radius: 0 0 5px 5px;
-  box-shadow: 0 3px 5px rgb(0 0 0 / 40%);
-  cursor: pointer;
-  pointer-events: auto;
-  transition:
-    transform 190ms cubic-bezier(.22,.8,.28,1),
-    background 120ms ease;
-}
-.application.sheet.black-flag.actor.pc .tov-death-toggle i { font-size: 9px; }
+.
+.
 
 /* A small blind-pull motion before the drawer settles open. */
-.application.sheet.black-flag.actor.pc .tov-death-saves.open .tov-death-panel {
-  opacity: 1;
-  transform: translateY(65px);
-  pointer-events: auto;
-  animation: tov-drawer-tug 260ms ease-out;
-}
-.application.sheet.black-flag.actor.pc .tov-death-saves.open .tov-death-toggle {
-  bottom: auto;
-  transform: translateY(47px);
-  background: #333840;
-  animation: tov-tab-tug 260ms ease-out;
-}
+.
 
-@keyframes tov-drawer-tug {
-  0%   { transform: translateY(0); }
-  68%  { transform: translateY(69px); }
-  100% { transform: translateY(65px); }
-}
-@keyframes tov-tab-tug {
-  0%   { transform: translateY(0); }
-  68%  { transform: translateY(51px); }
-  100% { transform: translateY(47px); }
-}
+@
+@
 
 /* Favorites stays where it is; the death drawer deliberately overlays it. */
 .application.sheet.black-flag.actor.pc .tov-favorites {
@@ -953,88 +838,21 @@
 }
 
 /* Give the pull tab breathing room below the raised card. */
-.application.sheet.black-flag.actor.pc .tov-death-saves {
-  left: 12px;
-  right: 12px;
-  bottom: -21px;
-  height: 21px;
-}
 
 /* Cleaner fantasy drawer: native mechanics, custom presentation. */
-.application.sheet.black-flag.actor.pc .tov-death-panel {
-  top: -51px;
-  height: 51px;
-  padding: 8px 13px;
-  background: #080a0d;
-  border: 1px solid var(--tov-gold);
-  border-radius: 0 0 7px 7px;
-}
-.application.sheet.black-flag.actor.pc .tov-death-panel blackFlag-deathSaves {
-  min-height: 35px;
-  --bf-death-saves-neutral-color: #0b0e12;
-  --bf-death-saves-failure-color: #7d2633;
-  --bf-death-saves-success-color: #2d7651;
-}
-.application.sheet.black-flag.actor.pc .tov-death-panel blackFlag-deathSaves .levels {
-  margin: 5px 2px;
-  grid-template-columns:
-    [third-start] 1fr [second-start] 1fr [first-start] 1fr
-    14px [center] 14px
-    1fr [first-end] 1fr [second-end] 1fr [third-end];
-}
-.application.sheet.black-flag.actor.pc .tov-death-panel blackFlag-deathSaves .levels button {
-  height: 19px;
-  border-radius: 50%;
-  border: 2px solid var(--tov-gold);
-  background: #080b0f;
-  box-shadow: none;
-}
-.application.sheet.black-flag.actor.pc .tov-death-panel blackFlag-deathSaves .levels button.failure,
-.application.sheet.black-flag.actor.pc .tov-death-panel blackFlag-deathSaves .levels button.success {
-  border-inline-start: 2px solid var(--tov-gold);
-  border-inline-end: 2px solid var(--tov-gold);
-  border-radius: 50%;
-}
-.application.sheet.black-flag.actor.pc .tov-death-panel blackFlag-deathSaves button[data-action="roll"] {
-  width: 38px;
-  height: 38px;
-  border: 0;
-  background: transparent;
-  box-shadow: none;
-}
-.application.sheet.black-flag.actor.pc .tov-death-panel blackFlag-deathSaves button[data-action="roll"] blackFlag-icon {
-  --icon-size: 34px;
-  filter: sepia(.55) saturate(.75) brightness(1.12);
-}
+.
+.
+.
+.
+.
+.
 
-.application.sheet.black-flag.actor.pc .tov-death-toggle {
-  top: 0;
-  width: 32px;
-  height: 21px;
-  background: #252a30;
-  border: 1px solid rgb(201 180 124 / 42%);
-  border-top: 0;
-}
+.
 
 /* Pull farther down over Favorites, with a slightly stronger blind-like overshoot. */
-.application.sheet.black-flag.actor.pc .tov-death-saves.open .tov-death-panel {
-  transform: translateY(79px);
-  animation: tov-drawer-tug-2 290ms ease-out;
-}
-.application.sheet.black-flag.actor.pc .tov-death-saves.open .tov-death-toggle {
-  transform: translateY(58px);
-  animation: tov-tab-tug-2 290ms ease-out;
-}
-@keyframes tov-drawer-tug-2 {
-  0%   { transform: translateY(0); }
-  72%  { transform: translateY(84px); }
-  100% { transform: translateY(79px); }
-}
-@keyframes tov-tab-tug-2 {
-  0%   { transform: translateY(0); }
-  72%  { transform: translateY(63px); }
-  100% { transform: translateY(58px); }
-}
+.
+@
+@
 
 
 /* =========================================================
@@ -1059,126 +877,22 @@
 
 /* Anchor the drawer to the actual bottom edge of the health/raised panel.
    Luck/HP height changes can no longer move it upward over Hit Dice. */
-.application.sheet.black-flag.actor.pc .tov-death-saves {
-  position: absolute;
-  z-index: 5;
-  left: 7px;
-  right: 7px;
-  top: 100%;
-  bottom: auto;
-  height: 20px;
-  margin: 0;
-  border: 0;
-  pointer-events: none;
-}
 
-.application.sheet.black-flag.actor.pc .tov-death-panel {
-  position: absolute;
-  z-index: 1;
-  left: 6px;
-  right: 6px;
-  top: -50px;
-  height: 50px;
-  display: grid;
-  grid-template-columns: 1fr 38px 1fr;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
-  opacity: 0;
-  overflow: hidden;
-  background: #080a0d;
-  border: 1px solid var(--tov-gold);
-  border-radius: 0 0 7px 7px;
-  box-shadow: 0 7px 10px rgb(0 0 0 / 55%);
-  transform: translateY(0);
-  transition: transform 210ms cubic-bezier(.22,.8,.28,1), opacity 110ms ease;
-  pointer-events: none;
-}
+.
 
-.application.sheet.black-flag.actor.pc .tov-death-pips {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  gap: 7px;
-}
-.application.sheet.black-flag.actor.pc .tov-death-pip {
-  width: 18px;
-  height: 18px;
-  min-width: 18px;
-  padding: 0;
-  border: 2px solid var(--tov-gold);
-  border-radius: 50%;
-  background: #090c10;
-  box-shadow: inset 0 0 0 2px #090c10;
-  cursor: pointer;
-}
-.application.sheet.black-flag.actor.pc .tov-death-pip.selected {
-  background: var(--tov-gold);
-}
-.application.sheet.black-flag.actor.pc .tov-death-roll {
-  width: 38px;
-  height: 38px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  box-shadow: none;
-  cursor: pointer;
-}
-.application.sheet.black-flag.actor.pc .tov-death-roll blackFlag-icon {
-  --icon-size: 36px;
-  filter: sepia(.45) saturate(.8) brightness(1.12);
-}
+.
+.
+.
+.
+.
 
 /* Pull tab is physically attached to the drawer's lower edge. */
-.application.sheet.black-flag.actor.pc .tov-death-toggle {
-  position: absolute;
-  z-index: 3;
-  left: 50%;
-  top: 0;
-  bottom: auto;
-  translate: -50% 0;
-  width: 30px;
-  height: 20px;
-  display: grid;
-  place-items: center;
-  padding: 0;
-  color: var(--tov-gold);
-  background: #24292e;
-  border: 1px solid rgb(201 180 124 / 45%);
-  border-top: 0;
-  border-radius: 0 0 7px 7px;
-  box-shadow: 0 3px 5px rgb(0 0 0 / 42%);
-  pointer-events: auto;
-  cursor: pointer;
-  transition: transform 210ms cubic-bezier(.22,.8,.28,1);
-}
-.application.sheet.black-flag.actor.pc .tov-death-toggle i {
-  display: block;
-  font-size: 10px;
-  line-height: 1;
-}
+.
 
 /* Drawer clears the raised panel completely, then settles with tab attached. */
-.application.sheet.black-flag.actor.pc .tov-death-saves.open .tov-death-panel {
-  opacity: 1;
-  transform: translateY(70px);
-  pointer-events: auto;
-  animation: tov-drawer-tug-3 285ms ease-out;
-}
-.application.sheet.black-flag.actor.pc .tov-death-saves.open .tov-death-toggle {
-  transform: translateY(70px);
-  animation: tov-tab-tug-3 285ms ease-out;
-}
-@keyframes tov-drawer-tug-3 {
-  0% { transform: translateY(0); }
-  72% { transform: translateY(75px); }
-  100% { transform: translateY(70px); }
-}
-@keyframes tov-tab-tug-3 {
-  0% { transform: translateY(0); }
-  72% { transform: translateY(75px); }
-  100% { transform: translateY(70px); }
-}
+.
+@
+@
 
 
 /* =========================================================
@@ -1215,226 +929,44 @@
 }
 
 /* Drawer is attached to the BOTTOM of the raised health card. */
-.application.sheet.black-flag.actor.pc .tov-death-saves {
-  position: absolute;
-  z-index: 20;
-  left: 8px;
-  right: 8px;
-  top: calc(100% - 1px);
-  bottom: auto;
-  height: 19px;
-  margin: 0;
-  pointer-events: none;
-}
 
 /* Closed drawer lives completely behind raised card. */
-.application.sheet.black-flag.actor.pc .tov-death-panel {
-  position: absolute;
-  z-index: 1;
-  left: 0;
-  right: 0;
-  top: -55px;
-  height: 55px;
-  box-sizing: border-box;
-  display: grid;
-  grid-template-columns: 1fr 44px 1fr;
-  align-items: center;
-  gap: 7px;
-  padding: 6px 12px;
-  opacity: 0;
-  overflow: hidden;
-  background: #050607;
-  border: 1px solid #c9b47c;
-  border-radius: 3px;
-  box-shadow: 0 5px 0 #000, 0 8px 10px rgb(0 0 0 / 55%);
-  transform: translateY(0);
-  transition: transform 220ms cubic-bezier(.22,.8,.28,1), opacity 80ms linear;
-  pointer-events: none;
-}
 
-.application.sheet.black-flag.actor.pc .tov-death-pips {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 7px;
-}
-.application.sheet.black-flag.actor.pc .tov-death-pip {
-  appearance: none;
-  width: 18px;
-  height: 18px;
-  min-width: 18px;
-  padding: 0;
-  margin: 0;
-  border: 2px solid #c9b47c;
-  border-radius: 50%;
-  background: #050607;
-  box-shadow: none;
-}
-.application.sheet.black-flag.actor.pc .tov-death-pip.selected {
-  background: #c9b47c;
-  box-shadow: inset 0 0 0 3px #050607;
-}
+.
+.
+.
 
-.application.sheet.black-flag.actor.pc .tov-death-roll {
-  appearance: none;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  display: grid;
-  place-items: center;
-  border: 0;
-  background: transparent;
-  box-shadow: none;
-  color: #c9b47c;
-}
-.application.sheet.black-flag.actor.pc .tov-death-roll i {
-  font-size: 36px;
-  line-height: 1;
-  text-shadow: 0 1px 0 #000;
-}
+.
+.
 
 /* Pull tab is always connected to the lower edge of the drawer. */
-.application.sheet.black-flag.actor.pc .tov-death-toggle {
-  position: absolute;
-  z-index: 2;
-  left: 50%;
-  top: -1px;
-  translate: -50% 0;
-  width: 31px;
-  height: 21px;
-  display: grid;
-  place-items: center;
-  padding: 0;
-  color: #eee6d2;
-  background: #353a40;
-  border: 1px solid #c9b47c;
-  border-top: 0;
-  border-radius: 0 0 6px 6px;
-  box-shadow: 0 3px 4px rgb(0 0 0 / 50%);
-  pointer-events: auto;
-  transition: transform 220ms cubic-bezier(.22,.8,.28,1);
-}
-.application.sheet.black-flag.actor.pc .tov-death-toggle i {
-  font-size: 9px;
-  line-height: 1;
-}
+.
 
 /* 55px drawer + 1px overlap: it emerges immediately below Hit Dice.
    Drawer and tab move the same distance, keeping them physically attached. */
-.application.sheet.black-flag.actor.pc .tov-death-saves.open .tov-death-panel {
-  opacity: 1;
-  transform: translateY(56px);
-  pointer-events: auto;
-  animation: tov-death-drawer-final 270ms ease-out;
-}
-.application.sheet.black-flag.actor.pc .tov-death-saves.open .tov-death-toggle {
-  transform: translateY(55px);
-  animation: tov-death-tab-final 270ms ease-out;
-}
-@keyframes tov-death-drawer-final {
-  0% { transform: translateY(0); }
-  75% { transform: translateY(60px); }
-  100% { transform: translateY(56px); }
-}
-@keyframes tov-death-tab-final {
-  0% { transform: translateY(0); }
-  75% { transform: translateY(59px); }
-  100% { transform: translateY(55px); }
-}
+.
+@
+@
 
 
 /* =========================================================
    Checkpoint 6F - visually match D&D death-save reference
    ========================================================= */
-.application.sheet.black-flag.actor.pc .tov-death-panel {
-  left: 2px;
-  right: 2px;
-  height: 57px;
-  grid-template-columns: 1fr 52px 1fr;
-  gap: 5px;
-  padding: 5px 10px;
-  background: #030405;
-  border: 1px solid #b9aa7c;
-  border-radius: 3px;
-  box-shadow: 0 5px 0 #000, 0 7px 8px rgb(0 0 0 / 60%);
-}
-.application.sheet.black-flag.actor.pc .tov-death-pips {
-  gap: 5px;
-  justify-content: space-evenly;
-}
-.application.sheet.black-flag.actor.pc .tov-death-pip {
-  width: 17px;
-  height: 17px;
-  min-width: 17px;
-  border: 2px solid #a99c73;
-  background: #030405;
-}
-.application.sheet.black-flag.actor.pc .tov-death-roll {
-  width: 52px;
-  height: 48px;
-  color: #b8ad88;
-}
-.application.sheet.black-flag.actor.pc .tov-death-roll i {
-  font-size: 42px;
-  transform: scaleX(.92);
-  color: #b8ad88;
-  text-shadow: none;
-}
-.application.sheet.black-flag.actor.pc .tov-death-toggle {
-  width: 30px;
-  height: 20px;
-  color: #b8ad88;
-  background: #292d32;
-  border-color: #746a4c;
-}
+.
+.
+.
+.
+.
 
 
 /* Checkpoint 6G - direct dnd5e death tray port */
-.application.sheet.black-flag.actor.pc .tov-death-tray {
-  --lip: 6px; --tray-height: 72px;
-  display:flex; flex-direction:column; align-items:center;
-  padding:0 8px; position:absolute; z-index:20; width:100%; left:0;
-  top:calc(100% - var(--tray-height)); transform:translateZ(-1px);
-  transition:top 450ms cubic-bezier(.36,0,.66,-.56); pointer-events:none;
-}
-.application.sheet.black-flag.actor.pc .tov-death-tray.open { top:calc(100% - var(--lip)); }
-.application.sheet.black-flag.actor.pc .tov-death-tray .tov-death-saves {
-  --padding:6px; position:relative; width:100%; min-height:66px;
-  display:flex; align-items:center; justify-content:space-between;
-  padding:calc(var(--padding)*2 + var(--lip)) var(--padding) calc(var(--padding)*2);
-  background:#000; border:0; border-radius:0 0 5px 5px;
-  box-shadow:0 0 6px #000; pointer-events:auto;
-}
-.application.sheet.black-flag.actor.pc .tov-death-tray .tov-death-saves::after {
-  content:""; border:1px solid var(--tov-gold); border-radius:4px;
-  position:absolute; inset:calc(var(--padding) + var(--lip)) var(--padding) var(--padding);
-  pointer-events:none;
-}
-.application.sheet.black-flag.actor.pc .tov-death-tray .tov-death-pips {
-  display:flex; align-items:center; gap:6px; padding:0 5px; z-index:1;
-}
-.application.sheet.black-flag.actor.pc .tov-death-tray .tov-death-pip {
-  appearance:none; width:18px; height:18px; min-width:18px; margin:0; padding:0;
-  border:2px solid var(--tov-gold); border-radius:50%; background:#000; box-shadow:none;
-}
-.application.sheet.black-flag.actor.pc .tov-death-tray .tov-death-pip.selected {
-  background:var(--tov-gold); box-shadow:inset 0 0 0 3px #000;
-}
-.application.sheet.black-flag.actor.pc .tov-death-tray .tov-death-roll {
-  appearance:none; width:40px; height:40px; min-width:40px; padding:0;
-  border:0; background:none; box-shadow:none; display:grid; place-items:center;
-  color:var(--tov-gold); z-index:1;
-}
-.application.sheet.black-flag.actor.pc .tov-death-tray .tov-death-roll i {
-  font-size:36px; line-height:1; color:var(--tov-gold);
-}
-.application.sheet.black-flag.actor.pc .tov-death-tray .tov-death-toggle {
-  position:relative; z-index:2; width:30px; height:20px; min-height:20px;
-  margin:0; padding:0; display:grid; place-items:center; color:var(--tov-gold);
-  background:#292d32; border:1px solid var(--tov-gold); border-top:0;
-  border-radius:0 0 5px 5px; box-shadow:0 3px 5px rgb(0 0 0 / 55%);
-  pointer-events:auto;
-}
-.application.sheet.black-flag.actor.pc .tov-death-tray .tov-death-toggle i {
-  font-size:10px; line-height:1;
-}
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
