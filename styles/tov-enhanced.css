@@ -916,3 +916,122 @@
   position: relative;
   z-index: 1;
 }
+
+
+/* =========================================================
+   Checkpoint 6B - raised portrait card + cleaner death drawer
+   ========================================================= */
+
+/* Make the portrait-through-hit-dice card visibly separate from the Favorites bed. */
+.application.sheet.black-flag.actor.pc .tov-static-panel {
+  background: #090d12;
+}
+.application.sheet.black-flag.actor.pc .tov-portrait-slot,
+.application.sheet.black-flag.actor.pc .tov-static-stats,
+.application.sheet.black-flag.actor.pc .tov-static-health {
+  background: #252a30;
+}
+.application.sheet.black-flag.actor.pc .tov-portrait-slot {
+  padding: 6px 6px 0;
+  margin: -6px -6px 0;
+  border: 1px solid rgb(201 180 124 / 34%);
+  border-bottom: 0;
+  box-shadow: 0 2px 0 rgb(255 255 255 / 4%);
+}
+.application.sheet.black-flag.actor.pc .tov-static-stats {
+  margin: 0 -6px;
+  padding: 0 6px;
+  border-left: 1px solid rgb(201 180 124 / 34%);
+  border-right: 1px solid rgb(201 180 124 / 34%);
+}
+.application.sheet.black-flag.actor.pc .tov-static-health {
+  margin: 0 -6px;
+  padding: 0 6px 10px;
+  border: 1px solid rgb(201 180 124 / 34%);
+  border-top: 0;
+  box-shadow: 0 8px 10px rgb(0 0 0 / 58%);
+}
+
+/* Give the pull tab breathing room below the raised card. */
+.application.sheet.black-flag.actor.pc .tov-death-saves {
+  left: 12px;
+  right: 12px;
+  bottom: -21px;
+  height: 21px;
+}
+
+/* Cleaner fantasy drawer: native mechanics, custom presentation. */
+.application.sheet.black-flag.actor.pc .tov-death-panel {
+  top: -51px;
+  height: 51px;
+  padding: 8px 13px;
+  background: #080a0d;
+  border: 1px solid var(--tov-gold);
+  border-radius: 0 0 7px 7px;
+}
+.application.sheet.black-flag.actor.pc .tov-death-panel blackFlag-deathSaves {
+  min-height: 35px;
+  --bf-death-saves-neutral-color: #0b0e12;
+  --bf-death-saves-failure-color: #7d2633;
+  --bf-death-saves-success-color: #2d7651;
+}
+.application.sheet.black-flag.actor.pc .tov-death-panel blackFlag-deathSaves .levels {
+  margin: 5px 2px;
+  grid-template-columns:
+    [third-start] 1fr [second-start] 1fr [first-start] 1fr
+    14px [center] 14px
+    1fr [first-end] 1fr [second-end] 1fr [third-end];
+}
+.application.sheet.black-flag.actor.pc .tov-death-panel blackFlag-deathSaves .levels button {
+  height: 19px;
+  border-radius: 50%;
+  border: 2px solid var(--tov-gold);
+  background: #080b0f;
+  box-shadow: none;
+}
+.application.sheet.black-flag.actor.pc .tov-death-panel blackFlag-deathSaves .levels button.failure,
+.application.sheet.black-flag.actor.pc .tov-death-panel blackFlag-deathSaves .levels button.success {
+  border-inline-start: 2px solid var(--tov-gold);
+  border-inline-end: 2px solid var(--tov-gold);
+  border-radius: 50%;
+}
+.application.sheet.black-flag.actor.pc .tov-death-panel blackFlag-deathSaves button[data-action="roll"] {
+  width: 38px;
+  height: 38px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.application.sheet.black-flag.actor.pc .tov-death-panel blackFlag-deathSaves button[data-action="roll"] blackFlag-icon {
+  --icon-size: 34px;
+  filter: sepia(.55) saturate(.75) brightness(1.12);
+}
+
+.application.sheet.black-flag.actor.pc .tov-death-toggle {
+  top: 0;
+  width: 32px;
+  height: 21px;
+  background: #252a30;
+  border: 1px solid rgb(201 180 124 / 42%);
+  border-top: 0;
+}
+
+/* Pull farther down over Favorites, with a slightly stronger blind-like overshoot. */
+.application.sheet.black-flag.actor.pc .tov-death-saves.open .tov-death-panel {
+  transform: translateY(79px);
+  animation: tov-drawer-tug-2 290ms ease-out;
+}
+.application.sheet.black-flag.actor.pc .tov-death-saves.open .tov-death-toggle {
+  transform: translateY(58px);
+  animation: tov-tab-tug-2 290ms ease-out;
+}
+@keyframes tov-drawer-tug-2 {
+  0%   { transform: translateY(0); }
+  72%  { transform: translateY(84px); }
+  100% { transform: translateY(79px); }
+}
+@keyframes tov-tab-tug-2 {
+  0%   { transform: translateY(0); }
+  72%  { transform: translateY(63px); }
+  100% { transform: translateY(58px); }
+}
