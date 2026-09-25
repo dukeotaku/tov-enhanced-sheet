@@ -114,8 +114,9 @@ Hooks.on("renderApplicationV2", (app, html) => {
   const profValue = sheet.querySelector(".sheet-header .proficiency-bonus span")?.textContent?.trim() ?? "—";
   const traits = main?.querySelector(".traits");
   const speedSource = traits ? [...traits.querySelectorAll(".trait")].find(el => /speed/i.test(el.textContent)) : null;
-  const speedValue = speedSource?.querySelector(":scope > span:last-child")?.textContent?.trim()
+  const speedRaw = speedSource?.querySelector(":scope > span:last-child")?.textContent?.trim()
     ?? speedSource?.textContent?.replace(/^.*?Speed\s*/i, "").trim() ?? "—";
+  const speedValue = speedRaw.match(/\d+/)?.[0] ?? speedRaw;
 
   vitals.innerHTML = `
     <div class="tov-vital"><span class="tov-vital-value">${initValue}</span><span class="tov-vital-label">Initiative</span></div>
@@ -132,9 +133,11 @@ Hooks.on("renderApplicationV2", (app, html) => {
   const luck = document.createElement("section");
   luck.className = "tov-luck-feature";
   luck.innerHTML = `
-    <div class="tov-luck-heading"><span>Luck</span><small>Point Pool</small></div>
-    <div class="tov-luck-pips">
-      ${Array.from({length:5},(_,i)=>`<span class="${i < filledLuck ? "filled" : ""}"></span>`).join("")}
+    <div class="tov-luck-title">Luck</div>
+    <div class="tov-luck-frame">
+      <div class="tov-luck-pips">
+        ${Array.from({length:5},(_,i)=>`<span class="${i < filledLuck ? "filled" : ""}"></span>`).join("")}
+      </div>
     </div>`;
   health.append(luck);
 
