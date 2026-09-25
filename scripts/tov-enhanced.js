@@ -132,18 +132,140 @@ Hooks.on("renderApplicationV2", (app, html) => {
     }
     shell.append(top, abilities);
     nativeHeader.append(shell);
+    if (app._tovHeaderEditing) {
+      shell.classList.add("tov-header-editing");
+      toggle.setAttribute("aria-checked", "true");
+      toggle.title = "Hide character progression";
+    }
     toggle.addEventListener("click", () => {
       const editing = shell.classList.toggle("tov-header-editing");
+      app._tovHeaderEditing = editing;
       toggle.setAttribute("aria-checked", String(editing));
       toggle.title = editing ? "Hide character progression" : "Show character progression";
     });
     sheet.classList.add("tov-header-prototype");
   }
 
+  // Black Flag re-renders the Main part when returning from progression.
+  // Reapply our layout even when the persistent portrait rail already exists.
+  const body = sheet.querySelector(".sheet-body");
+  if (body) {
+    // Main tab: native Skills and native Saving Throw controls in two columns.
+    // Reparenting retains Black Flag's delegated roll and configuration actions.
+    const mainTab = body.querySelector('.tab[data-tab="main"]');
+    if (mainTab && !mainTab.querySelector(".tov-main-layout")) {
+      const nativeSkills = mainTab.querySelector("fieldset.skills");
+      const nativeAbilities = mainTab.querySelector("fieldset.abilities");
+      if (nativeSkills && nativeAbilities) {
+        const layout = document.createElement("div");
+        layout.className = "tov-main-layout";
+        const skillsColumn = document.createElement("section");
+        skillsColumn.className = "tov-main-skills";
+        const detailsColumn = document.createElement("section");
+        detailsColumn.className = "tov-main-details";
+        skillsColumn.append(nativeSkills);
+
+        const saves = document.createElement("fieldset");
+        saves.className = "tov-main-saves";
+        const saveLegend = document.createElement("legend");
+        saveLegend.textContent = "Saving Throws";
+        saves.append(saveLegend);
+        const names = {
+          strength: "Strength", dexterity: "Dexterity", constitution: "Constitution",
+          intelligence: "Intelligence", wisdom: "Wisdom", charisma: "Charisma"
+        };
+        for (const [key, name] of Object.entries(names)) {
+          const source = nativeAbilities.querySelector('.ability[data-key="' + key + '"]');
+          const selector = source?.querySelector(".ability-save .proficiency-selector");
+          const button = source?.querySelector(".ability-save button");
+          if (!button) continue;
+          const row = document.createElement("div");
+          row.className = "tov-main-save-row";
+          if (selector) row.append(selector);
+          const label = document.createElement("span");
+          label.textContent = name;
+          row.append(label, button);
+          saves.append(row);
+        }
+        detailsColumn.append(saves);
+
+        const actorMain = app.actor ?? app.document;
+        const progressionMain = actorMain?.system?.progression;
+        const namedItem = kind => {
+          const items = actorMain?.items ? Array.from(actorMain.items) : [];
+          return items.find(item => item.type === kind)?.name ?? "";
+        };
+        const info = [
+          ["Lineage", progressionMain?.lineage?.name || namedItem("lineage")],
+          ["Heritage", progressionMain?.heritage?.name || namedItem("heritage")],
+          ["Background", progressionMain?.background?.name || namedItem("background")]
+        ];
+        const nativeTraits = mainTab.querySelector("fieldset.traits");
+        const traitRows = [...(nativeTraits?.querySelectorAll(".trait") ?? [])];
+        const traitValue = keyword => traitRows
+          .filter(row => new RegExp(keyword, "i").test(row.querySelector("label")?.textContent ?? ""))
+          .map(row => row.querySelector(":scope > span")?.textContent?.trim() ?? "")
+          .filter(Boolean).join(", ");
+        info.push(
+          ["Senses", traitValue("sense|vision")],
+          ["Armor", traitValue("armor")],
+          ["Weapons", traitValue("weapon")],
+          ["Languages", traitValue("language")]
+        );
+        for (const [title, value] of info) {
+          const section = document.createElement("fieldset");
+          section.className = "tov-main-info tov-main-info-" + title.toLowerCase();
+          const legend = document.createElement("legend");
+          legend.textContent = title;
+          const proficiencyIcons = { Senses: "fa-eye", Armor: "fa-shield-halved", Weapons: "fa-swords", Languages: "fa-flag" };
+          if (proficiencyIcons[title]) {
+            const icon = document.createElement("i");
+            icon.className = "fa-solid " + (title === "Weapons" ? "fa-hand-fist" : proficiencyIcons[title]);
+            icon.setAttribute("aria-hidden", "true");
+            legend.prepend(icon);
+          }
+          const content = document.createElement("div");
+          content.className = "tov-main-info-value";
+          if (["Lineage", "Heritage", "Background"].includes(title)) {
+            const item = [...(actorMain?.items ?? [])].find(entry =>
+              entry.name === value || entry.type === title.toLowerCase());
+            section.classList.add("tov-main-identity-card");
+            if (item?.img) {
+              const img = document.createElement("img");
+              img.className = "tov-main-identity-art";
+              img.src = item.img;
+              img.alt = "";
+              content.append(img);
+            }
+            const identity = document.createElement("span");
+            identity.className = "tov-main-identity-label";
+            identity.textContent = value || "—";
+            content.append(identity);
+          } else {
+            section.classList.add("tov-main-proficiency-section");
+            const values = (value || "").split(/,\s*/).map(v => v.trim()).filter(Boolean);
+            for (const entry of values.length ? values : ["—"]) {
+              const chip = document.createElement("span");
+              chip.className = "tov-main-chip";
+              chip.textContent = entry;
+              content.append(chip);
+            }
+          }
+          section.append(legend, content);
+          detailsColumn.append(section);
+        }
+        layout.append(skillsColumn, detailsColumn);
+        mainTab.prepend(layout);
+        mainTab.classList.add("tov-main-reorganized");
+      }
+    }
+
+
+  }
+
   // Persistent character rail: clone live Black Flag controls rather than
   // reimplementing actor updates/roll handlers.
   if (sheet.querySelector(".tov-static-panel")) return;
-  const body = sheet.querySelector(".sheet-body");
   if (!body) return;
 
   const panel = document.createElement("aside");
@@ -403,116 +525,6 @@ Hooks.on("renderApplicationV2", (app, html) => {
         render();
         await save();
       });
-    }
-  }
-
-  // Main tab: native Skills and native Saving Throw controls in two columns.
-  // Reparenting retains Black Flag's delegated roll and configuration actions.
-  const mainTab = body.querySelector('.tab[data-tab="main"]');
-  if (mainTab && !mainTab.querySelector(".tov-main-layout")) {
-    const nativeSkills = mainTab.querySelector("fieldset.skills");
-    const nativeAbilities = mainTab.querySelector("fieldset.abilities");
-    if (nativeSkills && nativeAbilities) {
-      const layout = document.createElement("div");
-      layout.className = "tov-main-layout";
-      const skillsColumn = document.createElement("section");
-      skillsColumn.className = "tov-main-skills";
-      const detailsColumn = document.createElement("section");
-      detailsColumn.className = "tov-main-details";
-      skillsColumn.append(nativeSkills);
-
-      const saves = document.createElement("fieldset");
-      saves.className = "tov-main-saves";
-      const saveLegend = document.createElement("legend");
-      saveLegend.textContent = "Saving Throws";
-      saves.append(saveLegend);
-      const names = {
-        strength: "Strength", dexterity: "Dexterity", constitution: "Constitution",
-        intelligence: "Intelligence", wisdom: "Wisdom", charisma: "Charisma"
-      };
-      for (const [key, name] of Object.entries(names)) {
-        const source = nativeAbilities.querySelector('.ability[data-key="' + key + '"]');
-        const selector = source?.querySelector(".ability-save .proficiency-selector");
-        const button = source?.querySelector(".ability-save button");
-        if (!button) continue;
-        const row = document.createElement("div");
-        row.className = "tov-main-save-row";
-        if (selector) row.append(selector);
-        const label = document.createElement("span");
-        label.textContent = name;
-        row.append(label, button);
-        saves.append(row);
-      }
-      detailsColumn.append(saves);
-
-      const actorMain = app.actor ?? app.document;
-      const progressionMain = actorMain?.system?.progression;
-      const namedItem = kind => {
-        const items = actorMain?.items ? Array.from(actorMain.items) : [];
-        return items.find(item => item.type === kind)?.name ?? "";
-      };
-      const info = [
-        ["Lineage", progressionMain?.lineage?.name || namedItem("lineage")],
-        ["Heritage", progressionMain?.heritage?.name || namedItem("heritage")],
-        ["Background", progressionMain?.background?.name || namedItem("background")]
-      ];
-      const nativeTraits = mainTab.querySelector("fieldset.traits");
-      const traitRows = [...(nativeTraits?.querySelectorAll(".trait") ?? [])];
-      const traitValue = keyword => traitRows
-        .filter(row => new RegExp(keyword, "i").test(row.querySelector("label")?.textContent ?? ""))
-        .map(row => row.querySelector(":scope > span")?.textContent?.trim() ?? "")
-        .filter(Boolean).join(", ");
-      info.push(
-        ["Senses", traitValue("sense|vision")],
-        ["Armor", traitValue("armor")],
-        ["Weapons", traitValue("weapon")],
-        ["Languages", traitValue("language")]
-      );
-      for (const [title, value] of info) {
-        const section = document.createElement("fieldset");
-        section.className = "tov-main-info tov-main-info-" + title.toLowerCase();
-        const legend = document.createElement("legend");
-        legend.textContent = title;
-        const proficiencyIcons = { Senses: "fa-eye", Armor: "fa-shield-halved", Weapons: "fa-swords", Languages: "fa-flag" };
-        if (proficiencyIcons[title]) {
-          const icon = document.createElement("i");
-          icon.className = "fa-solid " + (title === "Weapons" ? "fa-hand-fist" : proficiencyIcons[title]);
-          icon.setAttribute("aria-hidden", "true");
-          legend.prepend(icon);
-        }
-        const content = document.createElement("div");
-        content.className = "tov-main-info-value";
-        if (["Lineage", "Heritage", "Background"].includes(title)) {
-          const item = [...(actorMain?.items ?? [])].find(entry =>
-            entry.name === value || entry.type === title.toLowerCase());
-          section.classList.add("tov-main-identity-card");
-          if (item?.img) {
-            const img = document.createElement("img");
-            img.className = "tov-main-identity-art";
-            img.src = item.img;
-            img.alt = "";
-            content.append(img);
-          }
-          const identity = document.createElement("span");
-          identity.className = "tov-main-identity-label";
-          identity.textContent = value || "—";
-          content.append(identity);
-        } else {
-          section.classList.add("tov-main-proficiency-section");
-          const values = (value || "").split(/,\s*/).map(v => v.trim()).filter(Boolean);
-          for (const entry of values.length ? values : ["—"]) {
-            const chip = document.createElement("span");
-            chip.className = "tov-main-chip";
-            chip.textContent = entry;
-            content.append(chip);
-          }
-        }
-        section.append(legend, content);
-        detailsColumn.append(section);
-      }
-      layout.append(skillsColumn, detailsColumn);
-      mainTab.prepend(layout);
-      mainTab.classList.add("tov-main-reorganized");
     }
   }
 
