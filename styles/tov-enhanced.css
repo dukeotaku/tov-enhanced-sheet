@@ -1199,3 +1199,145 @@
 .application.sheet.black-flag.actor.pc .tov-static-vitals {
   margin-top: 0;
 }
+
+
+/* =========================================================
+   Checkpoint 6E - exact death-save target + AC centering
+   ========================================================= */
+
+/* AC shield: force true center under portrait while retaining overlap. */
+.application.sheet.black-flag.actor.pc .tov-ac-medallion {
+  position: relative;
+  left: 50%;
+  translate: -50% 0;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* Drawer is attached to the BOTTOM of the raised health card. */
+.application.sheet.black-flag.actor.pc .tov-death-saves {
+  position: absolute;
+  z-index: 20;
+  left: 8px;
+  right: 8px;
+  top: calc(100% - 1px);
+  bottom: auto;
+  height: 19px;
+  margin: 0;
+  pointer-events: none;
+}
+
+/* Closed drawer lives completely behind raised card. */
+.application.sheet.black-flag.actor.pc .tov-death-panel {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  top: -55px;
+  height: 55px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1fr 44px 1fr;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px;
+  opacity: 0;
+  overflow: hidden;
+  background: #050607;
+  border: 1px solid #c9b47c;
+  border-radius: 3px;
+  box-shadow: 0 5px 0 #000, 0 8px 10px rgb(0 0 0 / 55%);
+  transform: translateY(0);
+  transition: transform 220ms cubic-bezier(.22,.8,.28,1), opacity 80ms linear;
+  pointer-events: none;
+}
+
+.application.sheet.black-flag.actor.pc .tov-death-pips {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 7px;
+}
+.application.sheet.black-flag.actor.pc .tov-death-pip {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  padding: 0;
+  margin: 0;
+  border: 2px solid #c9b47c;
+  border-radius: 50%;
+  background: #050607;
+  box-shadow: none;
+}
+.application.sheet.black-flag.actor.pc .tov-death-pip.selected {
+  background: #c9b47c;
+  box-shadow: inset 0 0 0 3px #050607;
+}
+
+.application.sheet.black-flag.actor.pc .tov-death-roll {
+  appearance: none;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #c9b47c;
+}
+.application.sheet.black-flag.actor.pc .tov-death-roll i {
+  font-size: 36px;
+  line-height: 1;
+  text-shadow: 0 1px 0 #000;
+}
+
+/* Pull tab is always connected to the lower edge of the drawer. */
+.application.sheet.black-flag.actor.pc .tov-death-toggle {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: -1px;
+  translate: -50% 0;
+  width: 31px;
+  height: 21px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: #eee6d2;
+  background: #353a40;
+  border: 1px solid #c9b47c;
+  border-top: 0;
+  border-radius: 0 0 6px 6px;
+  box-shadow: 0 3px 4px rgb(0 0 0 / 50%);
+  pointer-events: auto;
+  transition: transform 220ms cubic-bezier(.22,.8,.28,1);
+}
+.application.sheet.black-flag.actor.pc .tov-death-toggle i {
+  font-size: 9px;
+  line-height: 1;
+}
+
+/* 55px drawer + 1px overlap: it emerges immediately below Hit Dice.
+   Drawer and tab move the same distance, keeping them physically attached. */
+.application.sheet.black-flag.actor.pc .tov-death-saves.open .tov-death-panel {
+  opacity: 1;
+  transform: translateY(56px);
+  pointer-events: auto;
+  animation: tov-death-drawer-final 270ms ease-out;
+}
+.application.sheet.black-flag.actor.pc .tov-death-saves.open .tov-death-toggle {
+  transform: translateY(55px);
+  animation: tov-death-tab-final 270ms ease-out;
+}
+@keyframes tov-death-drawer-final {
+  0% { transform: translateY(0); }
+  75% { transform: translateY(60px); }
+  100% { transform: translateY(56px); }
+}
+@keyframes tov-death-tab-final {
+  0% { transform: translateY(0); }
+  75% { transform: translateY(59px); }
+  100% { transform: translateY(55px); }
+}
