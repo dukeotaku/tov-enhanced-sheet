@@ -499,7 +499,7 @@ Hooks.on("renderApplicationV2", (app, html) => {
           content.append(identity);
         } else {
           section.classList.add("tov-main-proficiency-section");
-          const values = (value || "").split(/,\\s*/).map(v => v.trim()).filter(Boolean);
+          const values = (value || "").split(/,\s*/).map(v => v.trim()).filter(Boolean);
           for (const entry of values.length ? values : ["—"]) {
             const chip = document.createElement("span");
             chip.className = "tov-main-chip";
