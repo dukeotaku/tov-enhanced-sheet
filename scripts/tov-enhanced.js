@@ -192,18 +192,18 @@ Hooks.on("renderApplicationV2", (app, html) => {
   // large fantasy skull, three radio pips, with a small attached pull tab.
   const nativeDeath = main?.querySelector("blackFlag-deathSaves");
   const deathWrap = document.createElement("section");
-  deathWrap.className = "tov-death-saves";
+  deathWrap.className = "tov-death-tray";
   deathWrap.innerHTML = `
-    <div class="tov-death-panel">
+    <div class="tov-death-saves">
       <div class="tov-death-pips tov-death-failures"></div>
       <button type="button" class="tov-death-roll" title="Roll Death Save" aria-label="Roll Death Save">
-        <i class="fa-solid fa-skull"></i>
+        <i class="fa-solid fa-skull-crossbones"></i>
       </button>
       <div class="tov-death-pips tov-death-successes"></div>
     </div>
     <button type="button" class="tov-death-toggle" aria-expanded="false"
       title="Show Death Saves" aria-label="Show Death Saves">
-      <i class="fa-solid fa-skull"></i>
+      <i class="fa-solid fa-skull-crossbones"></i>
     </button>`;
   health.append(deathWrap);
 
