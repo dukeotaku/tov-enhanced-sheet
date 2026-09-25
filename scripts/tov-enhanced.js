@@ -101,7 +101,6 @@ Hooks.on("renderApplicationV2", (app, html) => {
       xpBox.querySelector(".tov-header-xp-track span").style.width = percent + "%";
       controls.prepend(xpBox);
     }
-    level.append(controls);
     right.append(level);
     top.append(left, right);
     // Six abilities stay visible on every tab and use Black Flag's own roll action.
@@ -132,7 +131,7 @@ Hooks.on("renderApplicationV2", (app, html) => {
       tile.append(title, roll, score);
       abilities.append(tile);
     }
-    shell.append(top, abilities);
+    shell.append(top, controls, abilities);
     nativeHeader.append(shell);
     toggle.addEventListener("click", () => {
       const editing = shell.classList.toggle("tov-header-editing");
