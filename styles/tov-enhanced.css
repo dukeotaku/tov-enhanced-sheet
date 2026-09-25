@@ -1035,3 +1035,147 @@
   72%  { transform: translateY(63px); }
   100% { transform: translateY(58px); }
 }
+
+
+/* =========================================================
+   Checkpoint 6C - organic raised card + correctly anchored death drawer
+   ========================================================= */
+
+/* Soften the raised card: less dashboard, more layered character folio. */
+.application.sheet.black-flag.actor.pc .tov-portrait-slot,
+.application.sheet.black-flag.actor.pc .tov-static-stats,
+.application.sheet.black-flag.actor.pc .tov-static-health {
+  background: linear-gradient(105deg,#20252a 0%,#292d31 52%,#20252a 100%);
+  border-color: rgb(201 180 124 / 22%);
+}
+.application.sheet.black-flag.actor.pc .tov-portrait-slot {
+  border-radius: 4px 4px 0 0;
+}
+.application.sheet.black-flag.actor.pc .tov-static-health {
+  position: relative;
+  border-radius: 0 0 5px 5px;
+  box-shadow: 0 7px 9px rgb(0 0 0 / 52%);
+}
+
+/* Anchor the drawer to the actual bottom edge of the health/raised panel.
+   Luck/HP height changes can no longer move it upward over Hit Dice. */
+.application.sheet.black-flag.actor.pc .tov-death-saves {
+  position: absolute;
+  z-index: 5;
+  left: 7px;
+  right: 7px;
+  top: 100%;
+  bottom: auto;
+  height: 20px;
+  margin: 0;
+  border: 0;
+  pointer-events: none;
+}
+
+.application.sheet.black-flag.actor.pc .tov-death-panel {
+  position: absolute;
+  z-index: 1;
+  left: 6px;
+  right: 6px;
+  top: -50px;
+  height: 50px;
+  display: grid;
+  grid-template-columns: 1fr 38px 1fr;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  opacity: 0;
+  overflow: hidden;
+  background: #080a0d;
+  border: 1px solid var(--tov-gold);
+  border-radius: 0 0 7px 7px;
+  box-shadow: 0 7px 10px rgb(0 0 0 / 55%);
+  transform: translateY(0);
+  transition: transform 210ms cubic-bezier(.22,.8,.28,1), opacity 110ms ease;
+  pointer-events: none;
+}
+
+.application.sheet.black-flag.actor.pc .tov-death-pips {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 7px;
+}
+.application.sheet.black-flag.actor.pc .tov-death-pip {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  padding: 0;
+  border: 2px solid var(--tov-gold);
+  border-radius: 50%;
+  background: #090c10;
+  box-shadow: inset 0 0 0 2px #090c10;
+  cursor: pointer;
+}
+.application.sheet.black-flag.actor.pc .tov-death-pip.selected {
+  background: var(--tov-gold);
+}
+.application.sheet.black-flag.actor.pc .tov-death-roll {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+}
+.application.sheet.black-flag.actor.pc .tov-death-roll blackFlag-icon {
+  --icon-size: 36px;
+  filter: sepia(.45) saturate(.8) brightness(1.12);
+}
+
+/* Pull tab is physically attached to the drawer's lower edge. */
+.application.sheet.black-flag.actor.pc .tov-death-toggle {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  top: 0;
+  bottom: auto;
+  translate: -50% 0;
+  width: 30px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: var(--tov-gold);
+  background: #24292e;
+  border: 1px solid rgb(201 180 124 / 45%);
+  border-top: 0;
+  border-radius: 0 0 7px 7px;
+  box-shadow: 0 3px 5px rgb(0 0 0 / 42%);
+  pointer-events: auto;
+  cursor: pointer;
+  transition: transform 210ms cubic-bezier(.22,.8,.28,1);
+}
+.application.sheet.black-flag.actor.pc .tov-death-toggle i {
+  display: block;
+  font-size: 10px;
+  line-height: 1;
+}
+
+/* Drawer clears the raised panel completely, then settles with tab attached. */
+.application.sheet.black-flag.actor.pc .tov-death-saves.open .tov-death-panel {
+  opacity: 1;
+  transform: translateY(70px);
+  pointer-events: auto;
+  animation: tov-drawer-tug-3 285ms ease-out;
+}
+.application.sheet.black-flag.actor.pc .tov-death-saves.open .tov-death-toggle {
+  transform: translateY(70px);
+  animation: tov-tab-tug-3 285ms ease-out;
+}
+@keyframes tov-drawer-tug-3 {
+  0% { transform: translateY(0); }
+  72% { transform: translateY(75px); }
+  100% { transform: translateY(70px); }
+}
+@keyframes tov-tab-tug-3 {
+  0% { transform: translateY(0); }
+  72% { transform: translateY(75px); }
+  100% { transform: translateY(70px); }
+}
