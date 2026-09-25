@@ -473,6 +473,13 @@ Hooks.on("renderApplicationV2", (app, html) => {
         section.className = "tov-main-info tov-main-info-" + title.toLowerCase();
         const legend = document.createElement("legend");
         legend.textContent = title;
+        const proficiencyIcons = { Senses: "fa-eye", Armor: "fa-shield-halved", Weapons: "fa-swords", Languages: "fa-flag" };
+        if (proficiencyIcons[title]) {
+          const icon = document.createElement("i");
+          icon.className = "fa-solid " + (title === "Weapons" ? "fa-hand-fist" : proficiencyIcons[title]);
+          icon.setAttribute("aria-hidden", "true");
+          legend.prepend(icon);
+        }
         const content = document.createElement("div");
         content.className = "tov-main-info-value";
         if (["Lineage", "Heritage", "Background"].includes(title)) {
