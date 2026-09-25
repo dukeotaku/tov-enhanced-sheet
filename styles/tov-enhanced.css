@@ -303,3 +303,17 @@
 .application.sheet.black-flag.actor.pc.tov-static-collapsed .tov-static-collapse {
   right: -28px;
 }
+
+
+/* Checkpoint 3 polish: keep the Portrait Static Panel handle clear of content. */
+.application.sheet.black-flag.actor.pc .tov-static-collapse {
+  top: 10px;
+  right: -18px;
+  width: 30px;
+  height: 38px;
+  z-index: 60;
+}
+
+.application.sheet.black-flag.actor.pc.tov-static-collapsed .tov-static-collapse {
+  right: -34px;
+}
