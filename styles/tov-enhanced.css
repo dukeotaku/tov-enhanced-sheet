@@ -655,3 +655,61 @@
   width: 17px;
   height: 17px;
 }
+
+
+/* Checkpoint 5C - explicit compact HP and Hit Dice tracks */
+.application.sheet.black-flag.actor.pc .tov-hp-track {
+  height: 34px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 52px;
+  overflow: hidden;
+  border: 1px solid var(--tov-gold);
+  border-radius: 3px;
+  background: #11161d;
+}
+.application.sheet.black-flag.actor.pc .tov-hp-main {
+  display: flex;
+  align-items: center;
+  padding: 0 9px;
+  background: linear-gradient(90deg,#2b8150,#32975c);
+  border-right: 1px solid var(--tov-gold);
+  color: #fff;
+  font-size: 15px;
+}
+.application.sheet.black-flag.actor.pc .tov-temp-main {
+  display: grid;
+  grid-template-columns: 1fr;
+  place-items: center;
+  align-content: center;
+  color: #fff;
+  background: #171b22;
+  line-height: 1;
+}
+.application.sheet.black-flag.actor.pc .tov-temp-main span {
+  color: var(--tov-muted);
+  font-size: 8px;
+  font-weight: 900;
+}
+.application.sheet.black-flag.actor.pc .tov-temp-main strong {
+  margin-top: 2px;
+  font-size: 12px;
+}
+.application.sheet.black-flag.actor.pc .tov-hd-track {
+  height: 27px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 9px;
+  border: 1px solid var(--tov-gold);
+  border-radius: 3px;
+  background: linear-gradient(90deg,#6f2634,#842a3d);
+  color: #fff;
+}
+.application.sheet.black-flag.actor.pc .tov-hd-die {
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+.application.sheet.black-flag.actor.pc .tov-hd-track strong {
+  font-size: 13px;
+}
