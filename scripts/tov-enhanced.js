@@ -28,6 +28,92 @@ Hooks.on("renderApplicationV2", (app, html) => {
     tab.title ||= tab.dataset.tovLabel;
   }
 
+  // Header prototype on its own branch; the existing v0.1.25 release is untouched.
+  // Retain Black Flag's native progression button so its own action handler opens the screen.
+  const nativeHeader = sheet.querySelector(".sheet-header");
+  const actorForHeader = app.actor ?? app.document;
+  if (nativeHeader && actorForHeader && !nativeHeader.querySelector(".tov-header-shell")) {
+    const originalName = nativeHeader.querySelector(".document-name");
+    const originalProgression = nativeHeader.querySelector(".progression");
+    const shell = document.createElement("div");
+    shell.className = "tov-header-shell";
+    const top = document.createElement("div");
+    top.className = "tov-header-top";
+    const left = document.createElement("div");
+    left.className = "tov-header-identity";
+    const toggle = document.createElement("button");
+    toggle.type = "button";
+    toggle.className = "tov-header-edit-toggle";
+    toggle.setAttribute("role", "switch");
+    toggle.setAttribute("aria-label", "Show character progression controls");
+    toggle.setAttribute("aria-checked", "false");
+    toggle.title = "Show character progression";
+    toggle.innerHTML = '<span aria-hidden="true"></span>';
+    left.append(toggle);
+    if (originalName) left.append(originalName);
+    const progression = actorForHeader.system?.progression;
+    const lineage = progression?.lineage?.name ?? "";
+    const classes = progression?.classes ?? {};
+    const classText = Object.values(classes).map(entry => {
+      const name = entry?.document?.name ?? entry?.name ?? "";
+      const levels = entry?.levels?.length ?? entry?.levels ?? entry?.level ?? "";
+      return name ? name + (Number.isInteger(levels) ? " " + levels : "") : "";
+    }).filter(Boolean).join(" / ");
+    const subtitle = document.createElement("div");
+    subtitle.className = "tov-header-subtitle";
+    subtitle.textContent = [lineage, classText].filter(Boolean).join(" · ");
+    left.append(subtitle);
+    const right = document.createElement("div");
+    right.className = "tov-header-right";
+    for (const [type, icon, title] of [
+      ["short", "fa-mug-hot", "Short Rest"],
+      ["long", "fa-moon", "Long Rest"]
+    ]) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "tov-header-rest";
+      button.dataset.action = "rest";
+      button.dataset.type = type;
+      button.title = title;
+      button.setAttribute("aria-label", title);
+      button.innerHTML = '<i class="fa-solid ' + icon + '" aria-hidden="true"></i>';
+      right.append(button);
+    }
+    const level = document.createElement("div");
+    level.className = "tov-header-level";
+    const badge = document.createElement("span");
+    badge.className = "tov-header-level-number";
+    badge.textContent = progression?.level ?? "—";
+    badge.title = "Character Level";
+    level.append(badge);
+    const controls = document.createElement("div");
+    controls.className = "tov-header-progression-controls";
+    if (originalProgression) controls.append(originalProgression);
+    if (game.settings.get(game.system.id, "levelingMode") === "xp" && progression?.xp) {
+      const xp = progression.xp;
+      const xpBox = document.createElement("div");
+      xpBox.className = "tov-header-xp";
+      const current = Number(xp.value) || 0;
+      const maximum = Number(xp.max) || 0;
+      const percent = Math.max(0, Math.min(100, Number(xp.percentage) || 0));
+      xpBox.innerHTML = '<div class="tov-header-xp-values"></div><div class="tov-header-xp-track"><span></span></div>';
+      xpBox.querySelector(".tov-header-xp-values").textContent = current.toLocaleString() + " / " + maximum.toLocaleString() + " XP";
+      xpBox.querySelector(".tov-header-xp-track span").style.width = percent + "%";
+      controls.prepend(xpBox);
+    }
+    level.append(controls);
+    right.append(level);
+    top.append(left, right);
+    shell.append(top);
+    nativeHeader.append(shell);
+    toggle.addEventListener("click", () => {
+      const editing = shell.classList.toggle("tov-header-editing");
+      toggle.setAttribute("aria-checked", String(editing));
+      toggle.title = editing ? "Hide character progression" : "Show character progression";
+    });
+    sheet.classList.add("tov-header-prototype");
+  }
+
   // Persistent character rail: clone live Black Flag controls rather than
   // reimplementing actor updates/roll handlers.
   if (sheet.querySelector(".tov-static-panel")) return;
