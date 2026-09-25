@@ -1677,3 +1677,128 @@
 .application.sheet.black-flag.actor.pc .tov-main-info:nth-of-type(n+5) {
   background: #242932;
 }
+
+
+/* v0.1.36: match the three specific 5e Main-tab reference treatments. */
+.application.sheet.black-flag.actor.pc .tov-main-details { gap: 0; }
+.application.sheet.black-flag.actor.pc .tov-main-layout .tov-main-saves {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 0 12px;
+  padding: 8px 12px 11px;
+  border: 2px solid #566278;
+  border-radius: 12px;
+  background: #292d37;
+  box-shadow: inset 0 0 0 3px #20252d, 0 0 0 1px #343e50;
+}
+.application.sheet.black-flag.actor.pc .tov-main-layout .tov-main-saves > legend {
+  color: #c4c6ca;
+  background: #292d37;
+  letter-spacing: .035em;
+  font-size: 12px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-save-row {
+  min-height: 34px;
+  gap: 8px;
+  border-bottom: 1px dotted #4e5562;
+}
+.application.sheet.black-flag.actor.pc .tov-main-save-row .proficiency-selector {
+  flex: 0 0 12px;
+  width: 12px;
+  height: 12px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-save-row > span {
+  font-size: 12px;
+  color: #d8d8db;
+}
+.application.sheet.black-flag.actor.pc .tov-main-save-row > button {
+  min-width: 32px;
+  font-weight: 750;
+  color: #e4e6eb;
+}
+/* 5e-style full-width identity strips, not framed fieldsets. */
+.application.sheet.black-flag.actor.pc .tov-main-layout fieldset.tov-main-identity-card {
+  min-height: 49px;
+  margin: 0 0 7px !important;
+  padding: 0;
+  border: 1px solid #404754;
+  border-left: 0;
+  border-radius: 5px;
+  box-shadow: none;
+  background: linear-gradient(100deg,#424957 0%,#303640 42%,#252a32 100%);
+  overflow: hidden;
+}
+.application.sheet.black-flag.actor.pc .tov-main-identity-card > legend {
+  display: none;
+}
+.application.sheet.black-flag.actor.pc .tov-main-identity-card .tov-main-info-value {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 47px;
+  padding: 4px 9px;
+  color: #d3bf90;
+  font-size: 14px;
+  font-weight: 700;
+}
+.application.sheet.black-flag.actor.pc .tov-main-identity-art {
+  width: 35px;
+  height: 35px;
+  flex: 0 0 35px;
+  object-fit: cover;
+  border: 1px solid #8b7955;
+  border-radius: 4px;
+}
+/* 5e proficiencies are unboxed icon headings with compact tags. */
+.application.sheet.black-flag.actor.pc .tov-main-layout fieldset.tov-main-proficiency-section {
+  min-height: 0;
+  margin: 4px 0 10px !important;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.application.sheet.black-flag.actor.pc .tov-main-layout .tov-main-proficiency-section > legend {
+  display: block;
+  width: 100%;
+  margin: 0 0 5px;
+  padding: 0;
+  text-align: left;
+  background: transparent;
+  color: #b9bdc5;
+  font-size: 11px;
+  letter-spacing: 0;
+}
+.application.sheet.black-flag.actor.pc .tov-main-proficiency-section > legend::before {
+  display: inline-block;
+  width: 17px;
+  margin-right: 3px;
+  color: #b4bac4;
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+}
+.application.sheet.black-flag.actor.pc .tov-main-info-senses > legend::before { content: "\\f06e"; }
+.application.sheet.black-flag.actor.pc .tov-main-info-armor > legend::before { content: "\\f3ed"; }
+.application.sheet.black-flag.actor.pc .tov-main-info-weapons > legend::before { content: "\\f71c"; }
+.application.sheet.black-flag.actor.pc .tov-main-info-languages > legend::before { content: "\\f024"; }
+.application.sheet.black-flag.actor.pc .tov-main-proficiency-section .tov-main-info-value {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  padding: 0;
+  min-height: 20px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-chip {
+  display: inline-block;
+  padding: 3px 7px;
+  border: 1px solid #596272;
+  border-radius: 3px;
+  background: #39414f;
+  color: #e3e6eb;
+  font-size: 10px;
+  line-height: 1.2;
+  font-weight: 700;
+  text-transform: uppercase;
+}
