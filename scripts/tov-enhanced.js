@@ -470,12 +470,36 @@ Hooks.on("renderApplicationV2", (app, html) => {
       );
       for (const [title, value] of info) {
         const section = document.createElement("fieldset");
-        section.className = "tov-main-info";
+        section.className = "tov-main-info tov-main-info-" + title.toLowerCase();
         const legend = document.createElement("legend");
         legend.textContent = title;
         const content = document.createElement("div");
         content.className = "tov-main-info-value";
-        content.textContent = value || "—";
+        if (["Lineage", "Heritage", "Background"].includes(title)) {
+          const item = [...(actorMain?.items ?? [])].find(entry =>
+            entry.name === value || entry.type === title.toLowerCase());
+          section.classList.add("tov-main-identity-card");
+          if (item?.img) {
+            const img = document.createElement("img");
+            img.className = "tov-main-identity-art";
+            img.src = item.img;
+            img.alt = "";
+            content.append(img);
+          }
+          const identity = document.createElement("span");
+          identity.className = "tov-main-identity-label";
+          identity.textContent = value || "—";
+          content.append(identity);
+        } else {
+          section.classList.add("tov-main-proficiency-section");
+          const values = (value || "").split(/,\\s*/).map(v => v.trim()).filter(Boolean);
+          for (const entry of values.length ? values : ["—"]) {
+            const chip = document.createElement("span");
+            chip.className = "tov-main-chip";
+            chip.textContent = entry;
+            content.append(chip);
+          }
+        }
         section.append(legend, content);
         detailsColumn.append(section);
       }
