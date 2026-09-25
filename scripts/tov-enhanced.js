@@ -82,50 +82,74 @@ Hooks.on("renderApplicationV2", (app, html) => {
     panel.querySelector(".tov-portrait-slot").append(copy);
   }
 
-  // Build the Portrait Static Panel from Black Flag's live Main-tab values.
-  // Main remains authoritative for now; this checkpoint is about locking layout.
+  // Build the compact Portrait Static Panel dashboard.
   const primary = panel.querySelector(".tov-static-primary");
   const vitals = panel.querySelector(".tov-static-vitals");
   const health = panel.querySelector(".tov-static-health");
 
-  const mirror = (selector, label, target, extraClass = "") => {
-    const source = sheet.querySelector(`.sheet-body ${selector}`);
-    if (!source) return null;
-    const card = document.createElement("section");
-    card.className = `tov-static-card ${extraClass}`.trim();
-    card.dataset.source = selector;
-    card.innerHTML = `<h3>${label}</h3><div class="tov-static-card-content">${source.innerHTML}</div>`;
-    target.append(card);
-    return card;
-  };
+  const main = sheet.querySelector(".sheet-body");
+  const acSource = main?.querySelector(".armor-class");
+  const acValue = acSource?.querySelector("input")?.value
+    ?? acSource?.querySelector(".value")?.textContent?.trim()
+    ?? acSource?.textContent?.match(/\d+/)?.[0]
+    ?? "—";
 
-  mirror(".armor-class", "Armor Class", primary, "tov-ac-card");
-  mirror(".luck", "Luck", primary, "tov-luck-card");
-  mirror(".initiative", "Initiative", vitals, "tov-initiative-card");
+  primary.innerHTML = `
+    <div class="tov-core-cluster">
+      <div class="tov-exhaustion tov-exhaustion-left" title="Exhaustion">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="tov-ac-medallion" title="Armor Class">
+        <span class="tov-ac-value">${acValue}</span>
+        <span class="tov-ac-label">AC</span>
+      </div>
+      <div class="tov-exhaustion tov-exhaustion-right" title="Exhaustion">
+        <span></span><span></span><span></span>
+      </div>
+    </div>`;
 
-  const prof = document.createElement("section");
-  prof.className = "tov-static-card tov-prof-card";
+  const initSource = main?.querySelector(".initiative");
+  const initValue = initSource?.querySelector("input")?.value
+    ?? initSource?.textContent?.match(/[+-]?\d+/)?.[0] ?? "—";
   const profValue = sheet.querySelector(".sheet-header .proficiency-bonus span")?.textContent?.trim() ?? "—";
-  prof.innerHTML = `<h3>Proficiency</h3><div class="tov-big-value">${profValue}</div>`;
-  vitals.append(prof);
+  const traits = main?.querySelector(".traits");
+  const speedSource = traits ? [...traits.querySelectorAll(".trait")].find(el => /speed/i.test(el.textContent)) : null;
+  const speedValue = speedSource?.querySelector(":scope > span:last-child")?.textContent?.trim()
+    ?? speedSource?.textContent?.replace(/^.*?Speed\s*/i, "").trim() ?? "—";
 
-  const traits = sheet.querySelector(".sheet-body .traits");
-  const speed = traits ? [...traits.querySelectorAll(".trait")].find(el => /speed/i.test(el.textContent)) : null;
-  if (speed) {
-    const card = document.createElement("section");
-    card.className = "tov-static-card tov-speed-card";
-    const value = speed.querySelector(":scope > span:last-child")?.textContent?.trim() ?? speed.textContent.trim();
-    card.innerHTML = `<h3>Speed</h3><div class="tov-big-value">${value.replace(/^Speed\s*/i, "")}</div>`;
-    vitals.append(card);
+  vitals.innerHTML = `
+    <div class="tov-vital"><span class="tov-vital-value">${initValue}</span><span class="tov-vital-label">Initiative</span></div>
+    <div class="tov-vital tov-vital-speed"><span class="tov-vital-value">${speedValue}</span><span class="tov-vital-label">Speed</span></div>
+    <div class="tov-vital"><span class="tov-vital-value">${profValue}</span><span class="tov-vital-label">Proficiency</span></div>`;
+
+  const luckSource = main?.querySelector(".luck");
+  let filledLuck = 0;
+  if (luckSource) {
+    const checked = luckSource.querySelectorAll("input:checked").length;
+    const active = luckSource.querySelectorAll(".active, .filled, [aria-checked='true']").length;
+    filledLuck = Math.min(5, Math.max(checked, active));
   }
+  const luck = document.createElement("section");
+  luck.className = "tov-luck-feature";
+  luck.innerHTML = `
+    <div class="tov-luck-heading"><span>Luck</span><small>Point Pool</small></div>
+    <div class="tov-luck-pips">
+      ${Array.from({length:5},(_,i)=>`<span class="${i < filledLuck ? "filled" : ""}"></span>`).join("")}
+    </div>`;
+  health.append(luck);
 
-  const hp = mirror(".hit-points", "Hit Points", health, "tov-hp-card");
-  if (hp) {
+  const hpSource = main?.querySelector(".hit-points");
+  if (hpSource) {
+    const hp = document.createElement("section");
+    hp.className = "tov-resource tov-hp-resource";
+    hp.innerHTML = `<div class="tov-resource-label">Hit Points</div><div class="tov-resource-live">${hpSource.innerHTML}</div>`;
+    health.append(hp);
+
     const dice = hp.querySelector(".hit-dice");
     if (dice) {
       const hd = document.createElement("section");
-      hd.className = "tov-static-card tov-hd-card";
-      hd.innerHTML = `<h3>Hit Dice</h3><div class="tov-static-card-content">${dice.outerHTML}</div>`;
+      hd.className = "tov-resource tov-hd-resource";
+      hd.innerHTML = `<div class="tov-resource-label">Hit Dice</div><div class="tov-resource-live">${dice.outerHTML}</div>`;
       health.append(hd);
       dice.remove();
     }
