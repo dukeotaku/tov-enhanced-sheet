@@ -250,3 +250,56 @@
 .application.sheet.black-flag.actor.pc .sheet-navigation > a.active > .tov-tab-icon {
   color: #0b0f14 !important;
 }
+
+
+/* =========================================================
+   Checkpoint 3 - collapsible Portrait Static Panel
+   ========================================================= */
+
+.application.sheet.black-flag.actor.pc .tov-static-panel {
+  position: relative;
+  transition: width 160ms ease, padding 160ms ease, border-color 160ms ease;
+}
+
+.application.sheet.black-flag.actor.pc .tov-static-collapse {
+  position: absolute;
+  top: 8px;
+  right: -14px;
+  z-index: 30;
+  width: 27px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: var(--tov-gold);
+  background: #0b0f14;
+  border: 1px solid var(--tov-gold);
+  border-radius: 5px;
+  box-shadow: 2px 2px 7px rgb(0 0 0 / 45%);
+  cursor: pointer;
+}
+
+.application.sheet.black-flag.actor.pc .tov-static-collapse:hover {
+  color: #0b0f14;
+  background: var(--tov-gold);
+}
+
+.application.sheet.black-flag.actor.pc.tov-static-collapsed > .window-content {
+  grid-template-columns: 0 minmax(0, 1fr);
+}
+
+.application.sheet.black-flag.actor.pc.tov-static-collapsed .tov-static-panel {
+  width: 0;
+  min-width: 0;
+  padding: 0;
+  overflow: visible;
+  border-right-color: transparent;
+}
+
+.application.sheet.black-flag.actor.pc.tov-static-collapsed .tov-static-panel > :not(.tov-static-collapse) {
+  display: none;
+}
+
+.application.sheet.black-flag.actor.pc.tov-static-collapsed .tov-static-collapse {
+  right: -28px;
+}
