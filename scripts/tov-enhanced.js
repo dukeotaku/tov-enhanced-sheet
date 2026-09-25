@@ -89,18 +89,6 @@ Hooks.on("renderApplicationV2", (app, html) => {
     const controls = document.createElement("div");
     controls.className = "tov-header-progression-controls";
     if (originalProgression) controls.append(originalProgression);
-    if (game.settings.get(game.system.id, "levelingMode") === "xp" && progression?.xp) {
-      const xp = progression.xp;
-      const xpBox = document.createElement("div");
-      xpBox.className = "tov-header-xp";
-      const current = Number(xp.value) || 0;
-      const maximum = Number(xp.max) || 0;
-      const percent = Math.max(0, Math.min(100, Number(xp.percentage) || 0));
-      xpBox.innerHTML = '<div class="tov-header-xp-values"></div><div class="tov-header-xp-track"><span></span></div>';
-      xpBox.querySelector(".tov-header-xp-values").textContent = current.toLocaleString() + " / " + maximum.toLocaleString() + " XP";
-      xpBox.querySelector(".tov-header-xp-track span").style.width = percent + "%";
-      controls.prepend(xpBox);
-    }
     right.append(level, controls);
     top.append(left, right);
     // Six abilities stay visible on every tab and use Black Flag's own roll action.
