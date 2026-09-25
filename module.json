@@ -2,11 +2,11 @@
   "id": "tov-enhanced-sheet",
   "title": "Tales of the Valiant Enhanced Sheet",
   "description": "A custom character sheet enhancement for the Black Flag system.",
-"version": "0.1.1",
-"styles": [
-  "styles/tov-enhanced.css"
-],
-"compatibility": {
+  "version": "0.1.2",
+  "styles": [
+    "styles/tov-enhanced.css"
+  ],
+  "compatibility": {
     "minimum": "14",
     "verified": "14"
   },
@@ -20,6 +20,6 @@
     ]
   },
   "url": "https://github.com/dukeotaku/tov-enhanced-sheet",
-  "manifest": "https://raw.githubusercontent.com/dukeotaku/tov-enhanced-sheet/main/module.json",
-  "download": "https://github.com/dukeotaku/tov-enhanced-sheet/releases/download/v0.1.1/tov-enhanced-sheet.zip"
+  "manifest": "https://raw.githubusercontent.com/dukeotaku/tov-enhanced-sheet/feature/sheet-shell/module.json",
+  "download": "https://github.com/dukeotaku/tov-enhanced-sheet/archive/refs/heads/feature/sheet-shell.zip"
 }
