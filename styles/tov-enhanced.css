@@ -1906,3 +1906,72 @@
   line-height: 1.25;
   font-weight: 600;
 }
+
+
+/* v0.1.38: precise alignment and externally mounted portrait handle. */
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready > .window-content > .tov-static-collapse {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: calc(var(--tov-header-height) + 10px);
+  left: calc(var(--tov-sidebar-width) - 2px);
+  right: auto;
+  width: 23px;
+  height: 43px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--tov-gold);
+  border-left: 0;
+  border-radius: 0 6px 6px 0;
+  background: #141c27;
+  color: var(--tov-gold);
+  box-shadow: 2px 2px 5px #0007;
+  z-index: 100;
+  cursor: pointer;
+}
+.application.sheet.black-flag.actor.pc.tov-static-collapsed > .window-content > .tov-static-collapse {
+  left: calc(var(--tov-sidebar-width) - 2px);
+  right: auto;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability {
+  display: grid;
+  grid-template-rows: 13px 25px 15px;
+  justify-items: center;
+  align-content: center;
+  row-gap: 0;
+  padding: 0 2px 7px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-label {
+  grid-row: 1;
+  align-self: center;
+  margin: 0;
+  line-height: 13px;
+  transform: none;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-roll {
+  grid-row: 2;
+  align-self: center;
+  justify-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 25px;
+  height: 25px;
+  padding: 0;
+  margin: 0;
+  line-height: 25px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-score {
+  grid-row: 3;
+  margin: 0;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block > button.unbutton {
+  grid-template-columns: 28px minmax(0,1fr) 33px;
+  padding-right: 8px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block .unbutton .mod {
+  padding-right: 2px;
+  text-align: right;
+}
