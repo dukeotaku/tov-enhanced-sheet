@@ -2093,6 +2093,8 @@
 .application.sheet.black-flag.actor.pc .tov-header-ability-score {
   position: absolute;
   top: 39px;
+  bottom: auto; /* cancel earlier bottom:-1px; otherwise the badge stretches to the tab border */
+  grid-row: auto;
   left: 50%;
   transform: translateX(-50%);
   margin: 0;
