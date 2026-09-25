@@ -414,3 +414,98 @@
   top: 8px;
   right: -19px;
 }
+
+
+/* =========================================================
+   Checkpoint 5 - stylized Portrait Static Panel
+   ========================================================= */
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready { --tov-sidebar-width: 242px; }
+
+.application.sheet.black-flag.actor.pc .tov-portrait-slot { margin-bottom: 0; }
+.application.sheet.black-flag.actor.pc .tov-static-portrait {
+  height: 225px !important;
+  border: 2px solid rgb(201 180 124 / 70%);
+  box-shadow: inset 0 0 0 4px rgb(0 0 0 / 25%);
+}
+
+.application.sheet.black-flag.actor.pc .tov-static-primary {
+  display: block;
+  margin: -19px 0 0;
+  position: relative;
+  z-index: 4;
+}
+.application.sheet.black-flag.actor.pc .tov-core-cluster {
+  display: grid;
+  grid-template-columns: 1fr 68px 1fr;
+  align-items: center;
+  gap: 5px;
+}
+.application.sheet.black-flag.actor.pc .tov-exhaustion {
+  display: flex;
+  justify-content: space-around;
+  gap: 6px;
+}
+.application.sheet.black-flag.actor.pc .tov-exhaustion span {
+  width: 17px; height: 17px; border-radius: 50%;
+  border: 2px solid var(--tov-gold);
+  background: #0b0f14;
+  box-shadow: 0 1px 3px #000;
+}
+.application.sheet.black-flag.actor.pc .tov-ac-medallion {
+  width: 68px; height: 68px; margin: auto;
+  display: grid; place-items: center;
+  align-content: center;
+  border-radius: 50%;
+  color: #fff;
+  background: radial-gradient(circle at 50% 42%,#343942 0 47%,#171b21 49% 100%);
+  border: 3px double var(--tov-gold);
+  box-shadow: 0 3px 8px rgb(0 0 0 / 65%), inset 0 0 0 3px rgb(201 180 124 / 18%);
+}
+.application.sheet.black-flag.actor.pc .tov-ac-value { font-size: 24px; font-weight: 800; line-height: .95; }
+.application.sheet.black-flag.actor.pc .tov-ac-label { color: var(--tov-gold); font-size: 8px; font-weight: 800; letter-spacing: .12em; }
+
+.application.sheet.black-flag.actor.pc .tov-static-vitals {
+  display: grid; grid-template-columns: 1fr 1.15fr 1fr;
+  gap: 4px; margin: 3px 0 8px;
+}
+.application.sheet.black-flag.actor.pc .tov-vital {
+  min-width: 0; text-align: center; padding: 4px 2px 3px;
+  background: linear-gradient(180deg,#383c42,#24282e);
+  clip-path: polygon(12% 0,88% 0,100% 50%,88% 100%,12% 100%,0 50%);
+}
+.application.sheet.black-flag.actor.pc .tov-vital-value { display:block; color:#fff; font-size:17px; font-weight:800; line-height:1; }
+.application.sheet.black-flag.actor.pc .tov-vital-label { display:block; margin-top:3px; color:var(--tov-gold); font-size:7px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; }
+
+.application.sheet.black-flag.actor.pc .tov-static-health { display:grid; gap:6px; }
+.application.sheet.black-flag.actor.pc .tov-luck-feature {
+  padding: 7px 9px 8px;
+  background: linear-gradient(90deg,#102d48,#174f7d 50%,#102d48);
+  border: 1px solid rgb(201 180 124 / 65%);
+  box-shadow: inset 0 0 14px rgb(40 121 185 / 18%);
+}
+.application.sheet.black-flag.actor.pc .tov-luck-heading {
+  display:flex; justify-content:space-between; align-items:baseline; margin-bottom:5px;
+  color:#fff; font-weight:800; text-transform:uppercase; letter-spacing:.08em;
+}
+.application.sheet.black-flag.actor.pc .tov-luck-heading small { color:var(--tov-gold); font-size:7px; }
+.application.sheet.black-flag.actor.pc .tov-luck-pips { display:flex; justify-content:center; gap:11px; }
+.application.sheet.black-flag.actor.pc .tov-luck-pips span {
+  width:18px; height:18px; border-radius:50%; border:2px solid #d8e7f4; background:#0b1722;
+  box-shadow:0 0 0 1px rgb(0 0 0 / 60%);
+}
+.application.sheet.black-flag.actor.pc .tov-luck-pips span.filled { background:var(--tov-blue-bright); box-shadow:0 0 8px rgb(40 121 185 / 70%); }
+
+.application.sheet.black-flag.actor.pc .tov-resource { padding:0; background:transparent; border:0; }
+.application.sheet.black-flag.actor.pc .tov-resource-label {
+  margin:0 0 2px; color:var(--tov-gold); font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:.05em;
+}
+.application.sheet.black-flag.actor.pc .tov-resource-live {
+  min-height:32px; padding:2px 4px; background:#11161d; border:1px solid rgb(201 180 124 / 55%);
+}
+.application.sheet.black-flag.actor.pc .tov-hp-resource .hit-dice { display:none; }
+
+.application.sheet.black-flag.actor.pc .tov-favorites {
+  margin-top:8px; padding-top:6px;
+}
+.application.sheet.black-flag.actor.pc .tov-favorites > h3 { margin-bottom:5px; }
+.application.sheet.black-flag.actor.pc .tov-favorites-empty { min-height:54px; }
