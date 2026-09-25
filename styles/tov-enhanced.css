@@ -1494,3 +1494,60 @@
 .application.sheet.black-flag.actor.pc .tov-header-progression-controls .tov-progression-notice {
   color: #f0c94d !important;
 }
+
+
+/* v0.1.32: integrate Foundry's chrome into the artwork header.
+   Preserve native window actions and a drag handle instead of deleting them. */
+.application.sheet.black-flag.actor.pc.tov-header-prototype {
+  position: relative;
+  --tov-header-height: 178px;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype:has(.tov-header-editing) {
+  --tov-header-height: 178px;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype > .window-header {
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 45;
+  height: 31px;
+  min-height: 31px;
+  margin: 0;
+  padding: 0 8px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 4px;
+  pointer-events: none;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype > .window-header .window-title,
+.application.sheet.black-flag.actor.pc.tov-header-prototype > .window-header .window-icon {
+  display: none !important;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype > .window-header .header-control,
+.application.sheet.black-flag.actor.pc.tov-header-prototype > .window-header button,
+.application.sheet.black-flag.actor.pc.tov-header-prototype > .window-header a {
+  pointer-events: auto;
+  color: #f1e6c8;
+  background: #071524a6;
+  border-radius: 4px;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype > .window-content {
+  padding-top: 0;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .sheet-header {
+  padding-top: 33px;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .tov-header-top {
+  height: 77px;
+  min-height: 77px;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .tov-header-edit-toggle {
+  top: 38px;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype.tov-enhanced-ready .tov-static-panel {
+  margin-top: -46px;
+  min-height: calc(100% + 46px);
+}
