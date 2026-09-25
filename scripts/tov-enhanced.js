@@ -46,6 +46,31 @@ Hooks.on("renderApplicationV2", (app, html) => {
 
   body.before(panel);
 
+  // Collapse control for the Portrait Static Panel.
+  const collapse = document.createElement("button");
+  collapse.type = "button";
+  collapse.className = "tov-static-collapse";
+  collapse.title = "Collapse Portrait Static Panel";
+  collapse.setAttribute("aria-label", "Collapse Portrait Static Panel");
+  collapse.innerHTML = '<i class="fa-solid fa-chevron-left" aria-hidden="true"></i>';
+  panel.append(collapse);
+
+  const setCollapsed = collapsed => {
+    sheet.classList.toggle("tov-static-collapsed", collapsed);
+    collapse.title = collapsed ? "Expand Portrait Static Panel" : "Collapse Portrait Static Panel";
+    collapse.setAttribute("aria-label", collapse.title);
+    collapse.innerHTML = collapsed
+      ? '<i class="fa-solid fa-chevron-right" aria-hidden="true"></i>'
+      : '<i class="fa-solid fa-chevron-left" aria-hidden="true"></i>';
+  };
+
+  setCollapsed(false);
+  collapse.addEventListener("click", event => {
+    event.preventDefault();
+    event.stopPropagation();
+    setCollapsed(!sheet.classList.contains("tov-static-collapsed"));
+  });
+
   const portrait = sheet.querySelector(".sheet-header .profile");
   if (portrait) {
     const copy = portrait.cloneNode(true);
