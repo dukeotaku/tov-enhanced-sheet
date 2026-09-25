@@ -1207,3 +1207,28 @@
   color: #e8d6a9;
   font-size: 13px;
 }
+
+
+/* v0.1.27: progression expands the header instead of overlaying ability tiles. */
+.application.sheet.black-flag.actor.pc.tov-header-prototype:has(.tov-header-editing) {
+  --tov-header-height: 340px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-editing .tov-header-progression-controls {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: static;
+  width: 100%;
+  min-height: 105px;
+  padding: 8px 14px;
+  box-shadow: none;
+}
+.application.sheet.black-flag.actor.pc .tov-header-editing .tov-header-level {
+  position: static;
+}
+.application.sheet.black-flag.actor.pc .tov-header-editing.tov-header-shell {
+  height: auto;
+}
+.application.sheet.black-flag.actor.pc .tov-header-editing .tov-header-progression-controls .progression {
+  width: 100%;
+}
