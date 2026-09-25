@@ -1975,3 +1975,96 @@
   padding-right: 2px;
   text-align: right;
 }
+
+
+/* v0.1.40: 5e-inspired header alignment and always-visible XP in XP mode.
+   Retain native Foundry window chrome and the approved portrait/main styling. */
+.application.sheet.black-flag.actor.pc.tov-header-prototype,
+.application.sheet.black-flag.actor.pc.tov-header-prototype:has(.tov-header-editing) {
+  --tov-header-height: 179px;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .sheet-header {
+  min-height: 179px;
+  height: 179px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-shell {
+  position: relative;
+  gap: 0;
+}
+.application.sheet.black-flag.actor.pc .tov-header-top {
+  height: 101px;
+  min-height: 101px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-right {
+  position: relative;
+  padding-bottom: 0;
+}
+.application.sheet.black-flag.actor.pc .tov-header-play-xp {
+  position: absolute;
+  right: 102px;
+  top: 56px;
+  width: clamp(135px, 23vw, 225px);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  pointer-events: none;
+}
+.application.sheet.black-flag.actor.pc .tov-header-play-xp-values {
+  align-self: flex-start;
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: 600;
+  color: #d3c19a;
+}
+.application.sheet.black-flag.actor.pc .tov-header-play-xp-track {
+  width: 100%;
+  height: 5px;
+  overflow: hidden;
+  border: 1px solid #a58c5b;
+  border-radius: 3px;
+  background: #101924;
+}
+.application.sheet.black-flag.actor.pc .tov-header-play-xp-track > span {
+  display: block;
+  height: 100%;
+  background: #c8ad72;
+  transition: width .15s ease;
+}
+.application.sheet.black-flag.actor.pc .tov-header-abilities {
+  width: min(55%, 495px);
+  margin: 0 5% 0 auto;
+  grid-template-columns: repeat(6, minmax(0,1fr));
+  gap: 8px;
+  align-items: start;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability {
+  grid-template-rows: 13px 25px 15px;
+  height: 53px;
+  padding: 0 2px 7px;
+  justify-items: center;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-label {
+  position: relative;
+  grid-row: 1;
+  align-self: center;
+  transform: none;
+  line-height: 13px;
+  text-align: center;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-roll {
+  grid-row: 2;
+  align-self: center;
+  line-height: 25px;
+  text-align: center;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-score {
+  grid-row: 3;
+  justify-self: center;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype.tov-enhanced-ready .tov-static-panel {
+  margin-top: -70px;
+  min-height: calc(100% + 70px);
+}
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready > .window-content > .tov-static-collapse {
+  top: calc(var(--tov-header-height) - 60px);
+}
