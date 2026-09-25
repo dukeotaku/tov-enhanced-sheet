@@ -1341,3 +1341,49 @@
   75% { transform: translateY(59px); }
   100% { transform: translateY(55px); }
 }
+
+
+/* =========================================================
+   Checkpoint 6F - visually match D&D death-save reference
+   ========================================================= */
+.application.sheet.black-flag.actor.pc .tov-death-panel {
+  left: 2px;
+  right: 2px;
+  height: 57px;
+  grid-template-columns: 1fr 52px 1fr;
+  gap: 5px;
+  padding: 5px 10px;
+  background: #030405;
+  border: 1px solid #b9aa7c;
+  border-radius: 3px;
+  box-shadow: 0 5px 0 #000, 0 7px 8px rgb(0 0 0 / 60%);
+}
+.application.sheet.black-flag.actor.pc .tov-death-pips {
+  gap: 5px;
+  justify-content: space-evenly;
+}
+.application.sheet.black-flag.actor.pc .tov-death-pip {
+  width: 17px;
+  height: 17px;
+  min-width: 17px;
+  border: 2px solid #a99c73;
+  background: #030405;
+}
+.application.sheet.black-flag.actor.pc .tov-death-roll {
+  width: 52px;
+  height: 48px;
+  color: #b8ad88;
+}
+.application.sheet.black-flag.actor.pc .tov-death-roll i {
+  font-size: 42px;
+  transform: scaleX(.92);
+  color: #b8ad88;
+  text-shadow: none;
+}
+.application.sheet.black-flag.actor.pc .tov-death-toggle {
+  width: 30px;
+  height: 20px;
+  color: #b8ad88;
+  background: #292d32;
+  border-color: #746a4c;
+}
