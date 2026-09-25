@@ -188,5 +188,111 @@ Hooks.on("renderApplicationV2", (app, html) => {
     health.append(hd);
   }
 
+
+  // Favorites v1: actor-owned, persistent embedded-item shortcuts.
+  // Foundry's native drag data supplies the item UUID; item sheets remain
+  // responsible for their own system-specific usage controls.
+  const actor = app.actor ?? app.document;
+  const favorites = panel.querySelector(".tov-favorites");
+  if (actor?.items && favorites) {
+    const MODULE = "tov-enhanced-sheet";
+    favorites.innerHTML = `
+      <h3><i class="fa-solid fa-bookmark" aria-hidden="true"></i> Favorites</h3>
+      <ol class="tov-favorite-list" aria-label="Pinned favorites"></ol>
+      <p class="tov-favorite-hint">Drag a weapon, spell, or feature here to pin it.</p>`;
+    const list = favorites.querySelector(".tov-favorite-list");
+    const hint = favorites.querySelector(".tov-favorite-hint");
+    let ids = [...new Set(actor.getFlag(MODULE, "favorites") ?? [])]
+      .filter(id => actor.items.get(id));
+    const save = async () => {
+      if (!actor.isOwner) return;
+      try { await actor.setFlag(MODULE, "favorites", ids); }
+      catch (error) { console.error("ToV Favorites could not save", error); ui.notifications?.error("Could not save Favorites."); }
+    };
+    const render = () => {
+      list.replaceChildren();
+      for (const id of ids) {
+        const item = actor.items.get(id);
+        if (!item) continue;
+        const row = document.createElement("li");
+        row.className = "tov-favorite-row";
+        row.draggable = !!actor.isOwner;
+        row.dataset.itemId = id;
+        const img = document.createElement("img");
+        img.src = item.img || "icons/svg/item-bag.svg";
+        img.alt = "";
+        const name = document.createElement("button");
+        name.type = "button";
+        name.className = "tov-favorite-name";
+        name.textContent = item.name;
+        name.title = "Open " + item.name;
+        name.addEventListener("click", () => item.sheet?.render(true));
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "tov-favorite-remove";
+        remove.innerHTML = '<i class="fa-solid fa-xmark" aria-hidden="true"></i>';
+        remove.title = "Unpin " + item.name;
+        remove.setAttribute("aria-label", remove.title);
+        remove.hidden = !actor.isOwner;
+        remove.addEventListener("click", async () => {
+          ids = ids.filter(saved => saved !== id);
+          render();
+          await save();
+        });
+        row.append(img, name, remove);
+        row.addEventListener("dragstart", event => {
+          event.dataTransfer.setData("text/plain", JSON.stringify({
+            type: "ToVFavorite", itemId: id
+          }));
+          event.dataTransfer.effectAllowed = "move";
+        });
+        list.append(row);
+      }
+      hint.hidden = ids.length > 0;
+    };
+    render();
+    if (actor.isOwner) {
+      favorites.addEventListener("dragover", event => {
+        if (!event.dataTransfer?.types.includes("text/plain")) return;
+        event.preventDefault();
+        event.dataTransfer.dropEffect = "copy";
+        favorites.classList.add("tov-favorites-dragover");
+      });
+      favorites.addEventListener("dragleave", event => {
+        if (!favorites.contains(event.relatedTarget)) favorites.classList.remove("tov-favorites-dragover");
+      });
+      favorites.addEventListener("drop", async event => {
+        event.preventDefault();
+        favorites.classList.remove("tov-favorites-dragover");
+        let data;
+        try { data = JSON.parse(event.dataTransfer.getData("text/plain")); }
+        catch { return; }
+        if (data?.type === "ToVFavorite") {
+          const from = ids.indexOf(data.itemId);
+          if (from < 0) return;
+          const target = event.target.closest(".tov-favorite-row")?.dataset.itemId;
+          const to = target ? ids.indexOf(target) : ids.length - 1;
+          ids.splice(from, 1);
+          ids.splice(Math.min(Math.max(to, 0), ids.length), 0, data.itemId);
+        } else {
+          if (data?.type !== "Item") return;
+          let item = actor.items.get(data._id ?? data.id);
+          if (!item && data.uuid && typeof fromUuid === "function") {
+            const found = await fromUuid(data.uuid);
+            if (found?.parent?.id === actor.id) item = actor.items.get(found.id);
+          }
+          if (!item) {
+            ui.notifications?.warn("Add the item to this character before pinning it.");
+            return;
+          }
+          if (ids.includes(item.id)) return;
+          ids.push(item.id);
+        }
+        render();
+        await save();
+      });
+    }
+  }
+
   sheet.classList.add("tov-enhanced-ready");
 });
