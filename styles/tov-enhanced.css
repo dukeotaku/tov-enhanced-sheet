@@ -1010,3 +1010,139 @@
   border: 1px dashed rgb(201 180 124 / 35%);
 }
 .application.sheet.black-flag.actor.pc .tov-favorite-hint[hidden] { display: none; }
+
+
+/* Static header prototype. Isolated from the released Favorites checkpoint. */
+.application.sheet.black-flag.actor.pc.tov-header-prototype {
+  --tov-header-height: 148px;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .sheet-header {
+  position: relative;
+  padding: 10px 18px;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .sheet-header > .profile,
+.application.sheet.black-flag.actor.pc.tov-header-prototype .sheet-header > .proficiency-bonus {
+  display: none !important;
+}
+.application.sheet.black-flag.actor.pc .tov-header-shell {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+}
+.application.sheet.black-flag.actor.pc .tov-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 16px;
+  height: 100%;
+}
+.application.sheet.black-flag.actor.pc .tov-header-identity {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-width: 0;
+  flex: 1;
+  gap: 4px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-edit-toggle {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  width: 29px;
+  height: 15px;
+  min-height: 15px;
+  padding: 2px;
+  border: 1px solid var(--tov-gold);
+  border-radius: 12px;
+  background: #283c50;
+  cursor: pointer;
+}
+.application.sheet.black-flag.actor.pc .tov-header-edit-toggle span {
+  display: block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #f1e5c7;
+  transition: transform 140ms ease;
+}
+.application.sheet.black-flag.actor.pc .tov-header-edit-toggle[aria-checked="true"] {
+  background: #967e49;
+}
+.application.sheet.black-flag.actor.pc .tov-header-edit-toggle[aria-checked="true"] span {
+  transform: translateX(13px);
+}
+.application.sheet.black-flag.actor.pc .tov-header-subtitle {
+  color: #e4d3aa;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.application.sheet.black-flag.actor.pc .tov-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-rest {
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--tov-gold);
+  font-size: 22px;
+  cursor: pointer;
+}
+.application.sheet.black-flag.actor.pc .tov-header-rest:hover {
+  border-color: var(--tov-gold);
+}
+.application.sheet.black-flag.actor.pc .tov-header-level {
+  position: relative;
+  width: 76px;
+  min-width: 76px;
+  height: 76px;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--tov-gold);
+  border-radius: 50%;
+  background: #132d46;
+  box-shadow: 0 0 0 4px rgb(7 20 33 / 50%);
+}
+.application.sheet.black-flag.actor.pc .tov-header-level-number {
+  font-size: 34px;
+  font-weight: 700;
+  color: #fff;
+}
+.application.sheet.black-flag.actor.pc .tov-header-progression-controls {
+  display: none;
+  position: absolute;
+  top: 82px;
+  right: 0;
+  z-index: 15;
+  width: 215px;
+  padding: 9px;
+  border: 1px solid var(--tov-gold);
+  border-radius: 6px;
+  background: #11263c;
+  box-shadow: 0 6px 15px #0009;
+}
+.application.sheet.black-flag.actor.pc .tov-header-editing .tov-header-progression-controls {
+  display: block;
+}
+.application.sheet.black-flag.actor.pc .tov-header-progression-controls .progression {
+  margin: 5px 0 0;
+  padding: 2px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-xp-values {
+  font-size: 11px;
+  color: #eee1c2;
+  text-align: center;
+  margin-bottom: 5px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-xp-track {
+  height: 6px;
+  border-radius: 4px;
+  background: #344a5a;
+  overflow: hidden;
+}
+.application.sheet.black-flag.actor.pc .tov-header-xp-track span {
+  display: block;
+  height: 100%;
+  background: var(--tov-gold);
+}
