@@ -188,5 +188,32 @@ Hooks.on("renderApplicationV2", (app, html) => {
     health.append(hd);
   }
 
+  // Hidden Death Saves using Black Flag's native component.
+  const deathWrap = document.createElement("section");
+  deathWrap.className = "tov-death-saves";
+  deathWrap.innerHTML = `
+    <button type="button" class="tov-death-toggle" aria-expanded="false"
+      title="Show Death Saves" aria-label="Show Death Saves">
+      <i class="fa-solid fa-skull" aria-hidden="true"></i>
+    </button>
+    <div class="tov-death-panel" hidden>
+      <div class="tov-death-title">Death Saves</div>
+      <blackFlag-deathSaves></blackFlag-deathSaves>
+    </div>`;
+  health.append(deathWrap);
+
+  const deathToggle = deathWrap.querySelector(".tov-death-toggle");
+  const deathPanel = deathWrap.querySelector(".tov-death-panel");
+  deathToggle.addEventListener("click", event => {
+    event.preventDefault();
+    event.stopPropagation();
+    const open = deathPanel.hasAttribute("hidden");
+    deathPanel.toggleAttribute("hidden", !open);
+    deathToggle.setAttribute("aria-expanded", String(open));
+    deathToggle.title = open ? "Hide Death Saves" : "Show Death Saves";
+    deathToggle.setAttribute("aria-label", deathToggle.title);
+    deathWrap.classList.toggle("open", open);
+  });
+
   sheet.classList.add("tov-enhanced-ready");
 });
