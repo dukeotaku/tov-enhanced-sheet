@@ -1146,3 +1146,64 @@
   height: 100%;
   background: var(--tov-gold);
 }
+
+
+/* Single-row abilities complete the header prototype. */
+.application.sheet.black-flag.actor.pc.tov-header-prototype {
+  --tov-header-height: 218px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-top {
+  height: 98px;
+  min-height: 98px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-abilities {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 7px;
+  width: 100%;
+  min-width: 0;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability {
+  min-width: 0;
+  height: 84px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border: 1px solid var(--tov-gold);
+  border-radius: 9px 9px 16px 16px;
+  background: linear-gradient(180deg,#173e61,#102940);
+  box-shadow: inset 0 0 0 2px #0a2138;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-label {
+  color: #e8d6a9;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-roll {
+  min-height: 31px;
+  padding: 0 8px;
+  color: #fff;
+  background: transparent;
+  border: 0;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-roll:hover,
+.application.sheet.black-flag.actor.pc .tov-header-ability-roll:focus-visible {
+  color: var(--tov-gold);
+  text-shadow: 0 0 8px #e5d4a866;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-score {
+  color: #e8d6a9;
+  font-size: 13px;
+}
