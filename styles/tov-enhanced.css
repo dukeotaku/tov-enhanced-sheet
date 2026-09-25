@@ -554,3 +554,104 @@
 .application.sheet.black-flag.actor.pc .tov-resource-label {
   margin-bottom: 1px;
 }
+
+
+/* =========================================================
+   Checkpoint 5B - diamond vitals + fantasy Luck treatment
+   ========================================================= */
+
+.application.sheet.black-flag.actor.pc .tov-static-vitals {
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: start;
+  gap: 3px;
+  margin: 1px 5px 4px;
+  min-height: 66px;
+}
+
+.application.sheet.black-flag.actor.pc .tov-vital {
+  width: 68px;
+  height: 50px;
+  justify-self: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2px 3px 3px;
+  background: linear-gradient(180deg,#4b4f55,#30343a);
+  clip-path: polygon(17% 0,83% 0,100% 50%,83% 100%,17% 100%,0 50%);
+}
+
+.application.sheet.black-flag.actor.pc .tov-vital-speed {
+  margin-top: 19px;
+}
+
+.application.sheet.black-flag.actor.pc .tov-vital-value {
+  display: block;
+  color: #fff;
+  font-size: 21px;
+  font-weight: 900;
+  line-height: .9;
+  white-space: nowrap;
+}
+
+.application.sheet.black-flag.actor.pc .tov-vital-label {
+  display: block;
+  margin-top: 5px;
+  color: var(--tov-gold);
+  font-size: 7px;
+  font-weight: 900;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: .035em;
+}
+
+.application.sheet.black-flag.actor.pc .tov-luck-feature {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.application.sheet.black-flag.actor.pc .tov-luck-title {
+  margin: 0 0 2px 7px;
+  color: var(--tov-gold);
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.application.sheet.black-flag.actor.pc .tov-luck-frame {
+  position: relative;
+  min-height: 39px;
+  display: grid;
+  place-items: center;
+  padding: 5px 18px;
+  background: linear-gradient(90deg,#102a43,#174f7d 50%,#102a43);
+  border-top: 1px solid rgb(201 180 124 / 75%);
+  border-bottom: 1px solid rgb(201 180 124 / 75%);
+  clip-path: polygon(7px 0,calc(100% - 7px) 0,100% 50%,calc(100% - 7px) 100%,7px 100%,0 50%);
+}
+
+.application.sheet.black-flag.actor.pc .tov-luck-frame::before {
+  content: "";
+  position: absolute;
+  inset: 3px 7px;
+  pointer-events: none;
+  border-top: 1px solid rgb(201 180 124 / 24%);
+  border-bottom: 1px solid rgb(201 180 124 / 24%);
+}
+
+.application.sheet.black-flag.actor.pc .tov-luck-pips {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  gap: 6px;
+}
+
+.application.sheet.black-flag.actor.pc .tov-luck-pips span {
+  width: 17px;
+  height: 17px;
+}
