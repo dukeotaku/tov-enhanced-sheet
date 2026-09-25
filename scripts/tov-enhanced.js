@@ -143,19 +143,39 @@ Hooks.on("renderApplicationV2", (app, html) => {
 
   const hpSource = main?.querySelector(".hit-points");
   if (hpSource) {
+    const text = hpSource.textContent.replace(/\s+/g, " ").trim();
+    const inputs = [...hpSource.querySelectorAll("input")].map(el => el.value).filter(v => v !== "");
+    const nums = inputs.length ? inputs : (text.match(/\d+/g) ?? []);
+    const current = nums[0] ?? "—";
+    const max = nums[1] ?? current;
+    const temp = nums[2] ?? "0";
+
     const hp = document.createElement("section");
     hp.className = "tov-resource tov-hp-resource";
-    hp.innerHTML = `<div class="tov-resource-label">Hit Points</div><div class="tov-resource-live">${hpSource.innerHTML}</div>`;
+    hp.innerHTML = `
+      <div class="tov-resource-label">Hit Points</div>
+      <div class="tov-hp-track">
+        <div class="tov-hp-main"><strong>${current} / ${max}</strong></div>
+        <div class="tov-temp-main"><span>TMP</span><strong>${temp}</strong></div>
+      </div>`;
     health.append(hp);
 
-    const dice = hp.querySelector(".hit-dice");
-    if (dice) {
-      const hd = document.createElement("section");
-      hd.className = "tov-resource tov-hd-resource";
-      hd.innerHTML = `<div class="tov-resource-label">Hit Dice</div><div class="tov-resource-live">${dice.outerHTML}</div>`;
-      health.append(hd);
-      dice.remove();
-    }
+    const diceSource = hpSource.querySelector(".hit-dice");
+    const diceText = diceSource?.textContent?.replace(/\s+/g, " ").trim() ?? "";
+    const die = diceText.match(/d\d+/i)?.[0] ?? "d8";
+    const diceNums = diceText.match(/\d+/g) ?? [];
+    const usedOrCurrent = diceNums.length > 1 ? diceNums[diceNums.length - 2] : (diceNums[0] ?? "—");
+    const total = diceNums.length ? diceNums[diceNums.length - 1] : "—";
+
+    const hd = document.createElement("section");
+    hd.className = "tov-resource tov-hd-resource";
+    hd.innerHTML = `
+      <div class="tov-resource-label">Hit Dice</div>
+      <div class="tov-hd-track">
+        <span class="tov-hd-die">${die}</span>
+        <strong>${usedOrCurrent} / ${total}</strong>
+      </div>`;
+    health.append(hd);
   }
 
   sheet.classList.add("tov-enhanced-ready");
