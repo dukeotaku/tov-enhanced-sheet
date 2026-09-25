@@ -101,7 +101,7 @@ Hooks.on("renderApplicationV2", (app, html) => {
       </div>
       <div class="tov-ac-medallion" title="Armor Class">
         <span class="tov-ac-value">${acValue}</span>
-        <span class="tov-ac-label">AC</span>
+        
       </div>
       <div class="tov-exhaustion tov-exhaustion-right" title="Exhaustion">
         <span></span><span></span><span></span>
