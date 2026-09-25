@@ -169,7 +169,7 @@ Hooks.on("renderApplicationV2", (app, html) => {
   collapse.title = "Collapse Portrait Static Panel";
   collapse.setAttribute("aria-label", "Collapse Portrait Static Panel");
   collapse.innerHTML = '<i class="fa-solid fa-chevron-left" aria-hidden="true"></i>';
-  panel.append(collapse);
+  // Mount handle outside the scrolling portrait panel so it stays visible.\n  panel.parentElement.append(collapse);
 
   const setCollapsed = collapsed => {
     sheet.classList.toggle("tov-static-collapsed", collapsed);
