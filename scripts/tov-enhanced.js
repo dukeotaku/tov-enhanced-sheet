@@ -126,9 +126,8 @@ Hooks.on("renderApplicationV2", (app, html) => {
   const luckSource = main?.querySelector(".luck");
   let filledLuck = 0;
   if (luckSource) {
-    const checked = luckSource.querySelectorAll("input:checked").length;
-    const active = luckSource.querySelectorAll(".active, .filled, [aria-checked='true']").length;
-    filledLuck = Math.min(5, Math.max(checked, active));
+    // Black Flag marks spent/owned Luck with .luck-point.selected.
+    filledLuck = Math.min(5, luckSource.querySelectorAll(".luck-points .luck-point.selected").length);
   }
   const luck = document.createElement("section");
   luck.className = "tov-luck-feature";
@@ -143,12 +142,16 @@ Hooks.on("renderApplicationV2", (app, html) => {
 
   const hpSource = main?.querySelector(".hit-points");
   if (hpSource) {
-    const text = hpSource.textContent.replace(/\s+/g, " ").trim();
-    const inputs = [...hpSource.querySelectorAll("input")].map(el => el.value).filter(v => v !== "");
-    const nums = inputs.length ? inputs : (text.match(/\d+/g) ?? []);
-    const current = nums[0] ?? "—";
-    const max = nums[1] ?? current;
-    const temp = nums[2] ?? "0";
+    // Read each HP field by its Black Flag semantic class so temp HP cannot
+    // accidentally be mistaken for max HP.
+    const current = hpSource.querySelector(".current-hit-points input.value")?.value
+      ?? hpSource.querySelector(".current-hit-points .value")?.textContent?.trim()
+      ?? "—";
+    const max = hpSource.querySelector(".max-hit-points .value")?.textContent?.trim()
+      ?? current;
+    const temp = hpSource.querySelector(".temp-hit-points input.value")?.value
+      ?? hpSource.querySelector(".temp-hit-points .value")?.textContent?.trim()
+      ?? "0";
 
     const hp = document.createElement("section");
     hp.className = "tov-resource tov-hp-resource";
