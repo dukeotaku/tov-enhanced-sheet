@@ -509,3 +509,48 @@
 }
 .application.sheet.black-flag.actor.pc .tov-favorites > h3 { margin-bottom:5px; }
 .application.sheet.black-flag.actor.pc .tov-favorites-empty { min-height:54px; }
+
+
+/* Checkpoint 5A - compact HP / Hit Dice tracks to match reference */
+.application.sheet.black-flag.actor.pc .tov-static-health { gap: 3px; }
+
+.application.sheet.black-flag.actor.pc .tov-hp-resource .tov-resource-live {
+  min-height: 34px;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Keep current/max HP together on the left and TMP on the same horizontal row. */
+.application.sheet.black-flag.actor.pc .tov-hp-resource .hit-points {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: stretch;
+  gap: 0 !important;
+}
+.application.sheet.black-flag.actor.pc .tov-hp-resource .hit-points > :not(.temp):not(.temporary):not(.hit-dice) {
+  grid-column: 1;
+}
+.application.sheet.black-flag.actor.pc .tov-hp-resource .hit-points > .temp,
+.application.sheet.black-flag.actor.pc .tov-hp-resource .hit-points > .temporary {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  min-width: 48px;
+  margin: 0;
+}
+
+/* Hit Dice hugs the HP track instead of becoming another card. */
+.application.sheet.black-flag.actor.pc .tov-hd-resource {
+  margin-top: -1px;
+}
+.application.sheet.black-flag.actor.pc .tov-hd-resource .tov-resource-live {
+  min-height: 27px;
+  padding: 0;
+  overflow: hidden;
+}
+.application.sheet.black-flag.actor.pc .tov-hd-resource .hit-dice {
+  min-height: 25px;
+  margin: 0;
+}
+.application.sheet.black-flag.actor.pc .tov-resource-label {
+  margin-bottom: 1px;
+}
