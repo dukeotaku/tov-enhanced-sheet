@@ -1802,3 +1802,107 @@
   font-weight: 700;
   text-transform: uppercase;
 }
+
+
+/* v0.1.37: Main-tab legibility and native proficiency state. */
+.application.sheet.black-flag.actor.pc .tov-main-layout {
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills > fieldset.skills {
+  padding: 7px 9px 11px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 7px;
+  min-width: 0;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block > .proficiency-selector {
+  flex: 0 0 13px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block > button.unbutton {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: 28px minmax(0,1fr) 26px;
+  gap: 5px;
+  min-width: 0;
+  width: auto;
+  padding: 2px 0;
+  font-size: 11px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block .unbutton .ability {
+  grid-column: 1;
+  grid-row: 1;
+  width: auto;
+  min-width: 0;
+  font-size: 10px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block .unbutton .name {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  font-size: 11px;
+  white-space: nowrap;
+  letter-spacing: -.015em;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block .unbutton .mod {
+  grid-column: 3;
+  grid-row: 1;
+  min-width: 0;
+  text-align: right;
+  font-size: 12px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block .proficiency-selector,
+.application.sheet.black-flag.actor.pc .tov-main-save-row .proficiency-selector {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 12px;
+  width: 12px;
+  height: 12px;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block .proficiency-selector blackFlag-icon,
+.application.sheet.black-flag.actor.pc .tov-main-save-row .proficiency-selector blackFlag-icon {
+  display: none !important;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block .proficiency-selector::after,
+.application.sheet.black-flag.actor.pc .tov-main-save-row .proficiency-selector::after {
+  content: "";
+  display: block;
+  width: 7px;
+  height: 7px;
+  border: 1px solid #bcb4a5;
+  border-radius: 50%;
+  background: transparent;
+  transform: none;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block .proficiency-selector:not([data-multiplier="0"])::after,
+.application.sheet.black-flag.actor.pc .tov-main-save-row .proficiency-selector:not([data-multiplier="0"])::after {
+  background: #c4b18a;
+}
+.application.sheet.black-flag.actor.pc .tov-main-save-row {
+  min-width: 0;
+  gap: 5px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-save-row > span {
+  white-space: nowrap;
+  font-size: 11px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-layout fieldset.tov-main-proficiency-section > legend::before {
+  content: none !important;
+}
+.application.sheet.black-flag.actor.pc .tov-main-proficiency-section > legend i {
+  display: inline-block;
+  width: 16px;
+  margin-right: 4px;
+  font-size: 11px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-chip {
+  padding: 2px 6px;
+  font-size: 10px;
+  line-height: 1.25;
+  font-weight: 600;
+}
