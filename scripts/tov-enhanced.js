@@ -104,7 +104,35 @@ Hooks.on("renderApplicationV2", (app, html) => {
     level.append(controls);
     right.append(level);
     top.append(left, right);
-    shell.append(top);
+    // Six abilities stay visible on every tab and use Black Flag's own roll action.
+    const abilities = document.createElement("div");
+    abilities.className = "tov-header-abilities";
+    for (const [key, label] of [
+      ["str", "STR"], ["dex", "DEX"], ["con", "CON"],
+      ["int", "INT"], ["wis", "WIS"], ["cha", "CHA"]
+    ]) {
+      const data = actorForHeader.system?.abilities?.[key];
+      const tile = document.createElement("div");
+      tile.className = "tov-header-ability";
+      const title = document.createElement("span");
+      title.className = "tov-header-ability-label";
+      title.textContent = label;
+      const roll = document.createElement("button");
+      roll.type = "button";
+      roll.className = "tov-header-ability-roll";
+      roll.dataset.action = "roll";
+      roll.dataset.subAction = "ability-check";
+      roll.dataset.ability = key;
+      roll.title = label + " ability check";
+      const modifier = Number(data?.mod);
+      roll.textContent = Number.isFinite(modifier) ? (modifier >= 0 ? "+" : "") + modifier : "—";
+      const score = document.createElement("span");
+      score.className = "tov-header-ability-score";
+      score.textContent = data?.value ?? data?.score ?? "—";
+      tile.append(title, roll, score);
+      abilities.append(tile);
+    }
+    shell.append(top, abilities);
     nativeHeader.append(shell);
     toggle.addEventListener("click", () => {
       const editing = shell.classList.toggle("tov-header-editing");
