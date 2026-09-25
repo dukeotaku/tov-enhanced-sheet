@@ -188,73 +188,65 @@ Hooks.on("renderApplicationV2", (app, html) => {
     health.append(hd);
   }
 
-  // Hidden Death Saves drawer. We render the six state controls ourselves
-  // for the compact 5e-style presentation, while writing to Black Flag's
-  // native death-save fields and using its native roll action.
+  // Hidden Death Saves drawer: exact compact target — three radio pips,
+  // large fantasy skull, three radio pips, with a small attached pull tab.
   const nativeDeath = main?.querySelector("blackFlag-deathSaves");
   const deathWrap = document.createElement("section");
   deathWrap.className = "tov-death-saves";
   deathWrap.innerHTML = `
     <div class="tov-death-panel">
-      <div class="tov-death-pips tov-death-failures" aria-label="Death save failures"></div>
+      <div class="tov-death-pips tov-death-failures"></div>
       <button type="button" class="tov-death-roll" title="Roll Death Save" aria-label="Roll Death Save">
-        <blackFlag-icon src="systems/black-flag/artwork/interface/death-save.webp"></blackFlag-icon>
+        <i class="fa-solid fa-skull"></i>
       </button>
-      <div class="tov-death-pips tov-death-successes" aria-label="Death save successes"></div>
+      <div class="tov-death-pips tov-death-successes"></div>
     </div>
     <button type="button" class="tov-death-toggle" aria-expanded="false"
       title="Show Death Saves" aria-label="Show Death Saves">
-      <i class="fa-solid fa-skull" aria-hidden="true"></i>
+      <i class="fa-solid fa-skull"></i>
     </button>`;
   health.append(deathWrap);
 
-  const getDeathValue = type => {
-    const input = nativeDeath?.querySelector(`.levels input.${type}`);
-    return Number(input?.value ?? 0);
-  };
+  const deathInput = type => nativeDeath?.querySelector(`.levels input.${type}`);
+  const deathValue = type => Number(deathInput(type)?.value ?? 0);
   const renderDeathPips = () => {
     for (const type of ["failure","success"]) {
-      const holder = deathWrap.querySelector(`.tov-death-${type === "failure" ? "failures" : "successes"}`);
-      const value = getDeathValue(type);
+      const holder = deathWrap.querySelector(type === "failure" ? ".tov-death-failures" : ".tov-death-successes");
+      const value = deathValue(type);
       holder.innerHTML = Array.from({length:3}, (_,i) =>
         `<button type="button" class="tov-death-pip ${i < value ? "selected" : ""}"
           data-death-type="${type}" data-death-value="${i+1}"
           aria-label="${type} ${i+1}"></button>`
       ).join("");
     }
+    deathWrap.querySelectorAll(".tov-death-pip").forEach(button => {
+      button.addEventListener("click", event => {
+        event.preventDefault(); event.stopPropagation();
+        const type = button.dataset.deathType;
+        const requested = Number(button.dataset.deathValue);
+        const input = deathInput(type);
+        if (!input) return;
+        const current = Number(input.value ?? 0);
+        input.value = current === requested ? requested - 1 : requested;
+        input.dispatchEvent(new Event("change", {bubbles:true}));
+        renderDeathPips();
+      });
+    });
   };
   renderDeathPips();
 
-  deathWrap.querySelectorAll(".tov-death-pip").forEach(button => {
-    button.addEventListener("click", event => {
-      event.preventDefault();
-      event.stopPropagation();
-      const type = button.dataset.deathType;
-      const requested = Number(button.dataset.deathValue);
-      const input = nativeDeath?.querySelector(`.levels input.${type}`);
-      if (!input) return;
-      const current = Number(input.value ?? 0);
-      input.value = current === requested ? requested - 1 : requested;
-      input.dispatchEvent(new Event("change", {bubbles:true}));
-      renderDeathPips();
-    });
-  });
-
   deathWrap.querySelector(".tov-death-roll")?.addEventListener("click", event => {
-    event.preventDefault();
-    event.stopPropagation();
+    event.preventDefault(); event.stopPropagation();
     nativeDeath?.querySelector('[data-action="roll"]')?.click();
   });
 
   const deathToggle = deathWrap.querySelector(".tov-death-toggle");
   deathToggle.addEventListener("click", event => {
-    event.preventDefault();
-    event.stopPropagation();
+    event.preventDefault(); event.stopPropagation();
     const open = !deathWrap.classList.contains("open");
+    deathWrap.classList.toggle("open", open);
     deathToggle.setAttribute("aria-expanded", String(open));
     deathToggle.title = open ? "Hide Death Saves" : "Show Death Saves";
-    deathToggle.setAttribute("aria-label", deathToggle.title);
-    deathWrap.classList.toggle("open", open);
   });
 
   sheet.classList.add("tov-enhanced-ready");
