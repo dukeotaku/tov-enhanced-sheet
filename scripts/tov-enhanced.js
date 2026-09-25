@@ -161,19 +161,26 @@ Hooks.on("renderApplicationV2", (app, html) => {
     health.append(hp);
 
     const diceSource = hpSource.querySelector(".hit-dice");
-    const diceText = diceSource?.textContent?.replace(/\s+/g, " ").trim() ?? "";
-    const die = diceText.match(/d\d+/i)?.[0] ?? "d8";
-    const diceNums = diceText.match(/\d+/g) ?? [];
-    const usedOrCurrent = diceNums.length > 1 ? diceNums[diceNums.length - 2] : (diceNums[0] ?? "—");
-    const total = diceNums.length ? diceNums[diceNums.length - 1] : "—";
+    // Black Flag exposes each actual Hit Die denomination in the rendered
+    // .denomination block (d6, d8, d10, etc.). Read that live source instead
+    // of guessing or using a fallback.
+    const denominations = [...(diceSource?.querySelectorAll(".denomination") ?? [])];
+    const hdRows = denominations.map(row => {
+      const denom = row.querySelector(".label")?.textContent?.trim()?.replace(/^d/i, "");
+      const available = row.querySelector("input.value")?.value
+        ?? row.querySelector(".value")?.textContent?.trim();
+      const max = row.querySelector(".max")?.textContent?.trim();
+      return { denom, available, max };
+    }).filter(d => d.denom && d.available != null && d.max != null);
 
     const hd = document.createElement("section");
     hd.className = "tov-resource tov-hd-resource";
     hd.innerHTML = `
       <div class="tov-resource-label">Hit Dice</div>
       <div class="tov-hd-track">
-        <span class="tov-hd-die">${die}</span>
-        <strong>${usedOrCurrent} / ${total}</strong>
+        ${hdRows.length
+          ? hdRows.map(d => `<strong data-denomination="${d.denom}">${d.available} / ${d.denom}</strong>`).join('<span class="tov-hd-separator">•</span>')
+          : '<strong>—</strong>'}
       </div>`;
     health.append(hd);
   }
