@@ -95,8 +95,8 @@ Hooks.on("renderApplicationV2", (app, html) => {
     const abilities = document.createElement("div");
     abilities.className = "tov-header-abilities";
     for (const [key, label] of [
-      ["str", "STR"], ["dex", "DEX"], ["con", "CON"],
-      ["int", "INT"], ["wis", "WIS"], ["cha", "CHA"]
+      ["strength", "STR"], ["dexterity", "DEX"], ["constitution", "CON"],
+      ["intelligence", "INT"], ["wisdom", "WIS"], ["charisma", "CHA"]
     ]) {
       const data = actorForHeader.system?.abilities?.[key];
       const tile = document.createElement("div");
@@ -115,7 +115,7 @@ Hooks.on("renderApplicationV2", (app, html) => {
       roll.textContent = Number.isFinite(modifier) ? (modifier >= 0 ? "+" : "") + modifier : "—";
       const score = document.createElement("span");
       score.className = "tov-header-ability-score";
-      score.textContent = data?.value ?? data?.score ?? "—";
+      score.textContent = data?.value ?? data?.base ?? "—";
       tile.append(title, roll, score);
       abilities.append(tile);
     }
