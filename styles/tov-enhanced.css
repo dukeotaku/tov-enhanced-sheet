@@ -1258,3 +1258,53 @@
 .application.sheet.black-flag.actor.pc .tov-header-editing .tov-header-right > .tov-header-progression-controls {
   display: flex;
 }
+
+
+/* v0.1.29: 5e-inspired compact ability strip, under identity, centered. */
+.application.sheet.black-flag.actor.pc.tov-header-prototype,
+.application.sheet.black-flag.actor.pc.tov-header-prototype:has(.tov-header-editing) {
+  --tov-header-height: 178px;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .sheet-header {
+  padding: 8px 16px 10px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-shell {
+  gap: 4px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-top {
+  height: 88px;
+  min-height: 88px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-abilities {
+  width: min(100%, 690px);
+  margin: 0 auto;
+  gap: 6px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability {
+  height: 62px;
+  gap: 0;
+  border-radius: 7px 7px 12px 12px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-label {
+  font-size: 10px;
+  line-height: 13px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-roll {
+  min-height: 27px;
+  font-size: 22px;
+  line-height: 25px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-score {
+  font-size: 11px;
+  line-height: 13px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-right > .tov-header-progression-controls {
+  width: 150px;
+  min-height: 64px;
+  max-height: 78px;
+  padding: 5px 7px;
+  overflow: visible;
+}
+.application.sheet.black-flag.actor.pc .tov-header-progression-controls .progression {
+  margin: 0;
+}
