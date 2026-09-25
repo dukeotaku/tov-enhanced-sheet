@@ -317,3 +317,100 @@
 .application.sheet.black-flag.actor.pc.tov-static-collapsed .tov-static-collapse {
   right: -34px;
 }
+
+
+/* =========================================================
+   Checkpoint 4 - Portrait Static Panel layout
+   ========================================================= */
+
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready {
+  --tov-sidebar-width: 242px;
+}
+
+.application.sheet.black-flag.actor.pc .tov-static-panel {
+  padding: 10px 11px 12px;
+}
+
+.application.sheet.black-flag.actor.pc .tov-static-portrait {
+  height: 232px !important;
+}
+
+.application.sheet.black-flag.actor.pc .tov-static-primary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+  margin-bottom: 7px;
+}
+
+.application.sheet.black-flag.actor.pc .tov-static-vitals {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-bottom: 7px;
+}
+
+.application.sheet.black-flag.actor.pc .tov-static-health {
+  display: grid;
+  gap: 7px;
+}
+
+.application.sheet.black-flag.actor.pc .tov-static-card {
+  margin: 0;
+  padding: 7px;
+  min-width: 0;
+}
+
+.application.sheet.black-flag.actor.pc .tov-ac-card,
+.application.sheet.black-flag.actor.pc .tov-luck-card {
+  min-height: 92px;
+}
+
+.application.sheet.black-flag.actor.pc .tov-ac-card .tov-static-card-content,
+.application.sheet.black-flag.actor.pc .tov-luck-card .tov-static-card-content {
+  display: grid;
+  place-items: center;
+}
+
+.application.sheet.black-flag.actor.pc .tov-static-vitals .tov-static-card {
+  min-height: 67px;
+  text-align: center;
+}
+
+.application.sheet.black-flag.actor.pc .tov-static-vitals .tov-static-card > h3 {
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.application.sheet.black-flag.actor.pc .tov-big-value {
+  margin-top: 8px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.application.sheet.black-flag.actor.pc .tov-hp-card {
+  min-height: 96px;
+}
+
+.application.sheet.black-flag.actor.pc .tov-hd-card {
+  min-height: 58px;
+}
+
+.application.sheet.black-flag.actor.pc .tov-hp-card .hit-dice {
+  display: none;
+}
+
+.application.sheet.black-flag.actor.pc .tov-favorites {
+  margin-top: 10px;
+}
+
+.application.sheet.black-flag.actor.pc .tov-favorites-empty {
+  min-height: 72px;
+}
+
+/* Final handle neighborhood for this layout pass. */
+.application.sheet.black-flag.actor.pc .tov-static-collapse {
+  top: 8px;
+  right: -19px;
+}
