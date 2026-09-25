@@ -1232,3 +1232,29 @@
 .application.sheet.black-flag.actor.pc .tov-header-editing .tov-header-progression-controls .progression {
   width: 100%;
 }
+
+
+/* v0.1.28: edit swaps the level medallion for progression in-place. */
+.application.sheet.black-flag.actor.pc.tov-header-prototype:has(.tov-header-editing) {
+  --tov-header-height: 218px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-right {
+  flex-shrink: 0;
+}
+.application.sheet.black-flag.actor.pc .tov-header-right > .tov-header-progression-controls {
+  display: none;
+  position: static;
+  width: 215px;
+  min-height: 76px;
+  max-height: 98px;
+  padding: 7px 10px;
+  margin: 0;
+  box-shadow: none;
+  overflow: auto;
+}
+.application.sheet.black-flag.actor.pc .tov-header-editing .tov-header-right > .tov-header-level {
+  display: none;
+}
+.application.sheet.black-flag.actor.pc .tov-header-editing .tov-header-right > .tov-header-progression-controls {
+  display: flex;
+}
