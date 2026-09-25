@@ -803,3 +803,116 @@
 }
 .application.sheet.black-flag.actor.pc .tov-death-saves.open { min-height: 58px; }
 .application.sheet.black-flag.actor.pc .tov-death-saves.open .tov-death-toggle { bottom: -9px; }
+
+
+/* =========================================================
+   Checkpoint 6A - D&D-style Death Saves pull-down drawer
+   ========================================================= */
+
+/* Portrait through Hit Dice reads as one raised foreground card. */
+.application.sheet.black-flag.actor.pc .tov-portrait-slot,
+.application.sheet.black-flag.actor.pc .tov-static-stats,
+.application.sheet.black-flag.actor.pc .tov-static-health {
+  position: relative;
+  z-index: 8;
+}
+.application.sheet.black-flag.actor.pc .tov-static-health {
+  padding-bottom: 8px;
+  background: #11161d;
+  box-shadow: 0 5px 7px rgb(0 0 0 / 42%);
+}
+
+/* The drawer occupies no normal layout height: it physically slides over Favorites. */
+.application.sheet.black-flag.actor.pc .tov-death-saves {
+  position: absolute;
+  z-index: 5;
+  left: 8px;
+  right: 8px;
+  bottom: -18px;
+  height: 18px;
+  min-height: 0;
+  margin: 0;
+  border: 0;
+  pointer-events: none;
+}
+
+.application.sheet.black-flag.actor.pc .tov-death-panel {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  top: -47px;
+  height: 47px;
+  padding: 7px 10px 6px;
+  overflow: hidden;
+  opacity: 0;
+  background: #07090c;
+  border: 1px solid var(--tov-gold);
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 6px 10px rgb(0 0 0 / 55%);
+  transform: translateY(0);
+  transition:
+    transform 190ms cubic-bezier(.22,.8,.28,1),
+    opacity 100ms ease;
+  pointer-events: none;
+}
+.application.sheet.black-flag.actor.pc .tov-death-panel[hidden] {
+  display: block !important;
+}
+.application.sheet.black-flag.actor.pc .tov-death-title { display: none; }
+
+.application.sheet.black-flag.actor.pc .tov-death-toggle {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  top: -1px;
+  bottom: auto;
+  translate: -50% 0;
+  width: 31px;
+  height: 19px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  color: var(--tov-gold);
+  background: #2a2e34;
+  border: 0;
+  border-radius: 0 0 5px 5px;
+  box-shadow: 0 3px 5px rgb(0 0 0 / 40%);
+  cursor: pointer;
+  pointer-events: auto;
+  transition:
+    transform 190ms cubic-bezier(.22,.8,.28,1),
+    background 120ms ease;
+}
+.application.sheet.black-flag.actor.pc .tov-death-toggle i { font-size: 9px; }
+
+/* A small blind-pull motion before the drawer settles open. */
+.application.sheet.black-flag.actor.pc .tov-death-saves.open .tov-death-panel {
+  opacity: 1;
+  transform: translateY(65px);
+  pointer-events: auto;
+  animation: tov-drawer-tug 260ms ease-out;
+}
+.application.sheet.black-flag.actor.pc .tov-death-saves.open .tov-death-toggle {
+  bottom: auto;
+  transform: translateY(47px);
+  background: #333840;
+  animation: tov-tab-tug 260ms ease-out;
+}
+
+@keyframes tov-drawer-tug {
+  0%   { transform: translateY(0); }
+  68%  { transform: translateY(69px); }
+  100% { transform: translateY(65px); }
+}
+@keyframes tov-tab-tug {
+  0%   { transform: translateY(0); }
+  68%  { transform: translateY(51px); }
+  100% { transform: translateY(47px); }
+}
+
+/* Favorites stays where it is; the death drawer deliberately overlays it. */
+.application.sheet.black-flag.actor.pc .tov-favorites {
+  position: relative;
+  z-index: 1;
+}
