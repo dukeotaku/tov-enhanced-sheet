@@ -1,6 +1,6 @@
 /* =========================================================
    Tales of the Valiant Enhanced Sheet
-   Base PC Sheet
+   Structural shell prototype
    ========================================================= */
 
 .application.sheet.black-flag.actor.pc {
@@ -13,52 +13,170 @@
   --tov-panel-light: #1a2029;
   --tov-text: #f2f2ed;
   --tov-muted: #aaa89f;
+  --tov-tabs-width: 118px;
+  --tov-header-height: 138px;
 
   background: var(--tov-ink);
 }
 
-/* Main interior of the PC sheet */
+/* The sheet is deliberately kept close to the dense desktop proportions
+   of the reference 5e sheet. */
 .application.sheet.black-flag.actor.pc > .window-content {
-  background:
-    linear-gradient(
-      180deg,
-      #0b1119 0%,
-      #090d13 180px,
-      #080b10 100%
-    );
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--tov-tabs-width);
+  grid-template-rows: var(--tov-header-height) minmax(0, 1fr);
+  gap: 0;
+  overflow: hidden;
+  padding: 0;
 
+  background:
+    linear-gradient(180deg, #0b1119 0%, #090d13 180px, #080b10 100%);
   color: var(--tov-text);
 }
 
-/* Temporary treatment of the existing header.
-   This will eventually become our illustrated banner. */
+/* Header / future illustrated banner */
 .application.sheet.black-flag.actor.pc .sheet-header {
-  background:
-    linear-gradient(
-      135deg,
-      #123f69 0%,
-      #18598e 48%,
-      #0d3152 100%
-    );
+  grid-column: 1 / -1;
+  grid-row: 1;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 12px 138px 12px 16px;
 
+  background:
+    linear-gradient(90deg, rgba(11, 41, 68, 0.96), rgba(22, 79, 130, 0.90) 58%, rgba(11, 41, 68, 0.96));
+  border: 0;
   border-bottom: 3px solid var(--tov-gold);
-  padding: 12px 16px;
 }
 
-/* Character name */
+/* Temporary portrait treatment. The portrait will move into the persistent
+   left character panel when that panel is introduced. */
+.application.sheet.black-flag.actor.pc .sheet-header .profile {
+  inline-size: 112px !important;
+  block-size: 112px !important;
+  object-fit: cover;
+  border: 2px solid var(--tov-gold);
+  box-shadow: 0 3px 12px rgb(0 0 0 / 45%);
+}
+
 .application.sheet.black-flag.actor.pc .sheet-header .document-name {
-  color: #ffffff;
+  color: #fff;
   font-size: 30px;
   font-weight: 700;
   letter-spacing: 0.04em;
-  text-shadow: 0 2px 4px #000000;
+  text-shadow: 0 2px 4px #000;
 }
 
-/* Make the existing portrait large enough to begin
-   establishing our permanent character column. */
-.application.sheet.black-flag.actor.pc .sheet-header .profile {
-  inline-size: 150px !important;
-  block-size: 150px !important;
-  object-fit: cover;
-  border: 2px solid var(--tov-gold);
+/* ---------------------------------------------------------
+   Right-side primary navigation
+   --------------------------------------------------------- */
+
+.application.sheet.black-flag.actor.pc .sheet-navigation {
+  grid-column: 2;
+  grid-row: 2;
+  align-self: stretch;
+  z-index: 5;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 4px;
+
+  min-width: 0;
+  margin: 0;
+  padding: 10px 7px;
+
+  background:
+    linear-gradient(180deg, var(--tov-blue-dark), #091b2b 72%, #080b10);
+  border: 0;
+  border-left: 1px solid rgb(201 180 124 / 45%);
+  box-shadow: -8px 0 18px rgb(0 0 0 / 22%);
+}
+
+.application.sheet.black-flag.actor.pc .sheet-navigation > a {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 44px;
+  width: 100%;
+  padding: 7px 9px;
+
+  color: var(--tov-muted);
+  background: rgb(255 255 255 / 3%);
+  border: 1px solid transparent;
+  border-radius: 3px;
+
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  line-height: 1.1;
+  text-align: left;
+  text-decoration: none;
+
+  transition:
+    background 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease;
+}
+
+.application.sheet.black-flag.actor.pc .sheet-navigation > a:hover,
+.application.sheet.black-flag.actor.pc .sheet-navigation > a:focus-visible {
+  color: #fff;
+  background: rgb(40 121 185 / 18%);
+  border-color: rgb(40 121 185 / 42%);
+}
+
+.application.sheet.black-flag.actor.pc .sheet-navigation > a.active {
+  color: #fff;
+  background:
+    linear-gradient(90deg, rgb(40 121 185 / 34%), rgb(22 79 130 / 16%));
+  border-color: rgb(201 180 124 / 58%);
+  box-shadow: inset 3px 0 0 var(--tov-gold);
+}
+
+/* ---------------------------------------------------------
+   Changing tab workspace
+   --------------------------------------------------------- */
+
+.application.sheet.black-flag.actor.pc .sheet-body {
+  grid-column: 1;
+  grid-row: 2;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  overflow: auto;
+  padding: 12px;
+
+  background:
+    linear-gradient(180deg, rgb(17 22 29 / 96%), rgb(8 11 16 / 98%));
+}
+
+/* Keep Black Flag's own tab mechanics in charge. We are changing placement,
+   not replacing the system's data/actions in this prototype. */
+.application.sheet.black-flag.actor.pc .sheet-body > .tab {
+  min-width: 0;
+}
+
+/* Shared panel language */
+.application.sheet.black-flag.actor.pc fieldset {
+  border-color: rgb(201 180 124 / 32%);
+}
+
+.application.sheet.black-flag.actor.pc fieldset > legend {
+  color: var(--tov-gold);
+}
+
+/* Narrow-window fallback: preserve access to every tab rather than letting
+   the rail disappear off-screen. */
+@media (max-width: 760px) {
+  .application.sheet.black-flag.actor.pc {
+    --tov-tabs-width: 102px;
+  }
+
+  .application.sheet.black-flag.actor.pc .sheet-navigation > a {
+    min-height: 40px;
+    padding-inline: 7px;
+    font-size: 11px;
+  }
 }
