@@ -38,7 +38,11 @@ Hooks.on("renderApplicationV2", (app, html) => {
   panel.className = "tov-static-panel";
   panel.innerHTML = `
     <section class="tov-portrait-slot"></section>
-    <section class="tov-static-stats"></section>
+    <section class="tov-static-stats">
+      <section class="tov-static-primary"></section>
+      <section class="tov-static-vitals"></section>
+      <section class="tov-static-health"></section>
+    </section>
     <section class="tov-favorites">
       <h3><i class="fa-solid fa-bookmark" aria-hidden="true"></i> Favorites</h3>
       <div class="tov-favorites-empty">Favorites coming next</div>
@@ -78,33 +82,52 @@ Hooks.on("renderApplicationV2", (app, html) => {
     panel.querySelector(".tov-portrait-slot").append(copy);
   }
 
-  // These are display mirrors for the first sidebar checkpoint. The original
-  // Black Flag controls remain authoritative and functional in Main.
-  const statTarget = panel.querySelector(".tov-static-stats");
-  const statSources = [
-    [".armor-class", "Armor Class"],
-    [".luck", "Luck"],
-    [".hit-points", "Hit Points"],
-    [".initiative", "Initiative"]
-  ];
-  for (const [selector, label] of statSources) {
+  // Build the Portrait Static Panel from Black Flag's live Main-tab values.
+  // Main remains authoritative for now; this checkpoint is about locking layout.
+  const primary = panel.querySelector(".tov-static-primary");
+  const vitals = panel.querySelector(".tov-static-vitals");
+  const health = panel.querySelector(".tov-static-health");
+
+  const mirror = (selector, label, target, extraClass = "") => {
     const source = sheet.querySelector(`.sheet-body ${selector}`);
-    if (!source) continue;
+    if (!source) return null;
     const card = document.createElement("section");
-    card.className = "tov-static-card";
+    card.className = `tov-static-card ${extraClass}`.trim();
     card.dataset.source = selector;
     card.innerHTML = `<h3>${label}</h3><div class="tov-static-card-content">${source.innerHTML}</div>`;
-    statTarget.append(card);
-  }
+    target.append(card);
+    return card;
+  };
+
+  mirror(".armor-class", "Armor Class", primary, "tov-ac-card");
+  mirror(".luck", "Luck", primary, "tov-luck-card");
+  mirror(".initiative", "Initiative", vitals, "tov-initiative-card");
+
+  const prof = document.createElement("section");
+  prof.className = "tov-static-card tov-prof-card";
+  const profValue = sheet.querySelector(".sheet-header .proficiency-bonus span")?.textContent?.trim() ?? "—";
+  prof.innerHTML = `<h3>Proficiency</h3><div class="tov-big-value">${profValue}</div>`;
+  vitals.append(prof);
 
   const traits = sheet.querySelector(".sheet-body .traits");
-  if (traits) {
-    const speed = [...traits.querySelectorAll(".trait")].find(el => /speed/i.test(el.textContent));
-    if (speed) {
-      const card = document.createElement("section");
-      card.className = "tov-static-card tov-speed-card";
-      card.innerHTML = `<h3>Speed</h3><div class="tov-static-card-content">${speed.innerHTML}</div>`;
-      statTarget.append(card);
+  const speed = traits ? [...traits.querySelectorAll(".trait")].find(el => /speed/i.test(el.textContent)) : null;
+  if (speed) {
+    const card = document.createElement("section");
+    card.className = "tov-static-card tov-speed-card";
+    const value = speed.querySelector(":scope > span:last-child")?.textContent?.trim() ?? speed.textContent.trim();
+    card.innerHTML = `<h3>Speed</h3><div class="tov-big-value">${value.replace(/^Speed\s*/i, "")}</div>`;
+    vitals.append(card);
+  }
+
+  const hp = mirror(".hit-points", "Hit Points", health, "tov-hp-card");
+  if (hp) {
+    const dice = hp.querySelector(".hit-dice");
+    if (dice) {
+      const hd = document.createElement("section");
+      hd.className = "tov-static-card tov-hd-card";
+      hd.innerHTML = `<h3>Hit Dice</h3><div class="tov-static-card-content">${dice.outerHTML}</div>`;
+      health.append(hd);
+      dice.remove();
     }
   }
 
