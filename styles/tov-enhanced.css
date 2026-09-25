@@ -713,3 +713,40 @@
 .application.sheet.black-flag.actor.pc .tov-hd-track strong {
   font-size: 13px;
 }
+
+
+/* Checkpoint 5D - ToV shield treatment for Armor Class */
+.application.sheet.black-flag.actor.pc .tov-ac-medallion {
+  position: relative;
+  width: 72px;
+  height: 78px;
+  border: 0;
+  border-radius: 0;
+  background: linear-gradient(180deg,#263b50 0%,#152536 64%,#0b121a 100%);
+  clip-path: polygon(50% 0,91% 15%,86% 63%,72% 82%,50% 100%,28% 82%,14% 63%,9% 15%);
+  box-shadow: none;
+  filter: drop-shadow(0 3px 3px rgb(0 0 0 / 60%));
+}
+.application.sheet.black-flag.actor.pc .tov-ac-medallion::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  z-index: -1;
+  background: linear-gradient(180deg,#c9b47c,#796b43 72%,#c9b47c);
+  clip-path: inherit;
+}
+.application.sheet.black-flag.actor.pc .tov-ac-medallion::after {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  z-index: -1;
+  background: linear-gradient(180deg,#122b42,#0c1722);
+  clip-path: inherit;
+}
+.application.sheet.black-flag.actor.pc .tov-ac-value {
+  position: relative;
+  z-index: 2;
+  margin-top: -3px;
+  font-size: 25px;
+}
+.application.sheet.black-flag.actor.pc .tov-ac-label { display:none !important; }
