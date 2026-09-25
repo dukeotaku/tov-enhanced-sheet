@@ -1563,3 +1563,117 @@
 .application.sheet.black-flag.actor.pc .tab[data-tab="main"].tov-main-reorganized > .right {
   display: none !important;
 }
+
+
+/* v0.1.35 — D&D 5e-inspired Main content styling, ToV blue/gold palette.
+   Main-only: header, portrait rail and other tabs remain untouched. */
+.application.sheet.black-flag.actor.pc .tab[data-tab="main"].tov-main-reorganized {
+  padding: 10px 12px 24px;
+  background: #1a1e24;
+}
+.application.sheet.black-flag.actor.pc .tov-main-layout {
+  grid-template-columns: minmax(225px, .93fr) minmax(275px, 1.07fr);
+  gap: 13px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-layout fieldset {
+  position: relative;
+  border: 1px solid #576478;
+  border-radius: 9px;
+  background: linear-gradient(155deg, #292e38, #242932);
+  box-shadow: inset 0 0 0 2px #20252d, 0 1px 0 #687488;
+  color: #dce0e8;
+}
+.application.sheet.black-flag.actor.pc .tov-main-layout fieldset > legend {
+  margin: 0 auto;
+  padding: 0 9px;
+  width: auto;
+  max-width: 94%;
+  color: #c3ae7f;
+  background: #252a33;
+  font-weight: 750;
+  font-size: 12px;
+  letter-spacing: .06em;
+  text-align: center;
+  text-transform: uppercase;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills > fieldset.skills {
+  padding: 7px 12px 11px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block {
+  display: flex;
+  min-height: 27px;
+  padding: 2px 0;
+  border-bottom: 1px dotted #535a66;
+  background: transparent;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block:last-child {
+  border-bottom: none;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block .unbutton {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  width: 100%;
+  gap: 7px;
+  padding: 2px 4px;
+  border: 0;
+  background: transparent;
+  color: #e1e2e5;
+  font-size: 12px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block .unbutton .name {
+  order: 2;
+  flex: 1;
+  text-align: left;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block .unbutton .ability {
+  order: 1;
+  width: 30px;
+  color: #c5b18b;
+  font-size: 10px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block .unbutton .mod {
+  order: 3;
+  min-width: 27px;
+  text-align: right;
+  font-weight: 750;
+  font-size: 13px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-saves {
+  padding: 11px 13px 13px;
+  gap: 8px 12px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-save-row {
+  padding: 3px 0;
+  border-bottom: 1px dotted #535a66;
+  font-size: 12px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-save-row > button {
+  min-width: 31px;
+  font-size: 14px;
+  font-weight: 750;
+  color: #e1e2e5;
+}
+.application.sheet.black-flag.actor.pc .tov-main-save-row > button svg.label {
+  display: none;
+}
+.application.sheet.black-flag.actor.pc .tov-main-info {
+  margin-bottom: 9px !important;
+  padding: 7px 12px 9px;
+  min-height: 46px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-info-value {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 23px;
+  font-size: 13px;
+  color: #e4e2df;
+}
+.application.sheet.black-flag.actor.pc .tov-main-info:nth-of-type(-n+4) {
+  background: linear-gradient(100deg,#323947,#252a33 85%);
+  border-left: 3px solid #a99160;
+}
+.application.sheet.black-flag.actor.pc .tov-main-info:nth-of-type(n+5) {
+  background: #242932;
+}
