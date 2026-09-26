@@ -2162,3 +2162,33 @@
   top: 37px;
   bottom: auto;
 }
+
+/* v0.1.45: ToV title typography and actual d20-outline attribute geometry. */
+.application.sheet.black-flag.actor.pc .tov-header-identity .document-name,
+.application.sheet.black-flag.actor.pc .tov-header-identity .document-name input {
+  font-family: Georgia, "Palatino Linotype", "Book Antiqua", serif;
+  font-weight: 900;
+  font-variant: small-caps;
+  letter-spacing: .018em;
+  color: #f6f4ee;
+  text-shadow: 0 2px 0 #24384b, 1px 3px 0 #13283c, 0 4px 4px #071320;
+}
+.application.sheet.black-flag.actor.pc .tov-header-subtitle {
+  font-family: Georgia, "Palatino Linotype", "Book Antiqua", serif;
+  font-variant: small-caps;
+  font-weight: 700;
+  letter-spacing: .035em;
+  color: #e2d1ae;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability::before {
+  inset: 0 1px 4px;
+  clip-path: polygon(50% 0%, 100% 23%, 100% 75%, 50% 100%, 0% 75%, 0% 23%);
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability::after {
+  inset: 2px 3px 6px;
+  clip-path: polygon(50% 0%, 100% 22%, 100% 74%, 50% 100%, 0% 74%, 0% 22%);
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-score {
+  top: 37px;
+  z-index: 3; /* score plate obscures the lower d20 point */
+}
