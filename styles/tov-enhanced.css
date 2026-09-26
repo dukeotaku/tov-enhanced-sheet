@@ -2262,3 +2262,26 @@
   min-width: 0;
   width: 100%;
 }
+
+/* v0.1.48: restore the tall d20 silhouette without responsive stretching.
+   The score plate covers the bottom point as on the 5e reference. */
+.application.sheet.black-flag.actor.pc .tov-header-ability {
+  width: 64px;
+  min-width: 64px;
+  max-width: 64px;
+  height: 64px;
+  padding: 7px 2px 7px;
+  grid-template-rows: 12px 24px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability::before {
+  inset: 0 2px 4px;
+  clip-path: polygon(50% 0%, 100% 24%, 100% 70%, 50% 100%, 0% 70%, 0% 24%);
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability::after {
+  inset: 2px 4px 6px;
+  clip-path: polygon(50% 0%, 100% 24%, 100% 70%, 50% 100%, 0% 70%, 0% 24%);
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-score {
+  top: 47px;
+  bottom: auto;
+}
