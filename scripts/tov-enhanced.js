@@ -411,7 +411,7 @@ Hooks.on("renderApplicationV2", (app, html) => {
       pip.classList.toggle("filled", n <= level);
       pip.setAttribute("aria-pressed", String(n === level));
       pip.disabled = !exhaustionActor.isOwner || exhaustionPending;
-      pip.title = `Exhaustion ${n} — ${exhaustionDetriments[n - 1]}\nCumulative: all lower-level effects also apply.`;
+      pip.title = `Exhaustion ${n} — ${exhaustionDetriments[n - 1]}${n > 1 ? "\\nCumulative: all lower-level effects also apply." : ""}`;
     }
   };
   paintExhaustion(displayedExhaustion);
