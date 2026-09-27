@@ -592,27 +592,69 @@ Hooks.on("renderApplicationV2", (app, html) => {
       <div class="tov-resource-label">Hit Dice</div>
       <div class="tov-hd-track">
         ${hdRows.length
-          ? hdRows.map(d => `<strong data-denomination="${d.denom}">${d.available} / ${d.denom}</strong>`).join('<span class="tov-hd-separator">•</span>')
+          ? hdRows.map(d => `<strong data-denomination="${d.denom}" data-die-max="${d.max}" data-die-available="${d.available}">${d.available} / ${d.denom}</strong>`).join('<span class="tov-hd-separator">•</span>')
           : '<strong>—</strong>'}
       </div>`;
     health.append(hd);
-    // Delegate hit-die rolls to the native sheet button. The native handler
-    // manages healing, available dice, chat cards, and any system hooks.
+    // Hit Dice are normally spent/restored by Black Flag features and rests.
+    // Manual correction is deliberately an edit, not an accidental die roll.
     for (const display of hd.querySelectorAll("[data-denomination]")) {
       const denomination = display.dataset.denomination;
       display.classList.add("tov-hit-die-action");
-      display.title = `Roll d${denomination} hit die`;
+      display.title = `Click to correct available d${denomination} hit dice`;
       display.setAttribute("role", "button");
       display.tabIndex = 0;
-      const roll = () => {
-        const native = [...(hpSource.querySelectorAll('.hit-dice button[data-sub-action="hit-die"]') ?? [])]
-          .find(button => button.dataset.denomination === denomination);
-        if (native && !native.disabled) native.click();
-        else ui.notifications?.warn("No hit dice available to roll.");
+      if (!resourceActor?.isOwner) {
+        display.removeAttribute("role");
+        display.tabIndex = -1;
+        continue;
+      }
+      const edit = () => {
+        if (display.querySelector("input")) return;
+        const previous = Number(resourceActor.system?.attributes?.hd?.d?.[denomination]?.available ?? display.dataset.dieAvailable);
+        const maximum = Number(resourceActor.system?.attributes?.hd?.d?.[denomination]?.max ?? display.dataset.dieMax);
+        const input = document.createElement("input");
+        input.type = "number";
+        input.className = "tov-inline-resource-input tov-hit-die-input";
+        input.min = "0";
+        input.step = "1";
+        if (Number.isFinite(maximum)) input.max = String(maximum);
+        input.value = String(previous);
+        input.setAttribute("aria-label", `Available d${denomination} hit dice`);
+        display.replaceChildren(input, document.createTextNode(` / ${denomination}`));
+        input.focus();
+        input.select();
+        let finished = false;
+        const finish = async save => {
+          if (finished) return;
+          finished = true;
+          const valid = input.value.trim() !== "" && Number.isInteger(Number(input.value));
+          const next = save && valid
+            ? Math.max(0, Math.min(Number(input.value), Number.isFinite(maximum) ? maximum : Infinity))
+            : previous;
+          display.textContent = `${next} / ${denomination}`;
+          if (!save || !valid || next === previous) return;
+          try {
+            await resourceActor.update({ [`system.attributes.hd.d.${denomination}.available`]: next });
+            display.dataset.dieAvailable = String(next);
+          } catch (error) {
+            console.error("ToV hit-die correction failed", error);
+            ui.notifications?.error("Could not update hit dice.");
+            display.textContent = `${previous} / ${denomination}`;
+          }
+        };
+        input.addEventListener("click", event => event.stopPropagation());
+        input.addEventListener("keydown", event => {
+          if (event.key === "Enter") { event.preventDefault(); finish(true); }
+          if (event.key === "Escape") { event.preventDefault(); finish(false); }
+          event.stopPropagation();
+        });
+        input.addEventListener("blur", () => finish(true));
       };
-      display.addEventListener("click", roll);
+      display.addEventListener("click", edit);
       display.addEventListener("keydown", event => {
-        if (event.key === "Enter" || event.key === " ") { event.preventDefault(); roll(); }
+        if (event.target !== display) return;
+        if (event.key === "Enter" || event.key === " ") { event.preventDefault(); edit(); }
       });
     }
 
