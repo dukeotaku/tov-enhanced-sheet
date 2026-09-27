@@ -2331,10 +2331,10 @@
   clip-path: polygon(50% 0%, 97% 13%, 94% 65%, 77% 83%, 50% 100%, 23% 83%, 6% 65%, 3% 13%) !important;
 }
 
-/* v0.1.55: reserve actual room for the AC shield between exhaustion groups.
+/* v0.1.56: reserve actual room for the AC shield between exhaustion groups.
    Previous widths only enlarged the shield inside a 68px grid column. */
 .application.sheet.black-flag.actor.pc .tov-core-cluster {
-  grid-template-columns: minmax(0, 1fr) 90px minmax(0, 1fr) !important;
+  grid-template-columns: minmax(0, 1fr) 81px minmax(0, 1fr) !important;
   column-gap: 0 !important;
 }
 .application.sheet.black-flag.actor.pc .tov-exhaustion {
@@ -2343,6 +2343,6 @@
   min-width: 0;
 }
 .application.sheet.black-flag.actor.pc .tov-ac-medallion {
-  width: 90px !important;
+  width: 81px !important;
   height: 92px !important;
 }
