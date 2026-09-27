@@ -2380,3 +2380,11 @@
   color: white; background: #142b40; border: 1px solid #d6bd7a;
   font: inherit; text-align: center;
 }
+
+/* v0.1.58: manual correction of available hit dice; no accidental rolling. */
+.application.sheet.black-flag.actor.pc .tov-hit-die-input {
+  width: 43px;
+  height: 22px;
+  margin-right: 2px;
+  font-size: 13px;
+}
