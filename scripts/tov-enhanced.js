@@ -403,32 +403,39 @@ Hooks.on("renderApplicationV2", (app, html) => {
     "Death"
   ];
   const exhaustionPips = [...primary.querySelectorAll("[data-exhaustion-level]")];
-  const syncExhaustion = () => {
-    const level = Math.max(0, Math.min(6, Number(exhaustionActor.system?.attributes?.exhaustion) || 0));
+  let displayedExhaustion = Math.max(0, Math.min(6, Number(exhaustionActor.system?.attributes?.exhaustion) || 0));
+  let exhaustionPending = false;
+  const paintExhaustion = level => {
     for (const pip of exhaustionPips) {
       const n = Number(pip.dataset.exhaustionLevel);
       pip.classList.toggle("filled", n <= level);
       pip.setAttribute("aria-pressed", String(n === level));
-      pip.disabled = !exhaustionActor.isOwner;
-      pip.title = `Exhaustion ${n} — ${exhaustionDetriments[n - 1]}\\nCumulative: all lower-level effects also apply.\\n${n <= level ? "Active" : "Inactive"}${exhaustionActor.isOwner ? " • Click to set; click the current level to clear" : ""}`;
+      pip.disabled = !exhaustionActor.isOwner || exhaustionPending;
+      pip.title = `Exhaustion ${n} — ${exhaustionDetriments[n - 1]}\nCumulative: all lower-level effects also apply.`;
     }
   };
-  syncExhaustion();
+  paintExhaustion(displayedExhaustion);
   for (const pip of exhaustionPips) pip.addEventListener("click", async event => {
     event.preventDefault();
     event.stopPropagation();
-    if (!exhaustionActor.isOwner) return;
+    if (!exhaustionActor.isOwner || exhaustionPending) return;
     const selected = Number(pip.dataset.exhaustionLevel);
-    const current = Number(exhaustionActor.system?.attributes?.exhaustion) || 0;
-    const next = current === selected ? 0 : selected;
-    exhaustionPips.forEach(p => { p.disabled = true; });
+    const previous = displayedExhaustion;
+    const next = previous === selected ? 0 : selected;
+    // Paint immediately; the native actor update/effect synchronization runs afterward.
+    displayedExhaustion = next;
+    exhaustionPending = true;
+    paintExhaustion(next);
     try {
       await exhaustionActor.update({ "system.attributes.exhaustion": next });
-      syncExhaustion();
+      displayedExhaustion = Math.max(0, Math.min(6, Number(exhaustionActor.system?.attributes?.exhaustion) || 0));
     } catch (error) {
+      displayedExhaustion = Math.max(0, Math.min(6, Number(exhaustionActor.system?.attributes?.exhaustion) || previous));
       console.error("ToV: unable to update native exhaustion", error);
       ui.notifications?.error("Could not update exhaustion.");
-      syncExhaustion();
+    } finally {
+      exhaustionPending = false;
+      paintExhaustion(displayedExhaustion);
     }
   });
 
