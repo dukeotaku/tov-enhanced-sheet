@@ -428,7 +428,11 @@ Hooks.on("renderApplicationV2", (app, html) => {
     paintExhaustion(next);
     try {
       await exhaustionActor.update({ "system.attributes.exhaustion": next });
-      displayedExhaustion = Math.max(0, Math.min(6, Number(exhaustionActor.system?.attributes?.exhaustion) || 0));
+      // Black Flag synchronizes its Exhaustion ActiveEffect asynchronously.
+      // Reading prepared actor data here can still return the OLD effect level,
+      // which made the pip flash off and require a second click.
+      // Keep the requested level painted; the next native render reads the effect.
+      displayedExhaustion = next;
     } catch (error) {
       displayedExhaustion = Math.max(0, Math.min(6, Number(exhaustionActor.system?.attributes?.exhaustion) || previous));
       console.error("ToV: unable to update native exhaustion", error);
