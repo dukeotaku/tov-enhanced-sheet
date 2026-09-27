@@ -900,7 +900,7 @@
    Checkpoint 6D - larger portrait-overlap AC shield
    ========================================================= */
 .application.sheet.black-flag.actor.pc .tov-ac-medallion {
-  width: 92px;
+  width: 104px;
   height: 92px;
   margin-top: -24px;
   margin-bottom: -7px;
@@ -2291,4 +2291,34 @@
 .application.sheet.black-flag.actor.pc.tov-enhanced-ready {
   min-width: 820px !important;
   min-height: 880px !important;
+}
+
+/* v0.1.51: native interactive exhaustion pips; preserve portrait geometry. */
+.application.sheet.black-flag.actor.pc .tov-exhaustion .tov-exhaustion-pip {
+  appearance: none;
+  box-sizing: border-box;
+  flex: 0 0 17px;
+  width: 17px;
+  height: 17px;
+  min-width: 17px;
+  min-height: 17px;
+  margin: 0;
+  padding: 0;
+  border: 2px solid var(--tov-gold);
+  border-radius: 50%;
+  background: #0b0f14;
+  box-shadow: 0 1px 3px #000;
+  cursor: pointer;
+}
+.application.sheet.black-flag.actor.pc .tov-exhaustion .tov-exhaustion-pip.filled {
+  background: var(--tov-gold);
+  box-shadow: inset 0 0 0 2px #222a32, 0 1px 3px #000;
+}
+.application.sheet.black-flag.actor.pc .tov-exhaustion .tov-exhaustion-pip:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+.application.sheet.black-flag.actor.pc .tov-exhaustion .tov-exhaustion-pip:disabled {
+  cursor: default;
+  opacity: .75;
 }
