@@ -2285,3 +2285,10 @@
   top: 47px;
   bottom: auto;
 }
+
+/* v0.1.49: preserve the approved default-sized sheet as the minimum.
+   Applies only once the enhanced layout is active; larger windows remain resizable. */
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready {
+  min-width: 820px !important;
+  min-height: 880px !important;
+}
