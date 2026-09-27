@@ -376,17 +376,50 @@ Hooks.on("renderApplicationV2", (app, html) => {
 
   primary.innerHTML = `
     <div class="tov-core-cluster">
-      <div class="tov-exhaustion tov-exhaustion-left" title="Exhaustion">
-        <span></span><span></span><span></span>
+      <div class="tov-exhaustion tov-exhaustion-left" role="group" aria-label="Exhaustion levels 1 through 3">
+        ${[1,2,3].map(n => `<button type="button" class="tov-exhaustion-pip" data-exhaustion-level="${n}" aria-label="Set exhaustion level ${n}" title="Exhaustion ${n}"></button>`).join("")}
       </div>
       <div class="tov-ac-medallion" title="Armor Class">
         <span class="tov-ac-value">${acValue}</span>
         
       </div>
-      <div class="tov-exhaustion tov-exhaustion-right" title="Exhaustion">
-        <span></span><span></span><span></span>
+      <div class="tov-exhaustion tov-exhaustion-right" role="group" aria-label="Exhaustion levels 4 through 6">
+        ${[4,5,6].map(n => `<button type="button" class="tov-exhaustion-pip" data-exhaustion-level="${n}" aria-label="Set exhaustion level ${n}" title="Exhaustion ${n}"></button>`).join("")}
       </div>
     </div>`;
+
+  // Native Black Flag exhaustion: write its actor attribute so system effects
+  // and automation stay authoritative. Click the active level again to clear.
+  const exhaustionActor = actorForHeader;
+  const exhaustionPips = [...primary.querySelectorAll("[data-exhaustion-level]")];
+  const syncExhaustion = () => {
+    const level = Math.max(0, Math.min(6, Number(exhaustionActor.system?.attributes?.exhaustion) || 0));
+    for (const pip of exhaustionPips) {
+      const n = Number(pip.dataset.exhaustionLevel);
+      pip.classList.toggle("filled", n <= level);
+      pip.setAttribute("aria-pressed", String(n === level));
+      pip.disabled = !exhaustionActor.isOwner;
+      pip.title = `Exhaustion ${n}: ${n <= level ? "active" : "inactive"}${exhaustionActor.isOwner ? " (click to set; click current level to clear)" : ""}`;
+    }
+  };
+  syncExhaustion();
+  for (const pip of exhaustionPips) pip.addEventListener("click", async event => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (!exhaustionActor.isOwner) return;
+    const selected = Number(pip.dataset.exhaustionLevel);
+    const current = Number(exhaustionActor.system?.attributes?.exhaustion) || 0;
+    const next = current === selected ? 0 : selected;
+    exhaustionPips.forEach(p => { p.disabled = true; });
+    try {
+      await exhaustionActor.update({ "system.attributes.exhaustion": next });
+      syncExhaustion();
+    } catch (error) {
+      console.error("ToV: unable to update native exhaustion", error);
+      ui.notifications?.error("Could not update exhaustion.");
+      syncExhaustion();
+    }
+  });
 
   const initSource = main?.querySelector(".initiative");
   const initValue = initSource?.querySelector("input")?.value
