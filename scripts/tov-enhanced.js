@@ -391,6 +391,17 @@ Hooks.on("renderApplicationV2", (app, html) => {
   // Native Black Flag exhaustion: write its actor attribute so system effects
   // and automation stay authoritative. Click the active level again to clear.
   const exhaustionActor = actorForHeader;
+  // Tales of the Valiant exhaustion ladder: cumulative detriments.
+  // Native Black Flag applies its own effect/roll notes; descriptions do not
+  // imply that movement, HP maximum, or death are automatically enforced.
+  const exhaustionDetriments = [
+    "Disadvantage on ability checks",
+    "Speed halved",
+    "Disadvantage on attack rolls and saving throws",
+    "Hit point maximum halved",
+    "Speed reduced to 0",
+    "Death"
+  ];
   const exhaustionPips = [...primary.querySelectorAll("[data-exhaustion-level]")];
   const syncExhaustion = () => {
     const level = Math.max(0, Math.min(6, Number(exhaustionActor.system?.attributes?.exhaustion) || 0));
@@ -399,7 +410,7 @@ Hooks.on("renderApplicationV2", (app, html) => {
       pip.classList.toggle("filled", n <= level);
       pip.setAttribute("aria-pressed", String(n === level));
       pip.disabled = !exhaustionActor.isOwner;
-      pip.title = `Exhaustion ${n}: ${n <= level ? "active" : "inactive"}${exhaustionActor.isOwner ? " (click to set; click current level to clear)" : ""}`;
+      pip.title = `Exhaustion ${n} — ${exhaustionDetriments[n - 1]}\\nCumulative: all lower-level effects also apply.\\n${n <= level ? "Active" : "Inactive"}${exhaustionActor.isOwner ? " • Click to set; click the current level to clear" : ""}`;
     }
   };
   syncExhaustion();
