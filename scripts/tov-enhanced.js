@@ -470,10 +470,32 @@ Hooks.on("renderApplicationV2", (app, html) => {
     <div class="tov-luck-title">Luck</div>
     <div class="tov-luck-frame">
       <div class="tov-luck-pips">
-        ${Array.from({length:5},(_,i)=>`<span class="${i < filledLuck ? "filled" : ""}"></span>`).join("")}
+        ${Array.from({length:5},(_,i)=>`<button type="button" class="tov-luck-pip ${i < filledLuck ? "filled" : ""}" data-luck-value="${i+1}" aria-label="Set Luck to ${i+1}" title="Luck ${i+1}"></button>`).join("")}
       </div>
     </div>`;
   health.append(luck);
+  // Edit the actual Black Flag Luck resource; the native sheet can re-render
+  // without losing these controls because they are reconstructed from actor data.
+  const resourceActor = app.actor ?? app.document;
+  for (const pip of luck.querySelectorAll("[data-luck-value]")) {
+    pip.disabled = !resourceActor?.isOwner;
+    pip.addEventListener("click", async event => {
+      event.preventDefault();
+      if (!resourceActor?.isOwner) return;
+      const currentLuck = Number(resourceActor.system?.attributes?.luck?.value) || 0;
+      const selected = Number(pip.dataset.luckValue);
+      const next = selected === currentLuck ? selected - 1 : selected;
+      const all = [...luck.querySelectorAll("[data-luck-value]")];
+      all.forEach(p => p.classList.toggle("filled", Number(p.dataset.luckValue) <= next));
+      try { await resourceActor.update({ "system.attributes.luck.value": next }); }
+      catch (error) {
+        console.error("ToV Luck update failed", error);
+        ui.notifications?.error("Could not update Luck.");
+        all.forEach(p => p.classList.toggle("filled", Number(p.dataset.luckValue) <= currentLuck));
+      }
+    });
+  }
+
 
   const hpSource = main?.querySelector(".hit-points");
   if (hpSource) {
@@ -497,6 +519,59 @@ Hooks.on("renderApplicationV2", (app, html) => {
         <div class="tov-temp-main"><span>TMP</span><strong>${temp}</strong></div>
       </div>`;
     health.append(hp);
+    // Inline resource editing, saved through native Black Flag actor fields.
+    // Click the HP total or TMP number; Enter commits, Escape cancels.
+    const editResource = (element, field, initial, maximum) => {
+      if (!resourceActor?.isOwner || element.querySelector("input")) return;
+      const label = element.querySelector("strong");
+      if (!label) return;
+      const original = label.textContent;
+      const input = document.createElement("input");
+      input.type = "number";
+      input.className = "tov-inline-resource-input";
+      input.min = "0";
+      if (Number.isFinite(maximum)) input.max = String(maximum);
+      input.value = String(initial);
+      input.setAttribute("aria-label", field.includes("temp") ? "Temporary hit points" : "Current hit points");
+      label.replaceWith(input);
+      input.focus();
+      input.select();
+      let finished = false;
+      const finish = async commit => {
+        if (finished) return;
+        finished = true;
+        if (!commit || !input.value.trim() || !Number.isFinite(Number(input.value))) {
+          input.replaceWith(label);
+          return;
+        }
+        const next = Math.max(0, Math.min(Number(input.value), Number.isFinite(maximum) ? maximum : Infinity));
+        label.textContent = field.includes("temp") ? String(next) : `${next} / ${max}`;
+        input.replaceWith(label);
+        try { await resourceActor.update({ [field]: next }); }
+        catch (error) {
+          console.error("ToV resource update failed", error);
+          ui.notifications?.error("Could not update hit points.");
+          label.textContent = original;
+        }
+      };
+      input.addEventListener("keydown", event => {
+        if (event.key === "Enter") { event.preventDefault(); finish(true); }
+        if (event.key === "Escape") { event.preventDefault(); finish(false); }
+        event.stopPropagation();
+      });
+      input.addEventListener("blur", () => finish(true));
+    };
+    const currentHpControl = hp.querySelector(".tov-hp-main");
+    const tempHpControl = hp.querySelector(".tov-temp-main");
+    for (const [control, field, value, limit] of [
+      [currentHpControl, "system.attributes.hp.value", Number(current), Infinity],
+      [tempHpControl, "system.attributes.hp.temp", Number(temp), Infinity]
+    ]) {
+      control.classList.add("tov-editable-resource");
+      control.title = field.includes("temp") ? "Click to edit temporary HP" : "Click to edit current HP";
+      control.addEventListener("click", () => editResource(control, field, value, limit));
+    }
+
 
     const diceSource = hpSource.querySelector(".hit-dice");
     // Black Flag exposes each actual Hit Die denomination in the rendered
@@ -521,6 +596,26 @@ Hooks.on("renderApplicationV2", (app, html) => {
           : '<strong>—</strong>'}
       </div>`;
     health.append(hd);
+    // Delegate hit-die rolls to the native sheet button. The native handler
+    // manages healing, available dice, chat cards, and any system hooks.
+    for (const display of hd.querySelectorAll("[data-denomination]")) {
+      const denomination = display.dataset.denomination;
+      display.classList.add("tov-hit-die-action");
+      display.title = `Roll d${denomination} hit die`;
+      display.setAttribute("role", "button");
+      display.tabIndex = 0;
+      const roll = () => {
+        const native = [...(hpSource.querySelectorAll('.hit-dice button[data-sub-action="hit-die"]') ?? [])]
+          .find(button => button.dataset.denomination === denomination);
+        if (native && !native.disabled) native.click();
+        else ui.notifications?.warn("No hit dice available to roll.");
+      };
+      display.addEventListener("click", roll);
+      display.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") { event.preventDefault(); roll(); }
+      });
+    }
+
   }
 
 
