@@ -2322,3 +2322,11 @@
   cursor: default;
   opacity: .75;
 }
+
+/* v0.1.53: broaden the visible AC silhouette, not merely its box.
+   Preserve shield height, vertical overlap, and counter positions. */
+.application.sheet.black-flag.actor.pc .tov-ac-medallion {
+  width: 116px !important;
+  height: 92px !important;
+  clip-path: polygon(50% 0%, 97% 13%, 94% 65%, 77% 83%, 50% 100%, 23% 83%, 6% 65%, 3% 13%) !important;
+}
