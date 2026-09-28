@@ -2703,3 +2703,12 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
   margin-top: 9px !important;
   min-height: 38px !important;
 }
+
+/* v0.1.68: respect Black Flag's native tab visibility.
+   The custom Main display:block must NEVER expose Main on other tabs. */
+.application.sheet.black-flag.actor.pc .sheet-body > .tab[data-tab="main"].tov-main-reorganized:not(.active) {
+  display: none !important;
+}
+.application.sheet.black-flag.actor.pc .sheet-body > .tab[data-tab="main"].tov-main-reorganized.active {
+  display: block !important;
+}
