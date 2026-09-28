@@ -2598,3 +2598,67 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
   border: 0 !important; outline: none; box-shadow: none !important;
   font-size: 14px !important;
 }
+
+/* v0.1.66: readable Favorites within the locked 242px portrait rail.
+   Return to an intermediate font size; reserve space for both metadata lines. */
+.application.sheet.black-flag.actor.pc .tov-favorites,
+.application.sheet.black-flag.actor.pc .tov-favorite-list {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-row {
+  box-sizing: border-box;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  min-height: 49px !important;
+  padding: 2px 3px !important;
+  gap: 0 !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-body {
+  flex: 1 1 0 !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  min-height: 43px !important;
+  padding: 3px 0 !important;
+  gap: 5px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-body img {
+  width: 28px !important;
+  height: 28px !important;
+  flex: 0 0 28px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-label {
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-label strong {
+  font-size: 12px !important;
+  line-height: 15px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-label small {
+  font-size: 10px !important;
+  line-height: 13px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-meta {
+  flex: 0 0 39px !important;
+  width: 39px !important;
+  min-width: 39px !important;
+  max-width: 39px !important;
+  overflow: hidden !important;
+  font-size: 12px !important;
+  line-height: 15px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-meta small {
+  font-size: 10px !important;
+  line-height: 13px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-remove {
+  flex: 0 0 13px !important;
+  width: 13px !important;
+  min-width: 13px !important;
+  padding: 0 !important;
+  font-size: 12px !important;
+}
