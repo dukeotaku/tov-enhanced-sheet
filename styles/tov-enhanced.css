@@ -2388,3 +2388,20 @@
   margin-right: 2px;
   font-size: 13px;
 }
+
+/* v0.1.59: favorites: native action shortcut, distinct from opening item. */
+.application.sheet.black-flag.actor.pc .tov-favorite-use {
+  flex: 0 0 auto; padding: 2px 5px; margin: 0;
+  border: 1px solid var(--tov-gold);
+  border-radius: 3px;
+  color: var(--tov-gold);
+  background: #172b3b;
+  font-size: 9px; font-weight: 900; line-height: 1.2;
+  cursor: pointer;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-use:hover {
+  background: #28445a; color: #fff;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-use:disabled {
+  opacity: .5; cursor: default;
+}
