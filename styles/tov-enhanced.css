@@ -2662,3 +2662,44 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
   padding: 0 !important;
   font-size: 12px !important;
 }
+
+/* v0.1.67: borderless 5e-style favorites; reclaim width from X buttons. */
+.application.sheet.black-flag.actor.pc .tov-favorite-list { gap: 0 !important; }
+.application.sheet.black-flag.actor.pc .tov-favorite-row {
+  min-height: 42px !important;
+  padding: 3px 1px !important;
+  border: 0 !important;
+  border-bottom: 1px dotted rgb(201 180 124 / 27%) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-body {
+  min-height: 36px !important;
+  gap: 7px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-label strong {
+  font-size: 13px !important;
+  line-height: 16px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-label small {
+  font-size: 10px !important;
+  line-height: 13px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-meta {
+  flex: 0 0 41px !important;
+  width: 41px !important;
+  min-width: 41px !important;
+  max-width: 41px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-meta strong {
+  font-size: 12px !important;
+  line-height: 15px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-meta small {
+  font-size: 10px !important;
+  line-height: 13px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-hint {
+  margin-top: 9px !important;
+  min-height: 38px !important;
+}
