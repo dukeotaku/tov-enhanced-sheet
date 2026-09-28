@@ -2405,3 +2405,43 @@
 .application.sheet.black-flag.actor.pc .tov-favorite-use:disabled {
   opacity: .5; cursor: default;
 }
+
+/* v0.1.61: compact actionable Favorites and delayed descriptive hover. */
+.application.sheet.black-flag.actor.pc .tov-favorite-row { position:relative; padding:0; gap:0; }
+.application.sheet.black-flag.actor.pc .tov-favorite-body {
+  display:flex; align-items:center; gap:7px; flex:1; min-width:0;
+  padding:4px; border:0; background:transparent; color:var(--tov-text);
+  box-shadow:none; text-align:left; cursor:pointer;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-body img { flex:0 0 28px; }
+.application.sheet.black-flag.actor.pc .tov-favorite-label {
+  display:flex; flex-direction:column; flex:1; min-width:0;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-label strong {
+  overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
+  font: bold 12px Georgia,serif; color:#e8e5df;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-label small,
+.application.sheet.black-flag.actor.pc .tov-favorite-meta small {
+  font: 9px Arial,sans-serif; color:#aeb5bd;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-meta {
+  display:flex; flex-direction:column; align-items:flex-end;
+  flex:0 0 auto; font-size:12px; color:#e4e5e8;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-body:hover strong { color:var(--tov-gold); }
+.application.sheet.black-flag.actor.pc .tov-favorite-preview {
+  display:none; position:absolute; z-index:1000;
+  left:calc(100% + 10px); top:0; width:290px; max-height:340px;
+  overflow:auto; padding:12px; background:#eeeae3; color:#26272a;
+  border:1px solid #ad9976; border-radius:4px;
+  box-shadow:0 6px 20px #000a; pointer-events:none;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-row.tov-preview-open .tov-favorite-preview { display:block; }
+.application.sheet.black-flag.actor.pc .tov-favorite-preview header {
+  display:flex; align-items:center; gap:8px; font:bold 18px Georgia,serif;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-preview header img { width:40px;height:40px; }
+.application.sheet.black-flag.actor.pc .tov-favorite-preview-text {
+  margin-top:9px; white-space:pre-line; font:12px/1.45 Georgia,serif;
+}
