@@ -2736,3 +2736,30 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
   font-weight: 700;
 }
 .application.sheet.black-flag.actor.pc .tov-favorite-save-range { color: #aeb5bd; }
+
+/* v0.1.74: make each non-Main tab scroll within the existing sheet body.
+   Leave Main, header, portrait, native tabs and window positioning alone. */
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-body:has(> .tab.active:not([data-tab="main"])) {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-body > .tab.active:not([data-tab="main"]) {
+  box-sizing: border-box;
+  flex: 1 1 0;
+  min-height: 0;
+  max-height: 100%;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #a99465 #151b23;
+  overscroll-behavior: contain;
+}
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-body > .tab.active:not([data-tab="main"])::-webkit-scrollbar {
+  width: 9px;
+}
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-body > .tab.active:not([data-tab="main"])::-webkit-scrollbar-thumb {
+  background: #a99465;
+  border-radius: 6px;
+}
