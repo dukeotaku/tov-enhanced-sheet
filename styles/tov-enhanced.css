@@ -2460,3 +2460,11 @@ body > .tov-favorite-preview header img { width:40px; height:40px; object-fit:co
 body > .tov-favorite-preview .tov-favorite-preview-text {
   margin-top:9px; white-space:pre-line; font:12px/1.45 Georgia,serif;
 }
+
+/* v0.1.63: two-line Favorites rows with compact right-side details. */
+.application.sheet.black-flag.actor.pc .tov-favorite-label small {
+  white-space:normal; line-height:1.2;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-meta {
+  min-width:30px; align-self:center; gap:1px;
+}
