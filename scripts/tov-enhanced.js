@@ -725,7 +725,8 @@ Hooks.on("renderApplicationV2", (app, html) => {
             && nativeRow.querySelector('button[data-action="activate"]'));
         const rows = nativeRows();
         const nativeRow = rows[0];
-        const challenge = nativeRow?.querySelector(".challenge")?.textContent?.trim();
+        const rawChallenge = nativeRow?.querySelector(".challenge")?.textContent?.trim() ?? "";
+        const challenge = /\[object\s+(set|object)\]/i.test(rawChallenge) ? "" : rawChallenge;
         const systemRange = item.system?.range;
         const range = weapon
           ? (item.system?.type?.value === "ranged"
@@ -747,10 +748,18 @@ Hooks.on("renderApplicationV2", (app, html) => {
           candidate?.system?.save?.ability || candidate?.save?.ability);
         if (spell && saveActivity) {
           const save = saveActivity.system?.save ?? saveActivity.save;
-          const ability = String(save.ability ?? "").toUpperCase();
+          const rawAbility = save.ability;
+          const abilityValue = rawAbility instanceof Set
+            ? [...rawAbility][0]
+            : Array.isArray(rawAbility) ? rawAbility[0]
+            : typeof rawAbility === "string" ? rawAbility
+            : (rawAbility && typeof rawAbility === "object" ? rawAbility.value : "");
+          const ability = typeof abilityValue === "string" && /^(str|dex|con|int|wis|cha)$/i.test(abilityValue)
+            ? abilityValue.toUpperCase() : "";
           const rawDC = save.dc?.value ?? save.dc;
-          const resolvedDC = typeof rawDC === "number" || typeof rawDC === "string"
-            ? rawDC : actor.system?.attributes?.spellcasting?.dc;
+          const actorSpellDC = actor.system?.attributes?.spellcasting?.dc;
+          const resolvedDC = typeof rawDC === "number" || (typeof rawDC === "string" && /^\d+$/.test(rawDC))
+            ? rawDC : (typeof actorSpellDC === "number" ? actorSpellDC : actorSpellDC?.value);
           const dc = Number(resolvedDC);
           if (ability) {
             const strong = document.createElement("strong");
