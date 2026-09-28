@@ -2712,3 +2712,27 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
 .application.sheet.black-flag.actor.pc .sheet-body > .tab[data-tab="main"].tov-main-reorganized.active {
   display: block !important;
 }
+
+/* v0.1.69: spell saves display three separate lines: ability, DC, range. */
+.application.sheet.black-flag.actor.pc .tov-favorite-meta:has(.tov-favorite-save-ability) {
+  gap: 0 !important;
+  line-height: 12px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-save-ability,
+.application.sheet.black-flag.actor.pc .tov-favorite-save-dc,
+.application.sheet.black-flag.actor.pc .tov-favorite-save-range {
+  display: block;
+  width: 100%;
+  white-space: nowrap;
+  text-align: right;
+  overflow: hidden;
+  font-family: Arial,sans-serif;
+  font-size: 10px;
+  line-height: 12px;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-save-ability,
+.application.sheet.black-flag.actor.pc .tov-favorite-save-dc {
+  color: #e8e6e1;
+  font-weight: 700;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-save-range { color: #aeb5bd; }
