@@ -5,6 +5,23 @@ Hooks.on("renderApplicationV2", (app, html) => {
   const sheet = root.closest?.(".application.sheet.black-flag.actor.pc") ?? root;
   if (!sheet.matches?.(".application.sheet.black-flag.actor.pc")) return;
 
+  // Foundry can restore a previously saved sheet position beyond the usable
+  // browser viewport after changing the minimum sheet dimensions. Reposition
+  // only when the sheet actually opens out of bounds; never move the sidebar
+  // or override deliberate in-bounds window dragging.
+  requestAnimationFrame(() => {
+    if (!sheet.isConnected || !sheet.classList.contains("tov-enhanced-ready")) return;
+    const rect = sheet.getBoundingClientRect();
+    const margin = 12;
+    const maxLeft = Math.max(margin, window.innerWidth - rect.width - margin);
+    const maxTop = Math.max(margin, window.innerHeight - Math.min(rect.height, window.innerHeight - margin) - margin);
+    const left = Math.max(margin, Math.min(rect.left, maxLeft));
+    const top = Math.max(margin, Math.min(rect.top, maxTop));
+    if (Math.abs(rect.left - left) > 2 || Math.abs(rect.top - top) > 2) {
+      app.setPosition?.({ left, top });
+    }
+  });
+
   // Give the existing Black Flag tabs clear icons without replacing its tab logic.
   const icons = {
     main: "fa-solid fa-gear",
