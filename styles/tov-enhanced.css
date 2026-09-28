@@ -2468,3 +2468,72 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
 .application.sheet.black-flag.actor.pc .tov-favorite-meta {
   min-width:30px; align-self:center; gap:1px;
 }
+
+/* v0.1.64: Favorites must fit two lines and never bleed into adjacent rows. */
+.application.sheet.black-flag.actor.pc .tov-favorite-list { gap: 5px !important; }
+.application.sheet.black-flag.actor.pc .tov-favorite-row {
+  min-height: 45px !important;
+  overflow: hidden;
+  gap: 0 !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-body {
+  box-sizing: border-box;
+  min-height: 43px;
+  gap: 5px !important;
+  padding: 4px 2px !important;
+  overflow: hidden;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-body img {
+  flex: 0 0 29px !important;
+  width: 29px !important;
+  height: 29px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-label {
+  min-width: 0;
+  overflow: hidden;
+  gap: 1px;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-label strong {
+  display: block;
+  max-width: 100%;
+  font-size: 11px !important;
+  line-height: 14px;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-label small {
+  display: block;
+  font-size: 9px !important;
+  line-height: 12px;
+  white-space: nowrap !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-meta {
+  flex: 0 0 34px !important;
+  min-width: 34px !important;
+  max-width: 34px !important;
+  overflow: hidden;
+  gap: 1px;
+  line-height: 13px;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-meta strong,
+.application.sheet.black-flag.actor.pc .tov-favorite-meta small {
+  display: block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+  text-align: right;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-remove {
+  flex: 0 0 15px !important;
+  width: 15px !important;
+  margin: 0 !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-hint {
+  display: block;
+  min-height: 38px;
+  margin-top: 9px;
+  padding: 10px 4px;
+  font-weight: 700;
+  letter-spacing: .03em;
+}
