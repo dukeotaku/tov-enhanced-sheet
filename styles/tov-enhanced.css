@@ -2445,3 +2445,18 @@
 .application.sheet.black-flag.actor.pc .tov-favorite-preview-text {
   margin-top:9px; white-space:pre-line; font:12px/1.45 Georgia,serif;
 }
+
+/* v0.1.62: hover card escapes the sidebar's clipped scroll container. */
+body > .tov-favorite-preview {
+  display:block !important; position:fixed !important; z-index:100000 !important;
+  width:290px; max-height:340px; overflow:auto; padding:12px;
+  background:#eeeae3; color:#26272a; border:1px solid #ad9976;
+  border-radius:4px; box-shadow:0 6px 20px #000a; pointer-events:none;
+}
+body > .tov-favorite-preview header {
+  display:flex; align-items:center; gap:8px; font:bold 18px Georgia,serif;
+}
+body > .tov-favorite-preview header img { width:40px; height:40px; object-fit:cover; }
+body > .tov-favorite-preview .tov-favorite-preview-text {
+  margin-top:9px; white-space:pre-line; font:12px/1.45 Georgia,serif;
+}
