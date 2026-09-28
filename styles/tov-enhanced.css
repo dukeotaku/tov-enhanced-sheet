@@ -2736,20 +2736,3 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
   font-weight: 700;
 }
 .application.sheet.black-flag.actor.pc .tov-favorite-save-range { color: #aeb5bd; }
-
-/* v0.1.70: put Foundry's window resize grip at the actual outer corner,
-   not at the inset edge of the scrollable tab body. */
-.application.sheet.black-flag.actor.pc {
-  position: relative;
-}
-.application.sheet.black-flag.actor.pc > .window-resize-handle,
-.application.sheet.black-flag.actor.pc > .resize-handle {
-  position: absolute !important;
-  inset: auto 0 0 auto !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  z-index: 100 !important;
-}
-.application.sheet.black-flag.actor.pc .sheet-body {
-  resize: none !important;
-}
