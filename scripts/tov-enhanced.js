@@ -699,8 +699,20 @@ Hooks.on("renderApplicationV2", (app, html) => {
         name.textContent = item.name;
         name.title = "Open " + item.name + " (item sheet)";
         name.addEventListener("click", () => item.sheet?.render(true));
-        // Activate through Black Flag's own sheet action. Never reproduce its
-        // resource spending, spellcasting, attack or feature mechanics here.
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "tov-favorite-remove";
+        remove.innerHTML = '<i class="fa-solid fa-xmark" aria-hidden="true"></i>';
+        remove.title = "Unpin " + item.name;
+        remove.setAttribute("aria-label", remove.title);
+        remove.hidden = !actor.isOwner;
+        remove.addEventListener("click", async () => {
+          ids = ids.filter(saved => saved !== id);
+          render();
+          await save();
+        });
+        // Activate through Black Flag's own sheet action; preserve all
+        // system-specific resources, prompts and roll handling.
         const nativeActionRows = [...(main?.querySelectorAll('.actions tr[data-item-id]') ?? [])]
           .filter(nativeRow => nativeRow.dataset.itemId === id
             && nativeRow.querySelector('button[data-action="activate"]'));
@@ -716,8 +728,6 @@ Hooks.on("renderApplicationV2", (app, html) => {
           use.addEventListener("click", event => {
             event.preventDefault();
             event.stopPropagation();
-            // Re-resolve at click time, so the native action's latest state
-            // (including disabled controls) remains authoritative.
             const rows = [...(main?.querySelectorAll('.actions tr[data-item-id]') ?? [])]
               .filter(nativeRow => nativeRow.dataset.itemId === id
                 && nativeRow.querySelector('button[data-action="activate"]'));
@@ -726,25 +736,12 @@ Hooks.on("renderApplicationV2", (app, html) => {
               if (!button.disabled) button.click();
               return;
             }
-            // Multiple activities must not be activated arbitrarily.
             item.sheet?.render(true);
           });
           row.append(img, name, use, remove);
         } else {
           row.append(img, name, remove);
         }
-        const remove = document.createElement("button");
-        remove.type = "button";
-        remove.className = "tov-favorite-remove";
-        remove.innerHTML = '<i class="fa-solid fa-xmark" aria-hidden="true"></i>';
-        remove.title = "Unpin " + item.name;
-        remove.setAttribute("aria-label", remove.title);
-        remove.hidden = !actor.isOwner;
-        remove.addEventListener("click", async () => {
-          ids = ids.filter(saved => saved !== id);
-          render();
-          await save();
-        });
         row.addEventListener("dragstart", event => {
           event.dataTransfer.setData("text/plain", JSON.stringify({
             type: "ToVFavorite", itemId: id
@@ -758,7 +755,7 @@ Hooks.on("renderApplicationV2", (app, html) => {
     render();
     if (actor.isOwner) {
       favorites.addEventListener("dragover", event => {
-        if (!event.dataTransfer?.types.includes("text/plain")) return;
+        if (!["text/plain", "application/json"].some(type => event.dataTransfer?.types.includes(type))) return;
         event.preventDefault();
         event.dataTransfer.dropEffect = "copy";
         favorites.classList.add("tov-favorites-dragover");
@@ -770,8 +767,16 @@ Hooks.on("renderApplicationV2", (app, html) => {
         event.preventDefault();
         favorites.classList.remove("tov-favorites-dragover");
         let data;
-        try { data = JSON.parse(event.dataTransfer.getData("text/plain")); }
-        catch { return; }
+        try {
+          // Foundry uses text/plain for document drags; some components also
+          // publish application/json. Accept both without requiring either.
+          const raw = event.dataTransfer.getData("text/plain")
+            || event.dataTransfer.getData("application/json");
+          data = JSON.parse(raw);
+        } catch (error) {
+          console.warn("ToV Favorites: unrecognized drag payload", error);
+          return;
+        }
         if (data?.type === "ToVFavorite") {
           const from = ids.indexOf(data.itemId);
           if (from < 0) return;
