@@ -706,8 +706,17 @@ Hooks.on("renderApplicationV2", (app, html) => {
         const subtitle = document.createElement("small");
         const activities = [...(item.system?.activities?.values?.() ?? [])];
         const activity = activities[0];
-        subtitle.textContent = activity?.name && activity.name !== item.name
-          ? activity.name : (item.system?.type?.value || item.type || "");
+        const spell = item.type === "spell";
+        const weapon = item.type === "weapon";
+        const components = spell ? [...(item.system?.components?.required ?? [])]
+          .map(value => String(value).slice(0,1).toUpperCase()).filter(value => "VSM".includes(value)) : [];
+        const actionType = spell
+          ? String(item.system?.casting?.type ?? item.system?.casting?.activation?.type ?? "Action")
+          : "Attack";
+        subtitle.textContent = weapon
+          ? (item.system?.type?.value === "ranged" ? "Ranged Weapon Attack" : "Melee Weapon Attack")
+          : spell ? [components.join(", "), actionType.replace(/^(.)/, letter => letter.toUpperCase())].filter(Boolean).join(" · ")
+          : (activity?.name && activity.name !== item.name ? activity.name : (item.system?.type?.value || item.type || ""));
         label.append(title, subtitle);
         const meta = document.createElement("span");
         meta.className = "tov-favorite-meta";
@@ -717,15 +726,43 @@ Hooks.on("renderApplicationV2", (app, html) => {
         const rows = nativeRows();
         const nativeRow = rows[0];
         const challenge = nativeRow?.querySelector(".challenge")?.textContent?.trim();
-        const detail = nativeRow?.querySelector(".uses")?.textContent?.trim();
+        const systemRange = item.system?.range;
+        const range = weapon
+          ? (item.system?.type?.value === "ranged"
+            ? [systemRange?.short, systemRange?.long].filter(Number.isFinite).join("/")
+            : String(5 + (Number(systemRange?.reach) || 0)))
+          : spell && systemRange?.type !== "touch"
+            ? (systemRange?.value ? String(systemRange.value) : "")
+            : "";
+        const unit = systemRange?.unit === "meters" ? "m" : "ft";
+        const numericRange = range && !/touch|self/i.test(range) ? range + " " + unit : "";
         if (challenge) {
           const strong = document.createElement("strong");
           strong.textContent = challenge;
           meta.append(strong);
         }
-        if (detail) {
+        // A saving-throw spell shows its save attribute and DC rather than
+        // mislabeling that number as an attack bonus.
+        const saveActivity = activities.find(candidate =>
+          candidate?.system?.save?.ability || candidate?.save?.ability);
+        if (spell && saveActivity) {
+          const save = saveActivity.system?.save ?? saveActivity.save;
+          const ability = String(save.ability ?? "").toUpperCase();
+          const dc = Number(save.dc?.value ?? save.dc ?? actor.system?.attributes?.spellcasting?.dc);
+          if (ability) {
+            const strong = document.createElement("strong");
+            strong.textContent = ability;
+            meta.replaceChildren(strong);
+          }
+          if (Number.isFinite(dc) && dc > 0) {
+            const small = document.createElement("small");
+            small.textContent = String(dc);
+            meta.append(small);
+          }
+        }
+        if (numericRange) {
           const small = document.createElement("small");
-          small.textContent = detail;
+          small.textContent = numericRange;
           meta.append(small);
         }
         body.append(img, label, meta);
@@ -800,8 +837,11 @@ Hooks.on("renderApplicationV2", (app, html) => {
           document.body.append(preview);
           const rect = row.getBoundingClientRect();
           const width = 290;
-          const left = rect.right + 12 + width <= window.innerWidth
-            ? rect.right + 12 : Math.max(8, rect.left - width - 12);
+          // Position outside the LEFT edge of the character sheet, rather
+          // than between the portrait and the Main tab.
+          const sheetRect = sheet.getBoundingClientRect();
+          const left = Math.max(8, Math.min(window.innerWidth - width - 8,
+            sheetRect.left - width - 12));
           preview.style.left = left + "px";
           preview.style.top = Math.max(8, Math.min(rect.top, window.innerHeight - Math.min(preview.scrollHeight, 340) - 8)) + "px";
         };
