@@ -737,45 +737,46 @@ Hooks.on("renderApplicationV2", (app, html) => {
             : "";
         const unit = systemRange?.unit === "meters" ? "m" : "ft";
         const numericRange = range && !/touch|self/i.test(range) ? range + " " + unit : "";
-        if (challenge) {
-          const strong = document.createElement("strong");
-          strong.textContent = challenge;
-          meta.append(strong);
-        }
-        // A saving-throw spell shows its save attribute and DC rather than
-        // mislabeling that number as an attack bonus.
-        const saveActivity = activities.find(candidate =>
-          candidate?.system?.save?.ability || candidate?.save?.ability);
-        if (spell && saveActivity) {
-          const save = saveActivity.system?.save ?? saveActivity.save;
-          const rawAbility = save.ability;
-          const abilityValue = rawAbility instanceof Set
-            ? [...rawAbility][0]
-            : Array.isArray(rawAbility) ? rawAbility[0]
-            : typeof rawAbility === "string" ? rawAbility
-            : (rawAbility && typeof rawAbility === "object" ? rawAbility.value : "");
-          const ability = typeof abilityValue === "string" && /^(str|dex|con|int|wis|cha)$/i.test(abilityValue)
-            ? abilityValue.toUpperCase() : "";
-          const rawDC = save.dc?.value ?? save.dc;
-          const actorSpellDC = actor.system?.attributes?.spellcasting?.dc;
-          const resolvedDC = typeof rawDC === "number" || (typeof rawDC === "string" && /^\d+$/.test(rawDC))
-            ? rawDC : (typeof actorSpellDC === "number" ? actorSpellDC : actorSpellDC?.value);
-          const dc = Number(resolvedDC);
-          if (ability) {
+        // Black Flag stores saves on activity.system.save, with ability as a
+        // Set and the computed DC at save.dc.final (not save.dc itself).
+        const saveActivity = spell ? activities.find(candidate =>
+          candidate?.type === "save" || candidate?.system?.save?.ability?.size
+          || candidate?.system?.save?.dc?.final) : null;
+        const save = saveActivity?.system?.save;
+        if (spell && save) {
+          const rawAbilities = save.ability instanceof Set ? [...save.ability]
+            : Array.isArray(save.ability) ? save.ability
+            : typeof save.ability === "string" ? [save.ability] : [];
+          const abbreviations = {
+            strength:"STR", dexterity:"DEX", constitution:"CON",
+            intelligence:"INT", wisdom:"WIS", charisma:"CHA",
+            str:"STR", dex:"DEX", con:"CON", int:"INT", wis:"WIS", cha:"CHA"
+          };
+          const abilityText = rawAbilities
+            .map(value => abbreviations[String(value).toLowerCase()] ?? "")
+            .filter(Boolean).join("/");
+          const finalDC = Number(save.dc?.final);
+          const addLine = (value, className) => {
+            const line = document.createElement("span");
+            line.className = className;
+            line.textContent = value;
+            meta.append(line);
+          };
+          if (abilityText) addLine(abilityText, "tov-favorite-save-ability");
+          if (Number.isFinite(finalDC) && finalDC > 0)
+            addLine(String(finalDC), "tov-favorite-save-dc");
+          if (numericRange) addLine(numericRange, "tov-favorite-save-range");
+        } else {
+          if (challenge) {
             const strong = document.createElement("strong");
-            strong.textContent = ability;
-            meta.replaceChildren(strong);
+            strong.textContent = challenge;
+            meta.append(strong);
           }
-          if (Number.isFinite(dc) && dc > 0) {
+          if (numericRange) {
             const small = document.createElement("small");
-            small.textContent = String(dc);
+            small.textContent = numericRange;
             meta.append(small);
           }
-        }
-        if (numericRange) {
-          const small = document.createElement("small");
-          small.textContent = numericRange;
-          meta.append(small);
         }
         body.append(img, label, meta);
         body.title = "Activate " + item.name;
