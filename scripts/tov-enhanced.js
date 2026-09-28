@@ -697,8 +697,42 @@ Hooks.on("renderApplicationV2", (app, html) => {
         name.type = "button";
         name.className = "tov-favorite-name";
         name.textContent = item.name;
-        name.title = "Open " + item.name;
+        name.title = "Open " + item.name + " (item sheet)";
         name.addEventListener("click", () => item.sheet?.render(true));
+        // Activate through Black Flag's own sheet action. Never reproduce its
+        // resource spending, spellcasting, attack or feature mechanics here.
+        const nativeActionRows = [...(main?.querySelectorAll('.actions tr[data-item-id]') ?? [])]
+          .filter(nativeRow => nativeRow.dataset.itemId === id
+            && nativeRow.querySelector('button[data-action="activate"]'));
+        if (nativeActionRows.length) {
+          const use = document.createElement("button");
+          use.type = "button";
+          use.className = "tov-favorite-use";
+          use.textContent = "USE";
+          use.title = nativeActionRows.length === 1
+            ? "Use " + item.name + " through Black Flag"
+            : "Choose an action for " + item.name;
+          use.disabled = !actor.isOwner;
+          use.addEventListener("click", event => {
+            event.preventDefault();
+            event.stopPropagation();
+            // Re-resolve at click time, so the native action's latest state
+            // (including disabled controls) remains authoritative.
+            const rows = [...(main?.querySelectorAll('.actions tr[data-item-id]') ?? [])]
+              .filter(nativeRow => nativeRow.dataset.itemId === id
+                && nativeRow.querySelector('button[data-action="activate"]'));
+            if (rows.length === 1) {
+              const button = rows[0].querySelector('button[data-action="activate"]');
+              if (!button.disabled) button.click();
+              return;
+            }
+            // Multiple activities must not be activated arbitrarily.
+            item.sheet?.render(true);
+          });
+          row.append(img, name, use, remove);
+        } else {
+          row.append(img, name, remove);
+        }
         const remove = document.createElement("button");
         remove.type = "button";
         remove.className = "tov-favorite-remove";
@@ -711,7 +745,6 @@ Hooks.on("renderApplicationV2", (app, html) => {
           render();
           await save();
         });
-        row.append(img, name, remove);
         row.addEventListener("dragstart", event => {
           event.dataTransfer.setData("text/plain", JSON.stringify({
             type: "ToVFavorite", itemId: id
@@ -752,6 +785,10 @@ Hooks.on("renderApplicationV2", (app, html) => {
           if (!item && data.uuid && typeof fromUuid === "function") {
             const found = await fromUuid(data.uuid);
             if (found?.parent?.id === actor.id) item = actor.items.get(found.id);
+            // Dragging a compendium/world item is supported only when that
+            // item already exists on the character. Do not create duplicates.
+            if (!item && found?.name) item = [...actor.items].find(owned =>
+              owned.name === found.name && owned.type === found.type);
           }
           if (!item) {
             ui.notifications?.warn("Add the item to this character before pinning it.");
