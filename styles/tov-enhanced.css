@@ -2763,3 +2763,10 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
   background: #a99465;
   border-radius: 6px;
 }
+
+/* v0.1.75: additive weapon-option controls on native Black Flag chat cards. */
+.chat-message .tov-weapon-options { list-style:none; width:100%; margin:5px 0; padding:0; }
+.chat-message .tov-option-heading { text-align:center; font-size:11px; font-weight:bold; margin:6px 0; }
+.chat-message .tov-weapon-options select { display:block; width:100%; margin:4px 0 7px; }
+.chat-message .tov-weapon-options button { width:100%; margin:3px 0; }
+.chat-message .tov-weapon-options div[hidden] { display:none; }
