@@ -734,12 +734,22 @@ Hooks.on("renderApplicationV2", (app, html) => {
           event.preventDefault();
           event.stopPropagation();
           const currentRows = nativeRows();
-          if (currentRows.length === 1) {
-            const button = currentRows[0].querySelector('button[data-action="activate"]');
-            if (!button.disabled) button.click();
+          // Weapons commonly expose more than one native action (e.g. attack
+          // and damage). Select the ATTACK row, never the item sheet.
+          const attackRows = currentRows.filter(nativeRow =>
+            /attack/i.test(nativeRow.querySelector(".name")?.textContent ?? "")
+            || /attack/i.test(nativeRow.querySelector(".control")?.textContent ?? "")
+            || /attack/i.test(nativeRow.querySelector('button[data-action="activate"]')?.dataset.tooltip ?? ""));
+          const selected = item.type === "weapon"
+            ? (attackRows[0] ?? currentRows[0])
+            : (currentRows.length === 1 ? currentRows[0] : null);
+          if (selected) {
+            const button = selected.querySelector('button[data-action="activate"]');
+            if (button && !button.disabled) button.click();
+          } else if (activity && typeof activity.use === "function") {
+            activity.use();
           } else {
-            // Never guess which spell/weapon activity to run.
-            item.sheet?.render(true);
+            ui.notifications?.warn("No single native action is available for this favorite.");
           }
         });
         const remove = document.createElement("button");
@@ -778,16 +788,29 @@ Hooks.on("renderApplicationV2", (app, html) => {
           previewText.textContent = safe.textContent?.trim() || item.type;
         } else previewText.textContent = item.type;
         preview.append(previewHeading, previewText);
-        row.append(preview);
+        // Sidebar and sheet containers clip overflow. Portal the preview
+        // to document.body and position it against the hovered row.
         let previewTimer;
+        const hidePreview = () => {
+          clearTimeout(previewTimer);
+          preview.remove();
+        };
+        const showPreview = () => {
+          if (!row.isConnected) return;
+          document.body.append(preview);
+          const rect = row.getBoundingClientRect();
+          const width = 290;
+          const left = rect.right + 12 + width <= window.innerWidth
+            ? rect.right + 12 : Math.max(8, rect.left - width - 12);
+          preview.style.left = left + "px";
+          preview.style.top = Math.max(8, Math.min(rect.top, window.innerHeight - Math.min(preview.scrollHeight, 340) - 8)) + "px";
+        };
         row.addEventListener("mouseenter", () => {
           clearTimeout(previewTimer);
-          previewTimer = setTimeout(() => row.classList.add("tov-preview-open"), 450);
+          previewTimer = setTimeout(showPreview, 400);
         });
-        row.addEventListener("mouseleave", () => {
-          clearTimeout(previewTimer);
-          row.classList.remove("tov-preview-open");
-        });
+        row.addEventListener("mouseleave", hidePreview);
+        row.addEventListener("dragstart", hidePreview, { once: true });
         row.addEventListener("dragstart", event => {
           event.dataTransfer.setData("text/plain", JSON.stringify({
             type: "ToVFavorite", itemId: id
