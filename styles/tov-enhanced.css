@@ -2537,3 +2537,64 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
   font-weight: 700;
   letter-spacing: .03em;
 }
+
+/* v0.1.65: accessible, two-line Favorites with no native button corner artifacts. */
+.application.sheet.black-flag.actor.pc .tov-favorites {
+  overflow: visible;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-list {
+  gap: 6px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-row {
+  min-height: 51px !important;
+  overflow: visible !important;
+  padding: 2px 3px !important;
+  border-radius: 3px;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-body {
+  min-height: 45px;
+  padding: 3px 1px !important;
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  gap: 6px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-body:focus,
+.application.sheet.black-flag.actor.pc .tov-favorite-body:active {
+  outline: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-body:focus-visible {
+  outline: 2px solid #d8c58b !important;
+  outline-offset: -2px;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-body::before,
+.application.sheet.black-flag.actor.pc .tov-favorite-body::after {
+  content: none !important;
+  display: none !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-body img {
+  width: 31px !important; height: 31px !important; flex-basis: 31px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-label strong {
+  font-size: 13px !important; line-height: 17px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-label small {
+  font-size: 11px !important; line-height: 15px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-meta {
+  flex: 0 0 42px !important; min-width: 42px !important;
+  max-width: 42px !important; font-size: 14px !important;
+  line-height: 16px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-meta small {
+  font-size: 11px !important; line-height: 14px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-remove {
+  width: 16px !important; flex-basis: 16px !important;
+  border: 0 !important; outline: none; box-shadow: none !important;
+  font-size: 14px !important;
+}
