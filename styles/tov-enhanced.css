@@ -2737,24 +2737,27 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
 }
 .application.sheet.black-flag.actor.pc .tov-favorite-save-range { color: #aeb5bd; }
 
-/* v0.1.76: restore native Black Flag tab layout and controls.
-   Scroll the existing body rather than changing native tab display to flex. */
-.application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-body {
-  display: block !important;
+/* Keep Black Flag's native flex/grid tab display and delegated controls.
+   Each non-Main page scrolls inside the fixed sheet body. */
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready:not([data-progression]) .sheet-body {
   min-height: 0;
   overflow-x: hidden;
-  overflow-y: auto !important;
+  overflow-y: hidden;
+}
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-body:has(> .tab[data-tab="main"].active) {
+  overflow-y: auto;
+}
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-body > .tab.active:not([data-tab="main"]) {
+  min-height: 0;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: #a99465 #151b23;
 }
-.application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-body > .tab.active:not([data-tab="main"]) {
-  display: block;
-  height: auto;
-  min-height: 0;
-  max-height: none;
-  overflow: visible !important;
-}
-.application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-body::-webkit-scrollbar { width: 9px; }
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-body::-webkit-scrollbar,
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-body > .tab.active::-webkit-scrollbar { width: 9px; }
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-body > .tab.active::-webkit-scrollbar-thumb,
 .application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-body::-webkit-scrollbar-thumb {
   background: #a99465;
   border-radius: 6px;
