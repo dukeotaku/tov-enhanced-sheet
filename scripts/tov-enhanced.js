@@ -801,19 +801,21 @@ Hooks.on("renderApplicationV2", (app, html) => {
             ui.notifications?.warn("No single native action is available for this favorite.");
           }
         });
-        const remove = document.createElement("button");
-        remove.type = "button";
-        remove.className = "tov-favorite-remove";
-        remove.innerHTML = '<i class="fa-solid fa-xmark" aria-hidden="true"></i>';
-        remove.title = "Unpin " + item.name;
-        remove.setAttribute("aria-label", remove.title);
-        remove.hidden = !actor.isOwner;
-        remove.addEventListener("click", async () => {
+        // Unpinning remains available from the context menu, freeing the
+        // full row width for readable names and attack/save information.
+        row.append(body);
+        row.addEventListener("contextmenu", async event => {
+          event.preventDefault();
+          if (!actor.isOwner) return;
+          const confirmed = await Dialog.confirm({
+            title: "Remove Favorite",
+            content: `<p>Remove ${item.name} from Favorites?</p>`
+          });
+          if (!confirmed) return;
           ids = ids.filter(saved => saved !== id);
           render();
           await save();
         });
-        row.append(body, remove);
         // Native Black Flag hover cards are exposed by its item components.
         // Provide a standalone equivalent for custom sidebar entries.
         const preview = document.createElement("aside");
