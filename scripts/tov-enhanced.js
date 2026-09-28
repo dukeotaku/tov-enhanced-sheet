@@ -693,12 +693,55 @@ Hooks.on("renderApplicationV2", (app, html) => {
         const img = document.createElement("img");
         img.src = item.img || "icons/svg/item-bag.svg";
         img.alt = "";
-        const name = document.createElement("button");
-        name.type = "button";
-        name.className = "tov-favorite-name";
-        name.textContent = item.name;
-        name.title = "Open " + item.name + " (item sheet)";
-        name.addEventListener("click", () => item.sheet?.render(true));
+        // Match the compact 5e favorite row. The entire item body activates
+        // Black Flag's native action, not its item sheet.
+        const body = document.createElement("button");
+        body.type = "button";
+        body.className = "tov-favorite-body";
+        body.disabled = !actor.isOwner;
+        const label = document.createElement("span");
+        label.className = "tov-favorite-label";
+        const title = document.createElement("strong");
+        title.textContent = item.name;
+        const subtitle = document.createElement("small");
+        const activities = [...(item.system?.activities?.values?.() ?? [])];
+        const activity = activities[0];
+        subtitle.textContent = activity?.name && activity.name !== item.name
+          ? activity.name : (item.system?.type?.value || item.type || "");
+        label.append(title, subtitle);
+        const meta = document.createElement("span");
+        meta.className = "tov-favorite-meta";
+        const nativeRows = () => [...(main?.querySelectorAll('.actions tr[data-item-id]') ?? [])]
+          .filter(nativeRow => nativeRow.dataset.itemId === id
+            && nativeRow.querySelector('button[data-action="activate"]'));
+        const rows = nativeRows();
+        const nativeRow = rows[0];
+        const challenge = nativeRow?.querySelector(".challenge")?.textContent?.trim();
+        const detail = nativeRow?.querySelector(".uses")?.textContent?.trim();
+        if (challenge) {
+          const strong = document.createElement("strong");
+          strong.textContent = challenge;
+          meta.append(strong);
+        }
+        if (detail) {
+          const small = document.createElement("small");
+          small.textContent = detail;
+          meta.append(small);
+        }
+        body.append(img, label, meta);
+        body.title = "Activate " + item.name;
+        body.addEventListener("click", event => {
+          event.preventDefault();
+          event.stopPropagation();
+          const currentRows = nativeRows();
+          if (currentRows.length === 1) {
+            const button = currentRows[0].querySelector('button[data-action="activate"]');
+            if (!button.disabled) button.click();
+          } else {
+            // Never guess which spell/weapon activity to run.
+            item.sheet?.render(true);
+          }
+        });
         const remove = document.createElement("button");
         remove.type = "button";
         remove.className = "tov-favorite-remove";
@@ -711,37 +754,40 @@ Hooks.on("renderApplicationV2", (app, html) => {
           render();
           await save();
         });
-        // Activate through Black Flag's own sheet action; preserve all
-        // system-specific resources, prompts and roll handling.
-        const nativeActionRows = [...(main?.querySelectorAll('.actions tr[data-item-id]') ?? [])]
-          .filter(nativeRow => nativeRow.dataset.itemId === id
-            && nativeRow.querySelector('button[data-action="activate"]'));
-        if (nativeActionRows.length) {
-          const use = document.createElement("button");
-          use.type = "button";
-          use.className = "tov-favorite-use";
-          use.textContent = "USE";
-          use.title = nativeActionRows.length === 1
-            ? "Use " + item.name + " through Black Flag"
-            : "Choose an action for " + item.name;
-          use.disabled = !actor.isOwner;
-          use.addEventListener("click", event => {
-            event.preventDefault();
-            event.stopPropagation();
-            const rows = [...(main?.querySelectorAll('.actions tr[data-item-id]') ?? [])]
-              .filter(nativeRow => nativeRow.dataset.itemId === id
-                && nativeRow.querySelector('button[data-action="activate"]'));
-            if (rows.length === 1) {
-              const button = rows[0].querySelector('button[data-action="activate"]');
-              if (!button.disabled) button.click();
-              return;
-            }
-            item.sheet?.render(true);
-          });
-          row.append(img, name, use, remove);
-        } else {
-          row.append(img, name, remove);
-        }
+        row.append(body, remove);
+        // Native Black Flag hover cards are exposed by its item components.
+        // Provide a standalone equivalent for custom sidebar entries.
+        const preview = document.createElement("aside");
+        preview.className = "tov-favorite-preview";
+        preview.setAttribute("role", "tooltip");
+        const previewHeading = document.createElement("header");
+        const previewImg = img.cloneNode(true);
+        const previewName = document.createElement("strong");
+        previewName.textContent = item.name;
+        previewHeading.append(previewImg, previewName);
+        const previewText = document.createElement("div");
+        previewText.className = "tov-favorite-preview-text";
+        const description = item.system?.description?.value
+          ?? item.system?.description ?? "";
+        if (typeof description === "string") {
+          // Description is already Foundry-authored HTML; do not inject
+          // arbitrary markup into a custom hover surface.
+          const safe = document.createElement("div");
+          safe.innerHTML = description;
+          safe.querySelectorAll("script,iframe,object,embed,style").forEach(el => el.remove());
+          previewText.textContent = safe.textContent?.trim() || item.type;
+        } else previewText.textContent = item.type;
+        preview.append(previewHeading, previewText);
+        row.append(preview);
+        let previewTimer;
+        row.addEventListener("mouseenter", () => {
+          clearTimeout(previewTimer);
+          previewTimer = setTimeout(() => row.classList.add("tov-preview-open"), 450);
+        });
+        row.addEventListener("mouseleave", () => {
+          clearTimeout(previewTimer);
+          row.classList.remove("tov-preview-open");
+        });
         row.addEventListener("dragstart", event => {
           event.dataTransfer.setData("text/plain", JSON.stringify({
             type: "ToVFavorite", itemId: id
