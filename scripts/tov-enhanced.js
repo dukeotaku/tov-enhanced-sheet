@@ -748,7 +748,10 @@ Hooks.on("renderApplicationV2", (app, html) => {
         if (spell && saveActivity) {
           const save = saveActivity.system?.save ?? saveActivity.save;
           const ability = String(save.ability ?? "").toUpperCase();
-          const dc = Number(save.dc?.value ?? save.dc ?? actor.system?.attributes?.spellcasting?.dc);
+          const rawDC = save.dc?.value ?? save.dc;
+          const resolvedDC = typeof rawDC === "number" || typeof rawDC === "string"
+            ? rawDC : actor.system?.attributes?.spellcasting?.dc;
+          const dc = Number(resolvedDC);
           if (ability) {
             const strong = document.createElement("strong");
             strong.textContent = ability;
@@ -859,7 +862,9 @@ Hooks.on("renderApplicationV2", (app, html) => {
         });
         list.append(row);
       }
-      hint.hidden = ids.length > 0;
+      // Keep a visible drop target even when favorites are populated.
+      hint.hidden = false;
+      hint.textContent = ids.length ? "DROP FAVORITE" : "Drag a weapon, spell, or feature here to pin it.";
     };
     render();
     if (actor.isOwner) {
