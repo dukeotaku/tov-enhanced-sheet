@@ -71,13 +71,15 @@
   z-index: 20;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 2px;
   width: var(--tov-tab-size);
   margin: 0;
-  padding: 0;
-  background: transparent;
-  border: 0;
-  box-shadow: none;
+  padding: 4px 0;
+  background: #0b0f14;
+  border: 1px solid var(--tov-gold);
+  border-left: 0;
+  border-radius: 0 5px 5px 0;
+  box-shadow: 3px 3px 8px rgb(0 0 0 / 45%);
   overflow: visible;
 }
 
@@ -94,45 +96,25 @@
   overflow: hidden;
   color: transparent;
   font-size: 0;
-  background: #0b0f14;
-  border: 1px solid var(--tov-gold);
-  border-left: 0;
-  border-radius: 0 7px 7px 0;
-  box-shadow: 3px 3px 8px rgb(0 0 0 / 45%);
+  background: transparent;
+  border: 0;
+  border-radius: 3px;
+  box-shadow: none;
   text-decoration: none;
 }
 
-/* Icons are intentionally CSS-generated so Black Flag's existing tab
-   template and mechanics remain untouched. */
+/* The module inserts a single icon in each native Black Flag tab link. */
 .application.sheet.black-flag.actor.pc .sheet-navigation > a::before {
-  color: var(--tov-gold);
-  font-family: "Font Awesome 6 Free";
-  font-size: 17px;
-  font-weight: 900;
-  line-height: 1;
+  content: none !important;
 }
-
-.application.sheet.black-flag.actor.pc .sheet-navigation > a[data-tab="main"]::before { content: "\f013"; }        /* gear */
-.application.sheet.black-flag.actor.pc .sheet-navigation > a[data-tab="spellcasting"]::before { content: "\f0e7"; } /* bolt */
-.application.sheet.black-flag.actor.pc .sheet-navigation > a[data-tab="inventory"]::before { content: "\f1b2"; }    /* cube */
-.application.sheet.black-flag.actor.pc .sheet-navigation > a[data-tab="features"]::before { content: "\f0ca"; }     /* list */
-.application.sheet.black-flag.actor.pc .sheet-navigation > a[data-tab="biography"]::before { content: "\f02d"; }    /* book */
-.application.sheet.black-flag.actor.pc .sheet-navigation > a[data-tab="effects"]::before { content: "\f005"; }      /* star */
 
 .application.sheet.black-flag.actor.pc .sheet-navigation > a:hover,
 .application.sheet.black-flag.actor.pc .sheet-navigation > a:focus-visible {
   background: #111a24;
-  border-color: #ead59b;
 }
 
 .application.sheet.black-flag.actor.pc .sheet-navigation > a.active {
   background: var(--tov-gold);
-  border-color: var(--tov-gold);
-  box-shadow: 3px 3px 10px rgb(0 0 0 / 55%);
-}
-
-.application.sheet.black-flag.actor.pc .sheet-navigation > a.active::before {
-  color: #0b0f14;
 }
 
 /* Preserve notification badges even though the text label is visually hidden. */
@@ -255,6 +237,10 @@
 
 .application.sheet.black-flag.actor.pc .sheet-navigation > a.active > .tov-tab-icon {
   color: #0b0f14 !important;
+}
+.application.sheet.black-flag.actor.pc .sheet-navigation > a > svg.tov-tab-icon {
+  width: 18px;
+  height: 18px;
 }
 
 
@@ -2763,6 +2749,49 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
   outline: 0 !important;
   box-shadow: none !important;
   background: transparent !important;
+}
+
+/* Original approved blue cover crop, kept under the character controls. */
+.application.sheet.black-flag.actor.pc.tov-header-prototype .sheet-header {
+  background-image: linear-gradient(90deg, rgb(8 27 47 / 76%), rgb(11 40 70 / 72%) 50%, rgb(8 27 47 / 75%)),
+    url("../assets/tov-header.webp");
+  background-size: cover;
+  background-position: center center;
+}
+
+/* D&D-style black quill pill above the name, without changing window chrome. */
+.application.sheet.black-flag.actor.pc.tov-header-prototype .tov-header-identity {
+  padding-top: 12px;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .tov-header-edit-toggle {
+  position: absolute;
+  top: -5px;
+  left: -7px;
+  display: grid !important;
+  place-items: center !important;
+  width: 39px;
+  min-width: 39px;
+  height: 18px;
+  min-height: 18px;
+  padding: 0 !important;
+  border: 0;
+  border-radius: 12px;
+  background: #080b10;
+  color: #f4efe2;
+  box-shadow: 0 2px 5px rgb(0 0 0 / 50%);
+  line-height: 1;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .tov-header-edit-toggle[aria-checked="true"] {
+  background: #080b10;
+  color: #ebcf8e;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .tov-header-edit-toggle > i {
+  font-size: 11px;
+  pointer-events: none;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .tov-header-edit-toggle:focus-visible {
+  outline: 2px solid var(--tov-gold);
+  outline-offset: 2px;
 }
 
 /* One-click weapon options on the native attack chat card. */
