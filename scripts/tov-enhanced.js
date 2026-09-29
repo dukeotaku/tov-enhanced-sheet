@@ -45,9 +45,9 @@ Hooks.on("renderApplicationV2", (app, html) => {
     toggle.type = "button";
     toggle.className = "tov-header-edit-toggle";
     toggle.setAttribute("role", "switch");
-    toggle.setAttribute("aria-label", "Show character progression controls");
+    toggle.setAttribute("aria-label", "Unlock character sheet");
     toggle.setAttribute("aria-checked", "false");
-    toggle.title = "Show character progression";
+    toggle.title = "Unlock character sheet";
     toggle.innerHTML = '<span aria-hidden="true"></span>';
     left.append(toggle);
     if (originalName) left.append(originalName);
@@ -171,25 +171,26 @@ Hooks.on("renderApplicationV2", (app, html) => {
     }
     shell.append(top, abilities);
     nativeHeader.append(shell);
-    // Preserve the switch through Black Flag's first unlock/re-render.
-    const initialEditing = app._tovHeaderEditing ?? (sheet.dataset.tovHeaderEditing === "true");
-    if (initialEditing) {
-      shell.classList.add("tov-header-editing");
-      toggle.setAttribute("aria-checked", "true");
-      toggle.title = "Hide character progression";
-    }
     toggle.addEventListener("click", event => {
-      // This custom control is not a native Black Flag sheet action.
       event.preventDefault();
       event.stopPropagation();
-      const editing = shell.classList.toggle("tov-header-editing");
-      app._tovHeaderEditing = editing;
-      sheet.dataset.tovHeaderEditing = String(editing);
-      toggle.setAttribute("aria-checked", String(editing));
-      toggle.title = editing ? "Hide character progression" : "Show character progression";
+      // Black Flag's mode action re-renders the Biography inputs, ProseMirror
+      // editors, and image actions. Keep our switch tied to that same mode.
+      sheet.querySelector('.window-header .mode-toggle[data-action="toggleSheetMode"]')?.click();
     });
-    sheet.dataset.tovHeaderEditing = String(Boolean(initialEditing));
     sheet.classList.add("tov-header-prototype");
+  }
+  // A mode change can re-render individual parts without rebuilding our shell.
+  // Refresh the switch and progression layout from Black Flag's actual mode.
+  const headerShell = sheet.querySelector(".tov-header-shell");
+  const headerToggle = headerShell?.querySelector(".tov-header-edit-toggle");
+  if (headerShell && headerToggle) {
+    const editing = app._mode === app.constructor.MODES?.EDIT;
+    headerShell.classList.toggle("tov-header-editing", editing);
+    sheet.dataset.tovHeaderEditing = String(editing);
+    headerToggle.setAttribute("aria-checked", String(editing));
+    headerToggle.setAttribute("aria-label", editing ? "Lock character sheet" : "Unlock character sheet");
+    headerToggle.title = editing ? "Lock character sheet" : "Unlock character sheet";
   }
 
   // Black Flag re-renders the Main part when returning from progression.
