@@ -2737,23 +2737,26 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
 }
 .application.sheet.black-flag.actor.pc .tov-favorite-save-range { color: #aeb5bd; }
 
-/* Let non-Main pages grow to their full content height and scroll the sheet
-   body. Keep each tab's native flex/grid display and action handlers. */
+/* Give each non-Main page a bounded touch-scroll area. Leave its native
+   flex/grid display and action handlers intact. */
 .application.sheet.black-flag.actor.pc.tov-enhanced-ready:not([data-progression])
   .sheet-body:has(> .tab.active:not([data-tab="main"])) {
   min-height: 0;
-  overflow-x: hidden;
-  overflow-y: scroll;
-  scrollbar-width: thin;
-  scrollbar-color: #a99465 #151b23;
+  overflow: hidden;
 }
 .application.sheet.black-flag.actor.pc.tov-enhanced-ready
   .sheet-body > .tab.active:not([data-tab="main"]) {
-  height: auto;
-  min-height: 100%;
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #a99465 #151b23;
 }
-.application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-body::-webkit-scrollbar { width: 9px; }
-.application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-body::-webkit-scrollbar-thumb {
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-body > .tab.active:not([data-tab="main"])::-webkit-scrollbar { width: 9px; }
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-body > .tab.active:not([data-tab="main"])::-webkit-scrollbar-thumb {
   background: #a99465;
   border-radius: 6px;
 }
