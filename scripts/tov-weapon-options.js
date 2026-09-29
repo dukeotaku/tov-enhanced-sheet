@@ -1,4 +1,4 @@
-/* v0.1.75: native Black Flag weapon option chat buttons. */
+/* Optional weapon effects on native Black Flag attack cards. */
 (() => {
 const descriptions = {
  bash:"On a hit, the target has disadvantage on its next attack roll.",
@@ -20,10 +20,10 @@ const ability = (actor,k) => {
 };
 const proficiency = actor => {
  const s=actor?.system;
- for(const x of [s?.attributes?.prof,s?.attributes?.proficiency,s?.proficiency?.bonus,s?.proficiencyBonus,s?.details?.proficiencyBonus]){
+ for(const x of [s?.attributes?.proficiency,s?.attributes?.prof,s?.proficiency?.bonus,s?.proficiencyBonus]){
   const n=numeric(x?.total ?? x);if(n!==null&&n>0)return n;
  }
- const level=numeric(s?.details?.level ?? s?.level);
+ const level=numeric(s?.progression?.level ?? s?.details?.level ?? s?.level);
  return level>0?Math.ceil(level/4)+1:null;
 };
 function render(message,html){
@@ -39,19 +39,15 @@ function render(message,html){
  if(!menu)return;
  const li=document.createElement("li");li.className="tov-weapon-options";
  const or=document.createElement("div");or.className="tov-weapon-or";or.textContent="OR — WEAPON OPTIONS";li.append(or);
- const pb=proficiency(actor),str=ability(actor,"str"),dex=ability(actor,"dex");
+ const pb=proficiency(actor),str=ability(actor,"strength"),dex=ability(actor,"dexterity");
  const dcText=pb===null||(str===null&&dex===null)?"DC = 8 + PB + attacker-chosen STR or DEX modifier":
   [str===null?null:"STR DC "+(8+pb+str),dex===null?null:"DEX DC "+(8+pb+dex)].filter(Boolean).join(" / ");
  for(const key of keys){
   const wrap=document.createElement("div");wrap.className="tov-option";
   const btn=document.createElement("button");btn.type="button";btn.className="light-button";btn.textContent=label(key);
-  const detail=document.createElement("div");detail.className="tov-option-detail";detail.hidden=true;
-  const text=document.createElement("p");
-  text.textContent=saveKeys.has(key)?"Target chooses STR or DEX save. "+dcText:key==="hamstring"?dcText:"Choose instead of normal damage.";
-  detail.append(text);
-  const apply=document.createElement("button");apply.type="button";apply.className="light-button";apply.textContent="Apply Effect";
-  apply.addEventListener("click",async event=>{
-   event.stopPropagation();apply.disabled=true;
+  btn.title="Post "+label(key)+" effect to chat";
+  btn.addEventListener("click",async event=>{
+   event.preventDefault();event.stopPropagation();btn.disabled=true;
    try{
     const escape=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
     const save=saveKeys.has(key)?"<p><strong>Save:</strong> Target chooses STR or DEX. "+escape(dcText)+"</p>":
@@ -59,10 +55,9 @@ function render(message,html){
     await ChatMessage.create({speaker:ChatMessage.getSpeaker({actor}),
       content:"<h3>"+escape(item.name)+" — "+escape(label(key))+"</h3>"+save+"<p>"+escape(descriptions[key])+"</p><p><em>GM adjudicates and applies the effect; no condition is automatically changed.</em></p>"});
    }catch(error){console.error("ToV weapon option",error);ui.notifications?.error("Unable to post weapon option.");}
-   finally{apply.disabled=false;}
+   finally{btn.disabled=false;}
   });
-  btn.addEventListener("click",event=>{event.stopPropagation();detail.hidden=!detail.hidden;btn.setAttribute("aria-expanded",String(!detail.hidden));});
-  detail.append(apply);wrap.append(btn,detail);li.append(wrap);
+  wrap.append(btn);li.append(wrap);
  }
  menu.append(li);
 }
