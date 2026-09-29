@@ -8,24 +8,44 @@ Hooks.on("renderApplicationV2", (app, html) => {
   // Give the existing Black Flag tabs clear icons without replacing its tab logic.
   const icons = {
     main: "fa-solid fa-gear",
-    spellcasting: "fa-solid fa-bolt",
-    inventory: "fa-solid fa-box",
+    spellcasting: "fa-solid fa-book",
+    inventory: "tov-backpack-icon",
     features: "fa-solid fa-list",
-    biography: "fa-solid fa-book",
-    effects: "fa-solid fa-star"
+    biography: "fa-solid fa-feather-pointed",
+    effects: "fa-solid fa-bolt"
   };
   for (const tab of sheet.querySelectorAll(".sheet-navigation [data-tab]")) {
     const key = tab.dataset.tab;
     if (!icons[key]) continue;
     tab.dataset.tovLabel = tab.textContent.trim();
-    let icon = tab.querySelector(":scope > i.tov-tab-icon");
+    let icon = tab.querySelector(":scope > .tov-tab-icon");
+    if (icon && (key === "inventory") !== (icon instanceof SVGElement)) {
+      icon.remove();
+      icon = null;
+    }
     if (!icon) {
-      icon = document.createElement("i");
-      icon.className = `tov-tab-icon ${icons[key]}`;
+      icon = key === "inventory"
+        ? document.createElementNS("http://www.w3.org/2000/svg", "svg")
+        : document.createElement("i");
+      icon.setAttribute("class", `tov-tab-icon ${icons[key]}`);
+      if (key === "inventory") {
+        icon.setAttribute("viewBox", "0 0 24 24");
+        icon.setAttribute("fill", "none");
+        icon.setAttribute("stroke", "currentColor");
+        icon.setAttribute("stroke-width", "2");
+        icon.setAttribute("stroke-linecap", "round");
+        icon.setAttribute("stroke-linejoin", "round");
+        icon.innerHTML = '<path d="M4 20v-8a8 8 0 0 1 16 0v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M8 5V3a4 4 0 0 1 8 0v2M4 13h16M9 13v4h6v-4M9 22v-3m6 3v-3"/>';
+      }
       icon.setAttribute("aria-hidden", "true");
       tab.prepend(icon);
-    }
+    } else if (key !== "inventory") icon.className = `tov-tab-icon ${icons[key]}`;
     tab.title ||= tab.dataset.tovLabel;
+  }
+  const navigation = sheet.querySelector(".sheet-navigation");
+  for (const key of ["main", "inventory", "features", "spellcasting", "effects", "biography"]) {
+    const tab = navigation?.querySelector(`:scope > a[data-tab="${key}"]`);
+    if (tab) navigation.append(tab);
   }
 
   // Header prototype on its own branch; the existing v0.1.25 release is untouched.
@@ -48,7 +68,7 @@ Hooks.on("renderApplicationV2", (app, html) => {
     toggle.setAttribute("aria-label", "Unlock character sheet");
     toggle.setAttribute("aria-checked", "false");
     toggle.title = "Unlock character sheet";
-    toggle.innerHTML = '<span aria-hidden="true"></span>';
+    toggle.innerHTML = '<i class="fa-solid fa-feather-pointed" aria-hidden="true"></i>';
     left.append(toggle);
     if (originalName) left.append(originalName);
     const progression = actorForHeader.system?.progression;
@@ -185,6 +205,8 @@ Hooks.on("renderApplicationV2", (app, html) => {
   const headerShell = sheet.querySelector(".tov-header-shell");
   const headerToggle = headerShell?.querySelector(".tov-header-edit-toggle");
   if (headerShell && headerToggle) {
+    if (!headerToggle.querySelector("i.fa-feather-pointed"))
+      headerToggle.innerHTML = '<i class="fa-solid fa-feather-pointed" aria-hidden="true"></i>';
     const editing = app._mode === app.constructor.MODES?.EDIT;
     headerShell.classList.toggle("tov-header-editing", editing);
     sheet.dataset.tovHeaderEditing = String(editing);
