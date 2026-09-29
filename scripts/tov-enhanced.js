@@ -337,7 +337,8 @@ Hooks.on("renderApplicationV2", (app, html) => {
   collapse.title = "Collapse Portrait Static Panel";
   collapse.setAttribute("aria-label", "Collapse Portrait Static Panel");
   collapse.innerHTML = '<i class="fa-solid fa-chevron-left" aria-hidden="true"></i>';
-  // Mount handle outside the scrolling portrait panel so it stays visible.\n  panel.parentElement.append(collapse);
+  // Mount handle outside the scrolling portrait panel so it stays visible.
+  panel.parentElement.append(collapse);
 
   const setCollapsed = collapsed => {
     sheet.classList.toggle("tov-static-collapsed", collapsed);
@@ -935,83 +936,4 @@ Hooks.on("renderApplicationV2", (app, html) => {
   }
 
   sheet.classList.add("tov-enhanced-ready");
-});
-
-/* Weapon option chat-card pilot: native Black Flag buttons are untouched. */
-Hooks.on("renderChatMessageHTML", (message, html) => {
-  if (game.system?.id !== "black-flag") return;
-  const root = html instanceof HTMLElement ? html : html?.[0];
-  if (!root || root.querySelector(".tov-weapon-options")) return;
-  const item = message.getAssociatedItem?.();
-  const actor = message.getAssociatedActor?.() ?? item?.actor;
-  if (item?.type !== "weapon" || !actor || !message.isContentVisible) return;
-  if (!(game.user.isGM || actor.isOwner || message.author?.id === game.user.id)) return;
-  const menu = root.querySelector(".chat-card.item .menu");
-  if (!menu) return;
-  const effects = {
-    bash: "On a hit, the target has disadvantage on its next attack roll.",
-    disarm: "On a hit, target chooses STR or DEX save or drops a wielded item within 5 feet (or at its feet).",
-    hamstring: "On a hit, base speed -10 feet for 1 minute. Adjacent creature can use an action and WIS (Medicine) vs option DC to end it; magical healing also ends it.",
-    pinningShot: "Large or smaller only. On a hit, target chooses STR or DEX save or speed becomes 0 until end of its next turn. An action and STR (Athletics) or DEX (Acrobatics) check vs option DC frees it.",
-    pull: "Large or smaller only. On a hit, pull up to 5 feet closer. If pulled into damaging terrain, target chooses STR or DEX save to avoid the pull.",
-    ricochetShot: "Visible target with half or three-quarters cover within 10 feet of another object or structure. Ignore cover AC. On a hit, roll normal damage and expend ammunition.",
-    trip: "Large or smaller only. On a hit, target chooses STR or DEX save or falls prone. Mounted targets have advantage on the save."
-  };
-  const keys = [...(item.system?.options ?? [])].filter(key => effects[key]);
-  if (!keys.length) return;
-  const pb = Number(actor.system?.attributes?.proficiency?.value ?? actor.system?.attributes?.proficiency);
-  const mod = key => {
-    const a = actor.system?.abilities?.[key];
-    return Number(a?.mod ?? a?.modifier ?? (a?.value != null ? Math.floor((a.value - 10) / 2) : NaN));
-  };
-  const strength = mod("strength");
-  const dexterity = mod("dexterity");
-  const section = document.createElement("li");
-  section.className = "tov-weapon-options";
-  const heading = document.createElement("div");
-  heading.textContent = "OR — WEAPON OPTIONS";
-  heading.className = "tov-option-heading";
-  section.append(heading);
-  const select = document.createElement("select");
-  select.setAttribute("aria-label", "Attacker's ability for weapon option DC");
-  for (const [ability, value] of [["STR", strength], ["DEX", dexterity]]) {
-    const option = document.createElement("option");
-    option.value = ability;
-    option.textContent = ability + (Number.isFinite(pb) && Number.isFinite(value) ? " (DC " + (8 + pb + value) + ")" : "");
-    select.append(option);
-  }
-  section.append(select);
-  const dc = () => {
-    const value = select.value === "DEX" ? dexterity : strength;
-    return Number.isFinite(pb) && Number.isFinite(value) ? String(8 + pb + value) : "GM determines";
-  };
-  for (const key of keys) {
-    const row = document.createElement("div");
-    const button = document.createElement("button");
-    button.type = "button";
-    button.textContent = key.replace(/([a-z])([A-Z])/g, "$1 $2").toUpperCase();
-    button.className = "light-button";
-    const detail = document.createElement("div");
-    detail.hidden = true;
-    const apply = document.createElement("button");
-    apply.type = "button";
-    apply.className = "light-button";
-    apply.textContent = "Apply Effect";
-    button.addEventListener("click", () => {
-      detail.replaceChildren(document.createTextNode("DC " + dc() + ": " + effects[key]), apply);
-      detail.hidden = !detail.hidden;
-    });
-    apply.addEventListener("click", async () => {
-      const safe = s => String(s).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-      await ChatMessage.create({
-        speaker: ChatMessage.getSpeaker({ actor }),
-        content: "<strong>" + safe(item.name) + " — " + safe(button.textContent) + "</strong><p>Weapon option DC: "
-          + safe(dc()) + " (attacker's " + safe(select.value) + ")</p><p>" + safe(effects[key])
-          + "</p><em>GM adjudicates; no effect is applied automatically.</em>"
-      });
-    });
-    row.append(button, detail);
-    section.append(row);
-  }
-  menu.append(section);
 });
