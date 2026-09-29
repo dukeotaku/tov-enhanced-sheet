@@ -2843,3 +2843,94 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
 .chat-message .tov-weapon-or {text-align:center;font-size:11px;font-weight:bold;margin:7px 0;opacity:.8;}
 .chat-message .tov-option {margin:4px 0;}
 .chat-message .tov-option>button {width:100%;}
+
+/* Conditions stay above the native Effects table; the shared sheet body
+   handles scrolling when effects extend below the visible sheet. */
+.application.sheet.black-flag.actor.pc .tab[data-tab="effects"] > .tov-conditions {
+  flex: 0 0 auto;
+  min-width: 0;
+  margin-bottom: 12px;
+  border: 1px solid rgb(201 180 124 / 48%);
+  background: #151c25;
+}
+.application.sheet.black-flag.actor.pc .tov-conditions > h3 {
+  margin: 0;
+  padding: 5px 9px;
+  border-bottom: 1px solid rgb(201 180 124 / 40%);
+  background: #263444;
+  color: #e8d09b;
+  font: 700 15px Georgia, serif;
+  font-variant: small-caps;
+}
+.application.sheet.black-flag.actor.pc .tov-condition-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+  gap: 1px;
+  background: #394553;
+}
+.application.sheet.black-flag.actor.pc .tov-condition {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 35px;
+  padding: 3px 6px;
+  background: #202832;
+  color: #d5d9de;
+  font: 12px Arial, sans-serif;
+}
+.application.sheet.black-flag.actor.pc .tov-condition:not([data-status-id="exhaustion"]) {
+  cursor: pointer;
+}
+.application.sheet.black-flag.actor.pc .tov-condition.active {
+  background: #273a48;
+  color: #f3dcaa;
+}
+.application.sheet.black-flag.actor.pc .tov-condition > img {
+  flex: 0 0 21px;
+  width: 21px;
+  height: 21px;
+  object-fit: contain;
+}
+.application.sheet.black-flag.actor.pc .tov-condition-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.application.sheet.black-flag.actor.pc .tov-condition button {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 22px;
+  height: 25px;
+  min-height: 25px;
+  margin: 0;
+  padding: 0 2px;
+  border: 0;
+  background: transparent;
+  color: #acb4be;
+  box-shadow: none;
+  font: 700 15px Arial, sans-serif;
+  line-height: 25px;
+}
+.application.sheet.black-flag.actor.pc .tov-condition.active button {
+  color: #dfc887;
+}
+.application.sheet.black-flag.actor.pc .tov-condition button:hover:not(:disabled),
+.application.sheet.black-flag.actor.pc .tov-condition button:focus-visible {
+  color: #fff3cf;
+  outline: 1px solid #dfc887;
+}
+.application.sheet.black-flag.actor.pc .tov-condition button:disabled {
+  opacity: .5;
+}
+.application.sheet.black-flag.actor.pc .tov-condition-toggle > i {
+  pointer-events: none;
+}
+.application.sheet.black-flag.actor.pc .tov-condition-count {
+  min-width: 12px;
+  text-align: center;
+  font-weight: 700;
+}
