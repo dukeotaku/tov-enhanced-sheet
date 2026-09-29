@@ -23,6 +23,8 @@
 .application.sheet.black-flag.actor.pc > .window-content {
   position: relative;
   display: grid;
+  flex: 1 1 0;
+  min-height: 0;
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: var(--tov-header-height) minmax(0, 1fr);
   gap: 0;
@@ -2286,11 +2288,11 @@
   bottom: auto;
 }
 
-/* v0.1.49: preserve the approved default-sized sheet as the minimum.
-   Applies only once the enhanced layout is active; larger windows remain resizable. */
+/* Preserve the default 880px sheet height when the viewport fits it, and
+   allow shorter viewports to keep the bottom of the window visible. */
 .application.sheet.black-flag.actor.pc.tov-enhanced-ready {
   min-width: 820px !important;
-  min-height: 880px !important;
+  min-height: min(880px, 85vh) !important;
 }
 
 /* v0.1.51: native interactive exhaustion pips; preserve portrait geometry. */
@@ -2737,26 +2739,20 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
 }
 .application.sheet.black-flag.actor.pc .tov-favorite-save-range { color: #aeb5bd; }
 
-/* Give each non-Main page a bounded touch-scroll area. Leave its native
-   flex/grid display and action handlers intact. */
-.application.sheet.black-flag.actor.pc.tov-enhanced-ready:not([data-progression])
-  .sheet-body:has(> .tab.active:not([data-tab="main"])) {
-  min-height: 0;
-  overflow: hidden;
-}
+/* The window-content flex item shrinks to the app height, giving the grid's
+   body row a real boundary. The body is the shared scroll area for every tab. */
 .application.sheet.black-flag.actor.pc.tov-enhanced-ready
   .sheet-body > .tab.active:not([data-tab="main"]) {
-  box-sizing: border-box;
-  height: 100%;
-  min-height: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
+  height: auto;
+  min-height: 100%;
+}
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-body {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
   scrollbar-color: #a99465 #151b23;
 }
-.application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-body > .tab.active:not([data-tab="main"])::-webkit-scrollbar { width: 9px; }
-.application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-body > .tab.active:not([data-tab="main"])::-webkit-scrollbar-thumb {
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-body::-webkit-scrollbar { width: 9px; }
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-body::-webkit-scrollbar-thumb {
   background: #a99465;
   border-radius: 6px;
 }
