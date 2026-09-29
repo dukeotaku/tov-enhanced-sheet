@@ -2934,3 +2934,35 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
   text-align: center;
   font-weight: 700;
 }
+
+/* Give native group headings the same blue-gray treatment as Conditions.
+   Keep the table cells and their native controls intact. */
+.application.sheet.black-flag.actor.pc .sheet-body > .tab:not([data-tab="main"])
+  tr.table-header > :is(td, th) {
+  background: #263444;
+  color: #e8d09b;
+  border-top: 1px solid rgb(201 180 124 / 40%);
+  border-bottom: 1px solid rgb(201 180 124 / 40%);
+}
+.application.sheet.black-flag.actor.pc .sheet-body > .tab:not([data-tab="main"])
+  tr.table-header > .name {
+  font: 700 15px Georgia, serif;
+  font-variant: small-caps;
+}
+.application.sheet.black-flag.actor.pc .tab[data-tab="biography"]
+  :is(.biography-block > h3, .characteristics > .tov-group-heading, .artwork figcaption),
+.application.sheet.black-flag.actor.pc .tab[data-tab="spellcasting"]
+  .spellcasting-origins .source-details > h3 {
+  box-sizing: border-box;
+  margin: 0 0 7px;
+  padding: 5px 9px;
+  border: 1px solid rgb(201 180 124 / 40%);
+  background: #263444;
+  color: #e8d09b;
+  font: 700 15px Georgia, serif;
+  font-variant: small-caps;
+}
+.application.sheet.black-flag.actor.pc .tab[data-tab="biography"]
+  .biography-block > h3 {
+  margin-bottom: 8px;
+}
