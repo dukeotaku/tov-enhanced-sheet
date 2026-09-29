@@ -2757,6 +2757,14 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
   border-radius: 6px;
 }
 
+/* Keep the native roll action while removing its focused red button frame. */
+.application.sheet.black-flag.actor.pc .tov-header-ability-roll:is(:focus, :active, :focus-visible) {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
 /* One-click weapon options on the native attack chat card. */
 .chat-message .tov-weapon-options {list-style:none;width:100%;margin:7px 0 0;padding:0;}
 .chat-message .tov-weapon-or {text-align:center;font-size:11px;font-weight:bold;margin:7px 0;opacity:.8;}
