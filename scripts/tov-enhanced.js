@@ -52,6 +52,19 @@ Hooks.on("renderApplicationV2", (app, html) => {
   // Retain Black Flag's native progression button so its own action handler opens the screen.
   const nativeHeader = sheet.querySelector(".sheet-header");
   const actorForHeader = app.actor ?? app.document;
+  const paintConditionsExhaustion = level => {
+    const tile = sheet.querySelector('.tov-conditions [data-status-id="exhaustion"]');
+    if (!tile) return;
+    tile.classList.toggle("active", level > 0);
+    tile.querySelector("output").textContent = String(level);
+    tile.querySelector('[data-step="-1"]').disabled = !actorForHeader.isOwner || level === 0;
+    tile.querySelector('[data-step="1"]').disabled = !actorForHeader.isOwner || level === 6;
+  };
+  const paintPortraitExhaustion = level => {
+    sheet.querySelector(".tov-static-panel")?.dispatchEvent(
+      new CustomEvent("tov-exhaustion-sync", { detail: { level } })
+    );
+  };
   if (nativeHeader && actorForHeader && !nativeHeader.querySelector(".tov-header-shell")) {
     const originalName = nativeHeader.querySelector(".document-name");
     const originalProgression = nativeHeader.querySelector(".progression");
@@ -268,33 +281,30 @@ Hooks.on("renderApplicationV2", (app, html) => {
             plus.textContent = "+";
             plus.setAttribute("aria-label", "Increase exhaustion");
             tile.append(icon, label, minus, count, plus);
-            let displayed = Math.max(0, Math.min(6, Number(actorForHeader.system?.attributes?.exhaustion) || 0));
             let pending = false;
             for (const control of [minus, plus]) control.addEventListener("click", async event => {
               event.preventDefault();
               event.stopPropagation();
               if (!actorForHeader.isOwner || pending) return;
-              const previous = displayed;
+              const previous = Number(count.textContent) || 0;
               const next = Math.max(0, Math.min(6, previous + Number(control.dataset.step)));
               if (next === previous) return;
               pending = true;
-              displayed = next;
               for (const button of [minus, plus]) button.disabled = true;
-              count.textContent = String(next);
-              tile.classList.toggle("active", next > 0);
+              paintConditionsExhaustion(next);
+              paintPortraitExhaustion(next);
               try {
                 await actorForHeader.update({ "system.attributes.exhaustion": next });
               } catch (error) {
                 console.error("ToV: unable to update exhaustion", error);
                 ui.notifications?.error("Could not update exhaustion.");
-                displayed = previous;
-                count.textContent = String(previous);
-                tile.classList.toggle("active", previous > 0);
+                paintConditionsExhaustion(previous);
+                paintPortraitExhaustion(previous);
               } finally {
                 pending = false;
                 const level = Number(count.textContent) || 0;
-                minus.disabled = !actorForHeader.isOwner || level === 0;
-                plus.disabled = !actorForHeader.isOwner || level === 6;
+                paintConditionsExhaustion(level);
+                paintPortraitExhaustion(level);
               }
             });
           } else {
@@ -338,10 +348,7 @@ Hooks.on("renderApplicationV2", (app, html) => {
         const id = tile.dataset.statusId;
         if (id === "exhaustion") {
           const level = Math.max(0, Math.min(6, Number(actorForHeader.system?.attributes?.exhaustion) || 0));
-          tile.classList.toggle("active", level > 0);
-          tile.querySelector("output").textContent = String(level);
-          tile.querySelector('[data-step="-1"]').disabled = !actorForHeader.isOwner || level === 0;
-          tile.querySelector('[data-step="1"]').disabled = !actorForHeader.isOwner || level === 6;
+          paintConditionsExhaustion(level);
         } else {
           const active = actorForHeader.statuses.has(id);
           const button = tile.querySelector("button");
@@ -351,6 +358,14 @@ Hooks.on("renderApplicationV2", (app, html) => {
           button.querySelector("i").className = `fa-solid fa-toggle-${active ? "on" : "off"}`;
         }
       }
+    }
+
+    const biographyCharacteristics = body.querySelector('.tab[data-tab="biography"] .characteristics');
+    if (biographyCharacteristics && !biographyCharacteristics.querySelector(".tov-group-heading")) {
+      const title = document.createElement("h3");
+      title.className = "tov-group-heading";
+      title.textContent = "Characteristics";
+      biographyCharacteristics.prepend(title);
     }
 
     // Main tab: native Skills and native Saving Throw controls in two columns.
@@ -573,6 +588,10 @@ Hooks.on("renderApplicationV2", (app, html) => {
     }
   };
   paintExhaustion(displayedExhaustion);
+  panel.addEventListener("tov-exhaustion-sync", event => {
+    displayedExhaustion = Math.max(0, Math.min(6, Number(event.detail.level) || 0));
+    paintExhaustion(displayedExhaustion);
+  });
   for (const pip of exhaustionPips) pip.addEventListener("click", async event => {
     event.preventDefault();
     event.stopPropagation();
@@ -584,6 +603,7 @@ Hooks.on("renderApplicationV2", (app, html) => {
     displayedExhaustion = next;
     exhaustionPending = true;
     paintExhaustion(next);
+    paintConditionsExhaustion(next);
     try {
       await exhaustionActor.update({ "system.attributes.exhaustion": next });
       // Black Flag synchronizes its Exhaustion ActiveEffect asynchronously.
@@ -595,9 +615,11 @@ Hooks.on("renderApplicationV2", (app, html) => {
       displayedExhaustion = Math.max(0, Math.min(6, Number(exhaustionActor.system?.attributes?.exhaustion) || previous));
       console.error("ToV: unable to update native exhaustion", error);
       ui.notifications?.error("Could not update exhaustion.");
+      paintConditionsExhaustion(displayedExhaustion);
     } finally {
       exhaustionPending = false;
       paintExhaustion(displayedExhaustion);
+      paintConditionsExhaustion(displayedExhaustion);
     }
   });
 
