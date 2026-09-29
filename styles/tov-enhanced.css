@@ -165,6 +165,7 @@
 
 .application.sheet.black-flag.actor.pc.tov-enhanced-ready > .window-content {
   grid-template-columns: var(--tov-sidebar-width) minmax(0, 1fr);
+  transition: grid-template-columns 220ms ease;
 }
 
 .application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-header {
@@ -174,6 +175,8 @@
 .application.sheet.black-flag.actor.pc.tov-enhanced-ready .tov-static-panel {
   grid-column: 1;
   grid-row: 2;
+  box-sizing: border-box;
+  width: var(--tov-sidebar-width);
   min-width: 0;
   min-height: 0;
   overflow-y: auto;
@@ -259,7 +262,7 @@
 
 .application.sheet.black-flag.actor.pc .tov-static-panel {
   position: relative;
-  transition: width 160ms ease, padding 160ms ease, border-color 160ms ease;
+  transition: transform 220ms ease, opacity 220ms ease;
 }
 
 .application.sheet.black-flag.actor.pc .tov-static-collapse {
@@ -286,19 +289,15 @@
 }
 
 .application.sheet.black-flag.actor.pc.tov-static-collapsed > .window-content {
-  grid-template-columns: 0 minmax(0, 1fr);
+  grid-template-columns: 0px minmax(0, 1fr);
 }
 
 .application.sheet.black-flag.actor.pc.tov-static-collapsed .tov-static-panel {
-  width: 0;
-  min-width: 0;
-  padding: 0;
-  overflow: visible;
-  border-right-color: transparent;
-}
-
-.application.sheet.black-flag.actor.pc.tov-static-collapsed .tov-static-panel > :not(.tov-static-collapse) {
-  display: none;
+  transform: translateX(calc(-1 * var(--tov-sidebar-width)));
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: transform 220ms ease, opacity 220ms ease, visibility 0s linear 220ms;
 }
 
 .application.sheet.black-flag.actor.pc.tov-static-collapsed .tov-static-collapse {
@@ -1930,6 +1929,7 @@
   box-shadow: 2px 2px 5px #0007;
   z-index: 100;
   cursor: pointer;
+  transition: left 220ms ease;
 }
 .application.sheet.black-flag.actor.pc.tov-static-collapsed > .window-content > .tov-static-collapse {
   left: 0;
