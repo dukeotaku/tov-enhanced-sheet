@@ -1932,7 +1932,7 @@
   cursor: pointer;
 }
 .application.sheet.black-flag.actor.pc.tov-static-collapsed > .window-content > .tov-static-collapse {
-  left: calc(var(--tov-sidebar-width) - 2px);
+  left: 0;
   right: auto;
 }
 .application.sheet.black-flag.actor.pc .tov-header-ability {
