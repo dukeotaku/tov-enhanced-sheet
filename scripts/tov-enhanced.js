@@ -68,7 +68,7 @@ Hooks.on("renderApplicationV2", (app, html) => {
     toggle.setAttribute("aria-label", "Unlock character sheet");
     toggle.setAttribute("aria-checked", "false");
     toggle.title = "Unlock character sheet";
-    toggle.innerHTML = '<i class="fa-solid fa-feather-pointed" aria-hidden="true"></i>';
+    toggle.innerHTML = '<i class="fa-solid fa-wrench" aria-hidden="true"></i>';
     left.append(toggle);
     if (originalName) left.append(originalName);
     const progression = actorForHeader.system?.progression;
@@ -196,7 +196,10 @@ Hooks.on("renderApplicationV2", (app, html) => {
       event.stopPropagation();
       // Black Flag's mode action re-renders the Biography inputs, ProseMirror
       // editors, and image actions. Keep our switch tied to that same mode.
-      sheet.querySelector('.window-header .mode-toggle[data-action="toggleSheetMode"]')?.click();
+      const nativeToggle = sheet.querySelector('.window-header .mode-toggle[data-action="toggleSheetMode"]');
+      if (!nativeToggle) return;
+      toggle.setAttribute("aria-checked", String(toggle.getAttribute("aria-checked") !== "true"));
+      nativeToggle.click();
     });
     sheet.classList.add("tov-header-prototype");
   }
@@ -205,8 +208,8 @@ Hooks.on("renderApplicationV2", (app, html) => {
   const headerShell = sheet.querySelector(".tov-header-shell");
   const headerToggle = headerShell?.querySelector(".tov-header-edit-toggle");
   if (headerShell && headerToggle) {
-    if (!headerToggle.querySelector("i.fa-feather-pointed"))
-      headerToggle.innerHTML = '<i class="fa-solid fa-feather-pointed" aria-hidden="true"></i>';
+    if (!headerToggle.querySelector("i.fa-wrench"))
+      headerToggle.innerHTML = '<i class="fa-solid fa-wrench" aria-hidden="true"></i>';
     const editing = app._mode === app.constructor.MODES?.EDIT;
     headerShell.classList.toggle("tov-header-editing", editing);
     sheet.dataset.tovHeaderEditing = String(editing);
