@@ -222,6 +222,137 @@ Hooks.on("renderApplicationV2", (app, html) => {
   // Reapply our layout even when the persistent portrait rail already exists.
   const body = sheet.querySelector(".sheet-body");
   if (body) {
+    // Put native actor conditions above the potentially long Effects table.
+    const effectsTab = body.querySelector('.tab[data-tab="effects"]');
+    if (effectsTab && actorForHeader) {
+      let conditions = effectsTab.querySelector(".tov-conditions");
+      if (!conditions) {
+        conditions = document.createElement("section");
+        conditions.className = "tov-conditions";
+        conditions.setAttribute("aria-label", "Conditions");
+        const heading = document.createElement("h3");
+        heading.textContent = "Conditions";
+        const grid = document.createElement("div");
+        grid.className = "tov-condition-grid";
+        const ids = [
+          "blinded", "charmed", "deafened", "exhaustion", "frightened", "grappled",
+          "incapacitated", "invisible", "paralyzed", "petrified", "poisoned", "prone",
+          "restrained", "stunned", "unconscious"
+        ];
+        for (const id of ids) {
+          const status = CONFIG.statusEffects.find(effect => effect.id === id);
+          const name = status?.name ?? id[0].toUpperCase() + id.slice(1);
+          const tile = document.createElement("div");
+          tile.className = "tov-condition";
+          tile.dataset.statusId = id;
+          const icon = document.createElement("img");
+          icon.src = status?.img ?? `systems/black-flag/artwork/statuses/${id}.svg`;
+          icon.alt = "";
+          const label = document.createElement("span");
+          label.className = "tov-condition-name";
+          label.textContent = name;
+          if (id === "exhaustion") {
+            const minus = document.createElement("button");
+            minus.type = "button";
+            minus.className = "tov-condition-step";
+            minus.dataset.step = "-1";
+            minus.textContent = "−";
+            minus.setAttribute("aria-label", "Decrease exhaustion");
+            const count = document.createElement("output");
+            count.className = "tov-condition-count";
+            count.setAttribute("aria-label", "Exhaustion level");
+            const plus = document.createElement("button");
+            plus.type = "button";
+            plus.className = "tov-condition-step";
+            plus.dataset.step = "1";
+            plus.textContent = "+";
+            plus.setAttribute("aria-label", "Increase exhaustion");
+            tile.append(icon, label, minus, count, plus);
+            let displayed = Math.max(0, Math.min(6, Number(actorForHeader.system?.attributes?.exhaustion) || 0));
+            let pending = false;
+            for (const control of [minus, plus]) control.addEventListener("click", async event => {
+              event.preventDefault();
+              event.stopPropagation();
+              if (!actorForHeader.isOwner || pending) return;
+              const previous = displayed;
+              const next = Math.max(0, Math.min(6, previous + Number(control.dataset.step)));
+              if (next === previous) return;
+              pending = true;
+              displayed = next;
+              for (const button of [minus, plus]) button.disabled = true;
+              count.textContent = String(next);
+              tile.classList.toggle("active", next > 0);
+              try {
+                await actorForHeader.update({ "system.attributes.exhaustion": next });
+              } catch (error) {
+                console.error("ToV: unable to update exhaustion", error);
+                ui.notifications?.error("Could not update exhaustion.");
+                displayed = previous;
+                count.textContent = String(previous);
+                tile.classList.toggle("active", previous > 0);
+              } finally {
+                pending = false;
+                const level = Number(count.textContent) || 0;
+                minus.disabled = !actorForHeader.isOwner || level === 0;
+                plus.disabled = !actorForHeader.isOwner || level === 6;
+              }
+            });
+          } else {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "tov-condition-toggle";
+            button.setAttribute("aria-label", `Toggle ${name}`);
+            const indicator = document.createElement("i");
+            indicator.className = "fa-solid fa-toggle-off";
+            indicator.setAttribute("aria-hidden", "true");
+            button.append(indicator);
+            tile.append(icon, label, button);
+            button.addEventListener("click", async event => {
+              event.preventDefault();
+              event.stopPropagation();
+              if (!actorForHeader.isOwner || button.disabled) return;
+              button.disabled = true;
+              try {
+                await actorForHeader.toggleStatusEffect(id);
+                const active = actorForHeader.statuses.has(id);
+                tile.classList.toggle("active", active);
+                button.setAttribute("aria-pressed", String(active));
+                indicator.className = `fa-solid fa-toggle-${active ? "on" : "off"}`;
+              } catch (error) {
+                console.error(`ToV: unable to toggle ${id}`, error);
+                ui.notifications?.error(`Could not toggle ${name}.`);
+              } finally {
+                button.disabled = !actorForHeader.isOwner;
+              }
+            });
+            tile.addEventListener("click", event => {
+              if (!event.target.closest("button")) button.click();
+            });
+          }
+          grid.append(tile);
+        }
+        conditions.append(heading, grid);
+        effectsTab.prepend(conditions);
+      }
+      for (const tile of conditions.querySelectorAll(".tov-condition")) {
+        const id = tile.dataset.statusId;
+        if (id === "exhaustion") {
+          const level = Math.max(0, Math.min(6, Number(actorForHeader.system?.attributes?.exhaustion) || 0));
+          tile.classList.toggle("active", level > 0);
+          tile.querySelector("output").textContent = String(level);
+          tile.querySelector('[data-step="-1"]').disabled = !actorForHeader.isOwner || level === 0;
+          tile.querySelector('[data-step="1"]').disabled = !actorForHeader.isOwner || level === 6;
+        } else {
+          const active = actorForHeader.statuses.has(id);
+          const button = tile.querySelector("button");
+          tile.classList.toggle("active", active);
+          button.disabled = !actorForHeader.isOwner;
+          button.setAttribute("aria-pressed", String(active));
+          button.querySelector("i").className = `fa-solid fa-toggle-${active ? "on" : "off"}`;
+        }
+      }
+    }
+
     // Main tab: native Skills and native Saving Throw controls in two columns.
     // Reparenting retains Black Flag's delegated roll and configuration actions.
     const mainTab = body.querySelector('.tab[data-tab="main"]');
