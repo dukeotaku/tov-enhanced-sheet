@@ -2763,18 +2763,8 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
   border-radius: 6px;
 }
 
-/* v0.1.75: additive weapon-option controls on native Black Flag chat cards. */
-.chat-message .tov-weapon-options { list-style:none; width:100%; margin:5px 0; padding:0; }
-.chat-message .tov-option-heading { text-align:center; font-size:11px; font-weight:bold; margin:6px 0; }
-.chat-message .tov-weapon-options select { display:block; width:100%; margin:4px 0 7px; }
-.chat-message .tov-weapon-options button { width:100%; margin:3px 0; }
-.chat-message .tov-weapon-options div[hidden] { display:none; }
-
-/* v0.1.75 native chat weapon options */
-.chat-message .tov-weapon-options {list-style:none;margin:7px 0 0;padding:0;}
+/* One-click weapon options on the native attack chat card. */
+.chat-message .tov-weapon-options {list-style:none;width:100%;margin:7px 0 0;padding:0;}
 .chat-message .tov-weapon-or {text-align:center;font-size:11px;font-weight:bold;margin:7px 0;opacity:.8;}
 .chat-message .tov-option {margin:4px 0;}
-.chat-message .tov-option>button,.chat-message .tov-option-detail>button {width:100%;}
-.chat-message .tov-option-detail {padding:7px;margin:4px 0 8px;border:1px solid #887b62;border-radius:4px;}
-.chat-message .tov-option-detail[hidden] {display:none;}
-.chat-message .tov-option-detail p {font-size:12px;margin:2px 0 6px;}
+.chat-message .tov-option>button {width:100%;}
