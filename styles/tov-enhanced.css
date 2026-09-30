@@ -1,6 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Grenze:wght@700;800;900&display=swap');
 /* =========================================================
    Tales of the Valiant Enhanced Sheet
-   Base PC Sheet
+   Checkpoint 1B - exterior icon tabs
    ========================================================= */
 
 .application.sheet.black-flag.actor.pc {
@@ -13,52 +14,3082 @@
   --tov-panel-light: #1a2029;
   --tov-text: #f2f2ed;
   --tov-muted: #aaa89f;
-
+  --tov-header-height: 138px;
+  --tov-tab-size: 42px;
+  overflow: visible;
   background: var(--tov-ink);
 }
 
-/* Main interior of the PC sheet */
 .application.sheet.black-flag.actor.pc > .window-content {
-  background:
-    linear-gradient(
-      180deg,
-      #0b1119 0%,
-      #090d13 180px,
-      #080b10 100%
-    );
-
+  position: relative;
+  display: grid;
+  flex: 1 1 0;
+  min-height: 0;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: var(--tov-header-height) minmax(0, 1fr);
+  gap: 0;
+  overflow: visible;
+  padding: 0;
+  background: linear-gradient(180deg,#0b1119 0%,#090d13 180px,#080b10 100%);
   color: var(--tov-text);
 }
 
-/* Temporary treatment of the existing header.
-   This will eventually become our illustrated banner. */
 .application.sheet.black-flag.actor.pc .sheet-header {
-  background:
-    linear-gradient(
-      135deg,
-      #123f69 0%,
-      #18598e 48%,
-      #0d3152 100%
-    );
-
-  border-bottom: 3px solid var(--tov-gold);
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
   padding: 12px 16px;
+  background: linear-gradient(90deg,rgba(11,41,68,.96),rgba(22,79,130,.90) 58%,rgba(11,41,68,.96));
+  border: 0;
+  border-bottom: 3px solid var(--tov-gold);
 }
 
-/* Character name */
-.application.sheet.black-flag.actor.pc .sheet-header .document-name {
-  color: #ffffff;
-  font-size: 30px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-shadow: 0 2px 4px #000000;
-}
-
-/* Make the existing portrait large enough to begin
-   establishing our permanent character column. */
 .application.sheet.black-flag.actor.pc .sheet-header .profile {
-  inline-size: 150px !important;
-  block-size: 150px !important;
+  inline-size: 112px !important;
+  block-size: 112px !important;
   object-fit: cover;
   border: 2px solid var(--tov-gold);
+  box-shadow: 0 3px 12px rgb(0 0 0 / 45%);
+}
+
+.application.sheet.black-flag.actor.pc .sheet-header .document-name {
+  color: #fff;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-shadow: 0 2px 4px #000;
+}
+
+/* Exterior index tabs. They sit outside the content edge and consume no
+   workspace width, matching the supplied 5e reference behavior. */
+.application.sheet.black-flag.actor.pc .sheet-navigation {
+  position: absolute;
+  top: calc(var(--tov-header-height) + 10px);
+  left: 100%;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: var(--tov-tab-size);
+  margin: 0;
+  padding: 4px 0;
+  background: #0b0f14;
+  border: 1px solid var(--tov-gold);
+  border-left: 0;
+  border-radius: 0 5px 5px 0;
+  box-shadow: 3px 3px 8px rgb(0 0 0 / 45%);
+  overflow: visible;
+}
+
+.application.sheet.black-flag.actor.pc .sheet-navigation > a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tov-tab-size);
+  height: var(--tov-tab-size);
+  min-width: var(--tov-tab-size);
+  min-height: var(--tov-tab-size);
+  padding: 0;
+  overflow: hidden;
+  color: transparent;
+  font-size: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 3px;
+  box-shadow: none;
+  text-decoration: none;
+}
+
+/* The module inserts a single icon in each native Black Flag tab link. */
+.application.sheet.black-flag.actor.pc .sheet-navigation > a::before {
+  content: none !important;
+}
+
+.application.sheet.black-flag.actor.pc .sheet-navigation > a:hover,
+.application.sheet.black-flag.actor.pc .sheet-navigation > a:focus-visible {
+  background: #111a24;
+}
+
+.application.sheet.black-flag.actor.pc .sheet-navigation > a.active {
+  background: var(--tov-gold);
+}
+
+/* Preserve notification badges even though the text label is visually hidden. */
+.application.sheet.black-flag.actor.pc .sheet-navigation > a > * {
+  font-size: 10px;
+  color: #fff;
+}
+
+.application.sheet.black-flag.actor.pc .sheet-body {
+  grid-column: 1;
+  grid-row: 2;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  overflow: auto;
+  padding: 12px;
+  background: linear-gradient(180deg,rgb(17 22 29 / 96%),rgb(8 11 16 / 98%));
+}
+
+.application.sheet.black-flag.actor.pc .sheet-body > .tab { min-width: 0; }
+.application.sheet.black-flag.actor.pc fieldset { border-color: rgb(201 180 124 / 32%); }
+.application.sheet.black-flag.actor.pc fieldset > legend { color: var(--tov-gold); }
+
+
+/* =========================================================
+   Checkpoint 2 - persistent character panel
+   ========================================================= */
+
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready {
+  --tov-sidebar-width: 220px;
+}
+
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready > .window-content {
+  grid-template-columns: var(--tov-sidebar-width) minmax(0, 1fr);
+  transition: grid-template-columns 220ms ease;
+}
+
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-header {
+  grid-column: 1 / -1;
+}
+
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready .tov-static-panel {
+  grid-column: 1;
+  grid-row: 2;
+  box-sizing: border-box;
+  width: var(--tov-sidebar-width);
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 10px;
+  background: linear-gradient(180deg,#10151c,#090d12);
+  border-right: 2px solid rgb(201 180 124 / 45%);
+}
+
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-body {
+  grid-column: 2;
+}
+
+.application.sheet.black-flag.actor.pc .tov-portrait-slot {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.application.sheet.black-flag.actor.pc .tov-static-portrait {
+  display: block;
+  width: 100% !important;
+  height: 210px !important;
+  object-fit: cover;
+  object-position: center top;
+  border: 2px solid var(--tov-gold);
+}
+
+.application.sheet.black-flag.actor.pc .tov-static-card {
+  margin: 0 0 8px;
+  padding: 7px;
+  background: #141a22;
+  border: 1px solid rgb(201 180 124 / 38%);
+}
+
+.application.sheet.black-flag.actor.pc .tov-static-card > h3,
+.application.sheet.black-flag.actor.pc .tov-favorites > h3 {
+  margin: 0 0 5px;
+  color: var(--tov-gold);
+  font-size: 11px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.application.sheet.black-flag.actor.pc .tov-static-card fieldset,
+.application.sheet.black-flag.actor.pc .tov-static-card legend {
+  margin: 0;
+}
+
+.application.sheet.black-flag.actor.pc .tov-static-card-content > legend {
+  display: none;
+}
+
+.application.sheet.black-flag.actor.pc .tov-favorites {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid rgb(201 180 124 / 45%);
+}
+
+.application.sheet.black-flag.actor.pc .tov-favorites-empty {
+  min-height: 56px;
+  display: grid;
+  place-items: center;
+  color: var(--tov-muted);
+  border: 1px dashed rgb(201 180 124 / 35%);
+  font-size: 11px;
+}
+
+/* Real icon elements injected by the module script. */
+.application.sheet.black-flag.actor.pc .sheet-navigation > a > .tov-tab-icon {
+  display: block !important;
+  color: var(--tov-gold) !important;
+  font-size: 17px !important;
+  line-height: 1;
+}
+
+.application.sheet.black-flag.actor.pc .sheet-navigation > a.active > .tov-tab-icon {
+  color: #0b0f14 !important;
+}
+.application.sheet.black-flag.actor.pc .sheet-navigation > a > svg.tov-tab-icon {
+  width: 18px;
+  height: 18px;
+}
+
+
+/* =========================================================
+   Checkpoint 3 - collapsible Portrait Static Panel
+   ========================================================= */
+
+.application.sheet.black-flag.actor.pc .tov-static-panel {
+  position: relative;
+  transition: transform 220ms ease, opacity 220ms ease;
+}
+
+.application.sheet.black-flag.actor.pc .tov-static-collapse {
+  position: absolute;
+  top: 8px;
+  right: -14px;
+  z-index: 30;
+  width: 27px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: var(--tov-gold);
+  background: #0b0f14;
+  border: 1px solid var(--tov-gold);
+  border-radius: 5px;
+  box-shadow: 2px 2px 7px rgb(0 0 0 / 45%);
+  cursor: pointer;
+}
+
+.application.sheet.black-flag.actor.pc .tov-static-collapse:hover {
+  color: #0b0f14;
+  background: var(--tov-gold);
+}
+
+.application.sheet.black-flag.actor.pc.tov-static-collapsed > .window-content {
+  grid-template-columns: 0px minmax(0, 1fr);
+}
+
+.application.sheet.black-flag.actor.pc.tov-static-collapsed .tov-static-panel {
+  transform: translateX(calc(-1 * var(--tov-sidebar-width)));
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: transform 220ms ease, opacity 220ms ease, visibility 0s linear 220ms;
+}
+
+.application.sheet.black-flag.actor.pc.tov-static-collapsed .tov-static-collapse {
+  right: -28px;
+}
+
+
+/* Checkpoint 3 polish: keep the Portrait Static Panel handle clear of content. */
+.application.sheet.black-flag.actor.pc .tov-static-collapse {
+  top: 10px;
+  right: -18px;
+  width: 30px;
+  height: 38px;
+  z-index: 60;
+}
+
+.application.sheet.black-flag.actor.pc.tov-static-collapsed .tov-static-collapse {
+  right: -34px;
+}
+
+
+/* =========================================================
+   Checkpoint 4 - Portrait Static Panel layout
+   ========================================================= */
+
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready {
+  --tov-sidebar-width: 242px;
+}
+
+.application.sheet.black-flag.actor.pc .tov-static-panel {
+  padding: 10px 11px 12px;
+}
+
+.application.sheet.black-flag.actor.pc .tov-static-portrait {
+  height: 232px !important;
+}
+
+.application.sheet.black-flag.actor.pc .tov-static-primary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+  margin-bottom: 7px;
+}
+
+.application.sheet.black-flag.actor.pc .tov-static-vitals {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-bottom: 7px;
+}
+
+.application.sheet.black-flag.actor.pc .tov-static-health {
+  display: grid;
+  gap: 7px;
+}
+
+.application.sheet.black-flag.actor.pc .tov-static-card {
+  margin: 0;
+  padding: 7px;
+  min-width: 0;
+}
+
+.application.sheet.black-flag.actor.pc .tov-ac-card,
+.application.sheet.black-flag.actor.pc .tov-luck-card {
+  min-height: 92px;
+}
+
+.application.sheet.black-flag.actor.pc .tov-ac-card .tov-static-card-content,
+.application.sheet.black-flag.actor.pc .tov-luck-card .tov-static-card-content {
+  display: grid;
+  place-items: center;
+}
+
+.application.sheet.black-flag.actor.pc .tov-static-vitals .tov-static-card {
+  min-height: 67px;
+  text-align: center;
+}
+
+.application.sheet.black-flag.actor.pc .tov-static-vitals .tov-static-card > h3 {
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.application.sheet.black-flag.actor.pc .tov-big-value {
+  margin-top: 8px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.application.sheet.black-flag.actor.pc .tov-hp-card {
+  min-height: 96px;
+}
+
+.application.sheet.black-flag.actor.pc .tov-hd-card {
+  min-height: 58px;
+}
+
+.application.sheet.black-flag.actor.pc .tov-hp-card .hit-dice {
+  display: none;
+}
+
+.application.sheet.black-flag.actor.pc .tov-favorites {
+  margin-top: 10px;
+}
+
+.application.sheet.black-flag.actor.pc .tov-favorites-empty {
+  min-height: 72px;
+}
+
+/* Final handle neighborhood for this layout pass. */
+.application.sheet.black-flag.actor.pc .tov-static-collapse {
+  top: 8px;
+  right: -19px;
+}
+
+
+/* =========================================================
+   Checkpoint 5 - stylized Portrait Static Panel
+   ========================================================= */
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready { --tov-sidebar-width: 242px; }
+
+.application.sheet.black-flag.actor.pc .tov-portrait-slot { margin-bottom: 0; }
+.application.sheet.black-flag.actor.pc .tov-static-portrait {
+  height: 225px !important;
+  border: 2px solid rgb(201 180 124 / 70%);
+  box-shadow: inset 0 0 0 4px rgb(0 0 0 / 25%);
+}
+
+.application.sheet.black-flag.actor.pc .tov-static-primary {
+  display: block;
+  margin: -19px 0 0;
+  position: relative;
+  z-index: 4;
+}
+.application.sheet.black-flag.actor.pc .tov-core-cluster {
+  display: grid;
+  grid-template-columns: 1fr 68px 1fr;
+  align-items: center;
+  gap: 5px;
+}
+.application.sheet.black-flag.actor.pc .tov-exhaustion {
+  display: flex;
+  justify-content: space-around;
+  gap: 6px;
+}
+.application.sheet.black-flag.actor.pc .tov-exhaustion span {
+  width: 17px; height: 17px; border-radius: 50%;
+  border: 2px solid var(--tov-gold);
+  background: #0b0f14;
+  box-shadow: 0 1px 3px #000;
+}
+.application.sheet.black-flag.actor.pc .tov-ac-medallion {
+  width: 68px; height: 68px; margin: auto;
+  display: grid; place-items: center;
+  align-content: center;
+  border-radius: 50%;
+  color: #fff;
+  background: radial-gradient(circle at 50% 42%,#343942 0 47%,#171b21 49% 100%);
+  border: 3px double var(--tov-gold);
+  box-shadow: 0 3px 8px rgb(0 0 0 / 65%), inset 0 0 0 3px rgb(201 180 124 / 18%);
+}
+.application.sheet.black-flag.actor.pc .tov-ac-value { font-size: 24px; font-weight: 800; line-height: .95; }
+.application.sheet.black-flag.actor.pc .tov-ac-label { color: var(--tov-gold); font-size: 8px; font-weight: 800; letter-spacing: .12em; }
+
+.application.sheet.black-flag.actor.pc .tov-static-vitals {
+  display: grid; grid-template-columns: 1fr 1.15fr 1fr;
+  gap: 4px; margin: 3px 0 8px;
+}
+.application.sheet.black-flag.actor.pc .tov-vital {
+  min-width: 0; text-align: center; padding: 4px 2px 3px;
+  background: linear-gradient(180deg,#383c42,#24282e);
+  clip-path: polygon(12% 0,88% 0,100% 50%,88% 100%,12% 100%,0 50%);
+}
+.application.sheet.black-flag.actor.pc .tov-vital-value { display:block; color:#fff; font-size:17px; font-weight:800; line-height:1; }
+.application.sheet.black-flag.actor.pc .tov-vital-label { display:block; margin-top:3px; color:var(--tov-gold); font-size:7px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; }
+
+.application.sheet.black-flag.actor.pc .tov-static-health { display:grid; gap:6px; }
+.application.sheet.black-flag.actor.pc .tov-luck-feature {
+  padding: 7px 9px 8px;
+  background: linear-gradient(90deg,#102d48,#174f7d 50%,#102d48);
+  border: 1px solid rgb(201 180 124 / 65%);
+  box-shadow: inset 0 0 14px rgb(40 121 185 / 18%);
+}
+.application.sheet.black-flag.actor.pc .tov-luck-heading {
+  display:flex; justify-content:space-between; align-items:baseline; margin-bottom:5px;
+  color:#fff; font-weight:800; text-transform:uppercase; letter-spacing:.08em;
+}
+.application.sheet.black-flag.actor.pc .tov-luck-heading small { color:var(--tov-gold); font-size:7px; }
+.application.sheet.black-flag.actor.pc .tov-luck-pips { display:flex; justify-content:center; gap:11px; }
+.application.sheet.black-flag.actor.pc .tov-luck-pips span {
+  width:18px; height:18px; border-radius:50%; border:2px solid #d8e7f4; background:#0b1722;
+  box-shadow:0 0 0 1px rgb(0 0 0 / 60%);
+}
+.application.sheet.black-flag.actor.pc .tov-luck-pips span.filled { background:var(--tov-blue-bright); box-shadow:0 0 8px rgb(40 121 185 / 70%); }
+
+.application.sheet.black-flag.actor.pc .tov-resource { padding:0; background:transparent; border:0; }
+.application.sheet.black-flag.actor.pc .tov-resource-label {
+  margin:0 0 2px; color:var(--tov-gold); font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:.05em;
+}
+.application.sheet.black-flag.actor.pc .tov-resource-live {
+  min-height:32px; padding:2px 4px; background:#11161d; border:1px solid rgb(201 180 124 / 55%);
+}
+.application.sheet.black-flag.actor.pc .tov-hp-resource .hit-dice { display:none; }
+
+.application.sheet.black-flag.actor.pc .tov-favorites {
+  margin-top:8px; padding-top:6px;
+}
+.application.sheet.black-flag.actor.pc .tov-favorites > h3 { margin-bottom:5px; }
+.application.sheet.black-flag.actor.pc .tov-favorites-empty { min-height:54px; }
+
+
+/* Checkpoint 5A - compact HP / Hit Dice tracks to match reference */
+.application.sheet.black-flag.actor.pc .tov-static-health { gap: 3px; }
+
+.application.sheet.black-flag.actor.pc .tov-hp-resource .tov-resource-live {
+  min-height: 34px;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Keep current/max HP together on the left and TMP on the same horizontal row. */
+.application.sheet.black-flag.actor.pc .tov-hp-resource .hit-points {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: stretch;
+  gap: 0 !important;
+}
+.application.sheet.black-flag.actor.pc .tov-hp-resource .hit-points > :not(.temp):not(.temporary):not(.hit-dice) {
+  grid-column: 1;
+}
+.application.sheet.black-flag.actor.pc .tov-hp-resource .hit-points > .temp,
+.application.sheet.black-flag.actor.pc .tov-hp-resource .hit-points > .temporary {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  min-width: 48px;
+  margin: 0;
+}
+
+/* Hit Dice hugs the HP track instead of becoming another card. */
+.application.sheet.black-flag.actor.pc .tov-hd-resource {
+  margin-top: -1px;
+}
+.application.sheet.black-flag.actor.pc .tov-hd-resource .tov-resource-live {
+  min-height: 27px;
+  padding: 0;
+  overflow: hidden;
+}
+.application.sheet.black-flag.actor.pc .tov-hd-resource .hit-dice {
+  min-height: 25px;
+  margin: 0;
+}
+.application.sheet.black-flag.actor.pc .tov-resource-label {
+  margin-bottom: 1px;
+}
+
+
+/* =========================================================
+   Checkpoint 5B - diamond vitals + fantasy Luck treatment
+   ========================================================= */
+
+.application.sheet.black-flag.actor.pc .tov-static-vitals {
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: start;
+  gap: 3px;
+  margin: 1px 5px 4px;
+  min-height: 66px;
+}
+
+.application.sheet.black-flag.actor.pc .tov-vital {
+  width: 68px;
+  height: 50px;
+  justify-self: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2px 3px 3px;
+  background: linear-gradient(180deg,#4b4f55,#30343a);
+  clip-path: polygon(17% 0,83% 0,100% 50%,83% 100%,17% 100%,0 50%);
+}
+
+.application.sheet.black-flag.actor.pc .tov-vital-speed {
+  margin-top: 19px;
+}
+
+.application.sheet.black-flag.actor.pc .tov-vital-value {
+  display: block;
+  color: #fff;
+  font-size: 21px;
+  font-weight: 900;
+  line-height: .9;
+  white-space: nowrap;
+}
+
+.application.sheet.black-flag.actor.pc .tov-vital-label {
+  display: block;
+  margin-top: 5px;
+  color: var(--tov-gold);
+  font-size: 7px;
+  font-weight: 900;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: .035em;
+}
+
+.application.sheet.black-flag.actor.pc .tov-luck-feature {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.application.sheet.black-flag.actor.pc .tov-luck-title {
+  margin: 0 0 2px 7px;
+  color: var(--tov-gold);
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.application.sheet.black-flag.actor.pc .tov-luck-frame {
+  position: relative;
+  min-height: 39px;
+  display: grid;
+  place-items: center;
+  padding: 5px 18px;
+  background: linear-gradient(90deg,#102a43,#174f7d 50%,#102a43);
+  border-top: 1px solid rgb(201 180 124 / 75%);
+  border-bottom: 1px solid rgb(201 180 124 / 75%);
+  clip-path: polygon(7px 0,calc(100% - 7px) 0,100% 50%,calc(100% - 7px) 100%,7px 100%,0 50%);
+}
+
+.application.sheet.black-flag.actor.pc .tov-luck-frame::before {
+  content: "";
+  position: absolute;
+  inset: 3px 7px;
+  pointer-events: none;
+  border-top: 1px solid rgb(201 180 124 / 24%);
+  border-bottom: 1px solid rgb(201 180 124 / 24%);
+}
+
+.application.sheet.black-flag.actor.pc .tov-luck-pips {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  gap: 6px;
+}
+
+.application.sheet.black-flag.actor.pc .tov-luck-pips span {
+  width: 17px;
+  height: 17px;
+}
+
+
+/* Checkpoint 5C - explicit compact HP and Hit Dice tracks */
+.application.sheet.black-flag.actor.pc .tov-hp-track {
+  height: 34px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 52px;
+  overflow: hidden;
+  border: 1px solid var(--tov-gold);
+  border-radius: 3px;
+  background: #11161d;
+}
+.application.sheet.black-flag.actor.pc .tov-hp-main {
+  display: flex;
+  align-items: center;
+  padding: 0 9px;
+  background: linear-gradient(90deg,#2b8150,#32975c);
+  border-right: 1px solid var(--tov-gold);
+  color: #fff;
+  font-size: 15px;
+}
+.application.sheet.black-flag.actor.pc .tov-temp-main {
+  display: grid;
+  grid-template-columns: 1fr;
+  place-items: center;
+  align-content: center;
+  color: #fff;
+  background: #171b22;
+  line-height: 1;
+}
+.application.sheet.black-flag.actor.pc .tov-temp-main span {
+  color: var(--tov-muted);
+  font-size: 8px;
+  font-weight: 900;
+}
+.application.sheet.black-flag.actor.pc .tov-temp-main strong {
+  margin-top: 2px;
+  font-size: 12px;
+}
+.application.sheet.black-flag.actor.pc .tov-hd-track {
+  height: 27px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 9px;
+  border: 1px solid var(--tov-gold);
+  border-radius: 3px;
+  background: linear-gradient(90deg,#6f2634,#842a3d);
+  color: #fff;
+}
+.application.sheet.black-flag.actor.pc .tov-hd-die {
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+.application.sheet.black-flag.actor.pc .tov-hd-track strong {
+  font-size: 13px;
+}
+
+
+/* Checkpoint 5D - ToV shield treatment for Armor Class */
+.application.sheet.black-flag.actor.pc .tov-ac-medallion {
+  position: relative;
+  width: 72px;
+  height: 78px;
+  border: 0;
+  border-radius: 0;
+  background: linear-gradient(180deg,#263b50 0%,#152536 64%,#0b121a 100%);
+  clip-path: polygon(50% 0,91% 15%,86% 63%,72% 82%,50% 100%,28% 82%,14% 63%,9% 15%);
+  box-shadow: none;
+  filter: drop-shadow(0 3px 3px rgb(0 0 0 / 60%));
+}
+.application.sheet.black-flag.actor.pc .tov-ac-medallion::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  z-index: -1;
+  background: linear-gradient(180deg,#c9b47c,#796b43 72%,#c9b47c);
+  clip-path: inherit;
+}
+.application.sheet.black-flag.actor.pc .tov-ac-medallion::after {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  z-index: -1;
+  background: linear-gradient(180deg,#122b42,#0c1722);
+  clip-path: inherit;
+}
+.application.sheet.black-flag.actor.pc .tov-ac-value {
+  position: relative;
+  z-index: 2;
+  margin-top: -3px;
+  font-size: 25px;
+}
+.application.sheet.black-flag.actor.pc .tov-ac-label { display:none !important; }
+
+
+/* Checkpoint 6 - hidden Death Saves */
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+
+/* =========================================================
+   Checkpoint 6A - D&D-style Death Saves pull-down drawer
+   ========================================================= */
+
+/* Portrait through Hit Dice reads as one raised foreground card. */
+.application.sheet.black-flag.actor.pc .tov-portrait-slot,
+.application.sheet.black-flag.actor.pc .tov-static-stats,
+.application.sheet.black-flag.actor.pc .tov-static-health {
+  position: relative;
+  z-index: 8;
+}
+.application.sheet.black-flag.actor.pc .tov-static-health {
+  padding-bottom: 8px;
+  background: #11161d;
+  box-shadow: 0 5px 7px rgb(0 0 0 / 42%);
+}
+
+/* The drawer occupies no normal layout height: it physically slides over Favorites. */
+
+.
+.
+.
+
+.
+.
+
+/* A small blind-pull motion before the drawer settles open. */
+.
+
+@
+@
+
+/* Favorites stays where it is; the death drawer deliberately overlays it. */
+.application.sheet.black-flag.actor.pc .tov-favorites {
+  position: relative;
+  z-index: 1;
+}
+
+
+/* =========================================================
+   Checkpoint 6B - raised portrait card + cleaner death drawer
+   ========================================================= */
+
+/* Make the portrait-through-hit-dice card visibly separate from the Favorites bed. */
+.application.sheet.black-flag.actor.pc .tov-static-panel {
+  background: #090d12;
+}
+.application.sheet.black-flag.actor.pc .tov-portrait-slot,
+.application.sheet.black-flag.actor.pc .tov-static-stats,
+.application.sheet.black-flag.actor.pc .tov-static-health {
+  background: #252a30;
+}
+.application.sheet.black-flag.actor.pc .tov-portrait-slot {
+  padding: 6px 6px 0;
+  margin: -6px -6px 0;
+  border: 1px solid rgb(201 180 124 / 34%);
+  border-bottom: 0;
+  box-shadow: 0 2px 0 rgb(255 255 255 / 4%);
+}
+.application.sheet.black-flag.actor.pc .tov-static-stats {
+  margin: 0 -6px;
+  padding: 0 6px;
+  border-left: 1px solid rgb(201 180 124 / 34%);
+  border-right: 1px solid rgb(201 180 124 / 34%);
+}
+.application.sheet.black-flag.actor.pc .tov-static-health {
+  margin: 0 -6px;
+  padding: 0 6px 10px;
+  border: 1px solid rgb(201 180 124 / 34%);
+  border-top: 0;
+  box-shadow: 0 8px 10px rgb(0 0 0 / 58%);
+}
+
+/* Give the pull tab breathing room below the raised card. */
+
+/* Cleaner fantasy drawer: native mechanics, custom presentation. */
+.
+.
+.
+.
+.
+.
+
+.
+
+/* Pull farther down over Favorites, with a slightly stronger blind-like overshoot. */
+.
+@
+@
+
+
+/* =========================================================
+   Checkpoint 6C - organic raised card + correctly anchored death drawer
+   ========================================================= */
+
+/* Soften the raised card: less dashboard, more layered character folio. */
+.application.sheet.black-flag.actor.pc .tov-portrait-slot,
+.application.sheet.black-flag.actor.pc .tov-static-stats,
+.application.sheet.black-flag.actor.pc .tov-static-health {
+  background: linear-gradient(105deg,#20252a 0%,#292d31 52%,#20252a 100%);
+  border-color: rgb(201 180 124 / 22%);
+}
+.application.sheet.black-flag.actor.pc .tov-portrait-slot {
+  border-radius: 4px 4px 0 0;
+}
+.application.sheet.black-flag.actor.pc .tov-static-health {
+  position: relative;
+  border-radius: 0 0 5px 5px;
+  box-shadow: 0 7px 9px rgb(0 0 0 / 52%);
+}
+
+/* Anchor the drawer to the actual bottom edge of the health/raised panel.
+   Luck/HP height changes can no longer move it upward over Hit Dice. */
+
+.
+
+.
+.
+.
+.
+.
+
+/* Pull tab is physically attached to the drawer's lower edge. */
+.
+
+/* Drawer clears the raised panel completely, then settles with tab attached. */
+.
+@
+@
+
+
+/* =========================================================
+   Checkpoint 6D - larger portrait-overlap AC shield
+   ========================================================= */
+.application.sheet.black-flag.actor.pc .tov-ac-medallion {
+  width: 104px;
+  height: 92px;
+  margin-top: -24px;
+  margin-bottom: -7px;
+  z-index: 12;
+  overflow: visible;
+}
+.application.sheet.black-flag.actor.pc .tov-ac-value {
+  margin-top: -5px;
+  font-size: 29px;
+}
+.application.sheet.black-flag.actor.pc .tov-static-vitals {
+  margin-top: 0;
+}
+
+
+/* =========================================================
+   Checkpoint 6E - exact death-save target + AC centering
+   ========================================================= */
+
+/* AC shield: force true center under portrait while retaining overlap. */
+.application.sheet.black-flag.actor.pc .tov-ac-medallion {
+  position: relative;
+  left: 50%;
+  translate: -50% 0;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* Drawer is attached to the BOTTOM of the raised health card. */
+
+/* Closed drawer lives completely behind raised card. */
+
+.
+.
+.
+
+.
+.
+
+/* Pull tab is always connected to the lower edge of the drawer. */
+.
+
+/* 55px drawer + 1px overlap: it emerges immediately below Hit Dice.
+   Drawer and tab move the same distance, keeping them physically attached. */
+.
+@
+@
+
+
+/* =========================================================
+   Checkpoint 6F - visually match D&D death-save reference
+   ========================================================= */
+.
+.
+.
+.
+.
+
+
+/* Checkpoint 6G - direct dnd5e death tray port */
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+/* Favorites v1 — compact 5e-inspired item rail. */
+.application.sheet.black-flag.actor.pc .tov-favorites { min-height: 92px; }
+.application.sheet.black-flag.actor.pc .tov-favorites-dragover {
+  outline: 1px dashed var(--tov-gold);
+  outline-offset: -2px;
+  background: rgb(201 180 124 / 9%);
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-list {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: 3px;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-row {
+  display: flex; align-items: center; gap: 7px;
+  min-height: 34px; padding: 3px 5px;
+  background: #151b23; border: 1px solid rgb(201 180 124 / 26%);
+  border-radius: 3px;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-row img {
+  flex: 0 0 27px; width: 27px; height: 27px; object-fit: cover;
+  border: 1px solid rgb(201 180 124 / 50%);
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-name {
+  flex: 1 1 0; min-width: 0; padding: 2px 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  text-align: left; font-size: 11px; color: var(--tov-text);
+  background: none; border: 0; box-shadow: none;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-name:hover { color: var(--tov-gold); }
+.application.sheet.black-flag.actor.pc .tov-favorite-remove {
+  flex: 0 0 20px; width: 20px; height: 22px; padding: 0;
+  color: var(--tov-muted); background: none; border: 0; box-shadow: none;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-remove:hover { color: #fff; }
+.application.sheet.black-flag.actor.pc .tov-favorite-hint {
+  margin: 5px 0 0; padding: 10px 5px;
+  text-align: center; font-size: 11px; color: var(--tov-muted);
+  border: 1px dashed rgb(201 180 124 / 35%);
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-hint[hidden] { display: none; }
+
+
+/* Static header prototype. Isolated from the released Favorites checkpoint. */
+.application.sheet.black-flag.actor.pc.tov-header-prototype {
+  --tov-header-height: 148px;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .sheet-header {
+  position: relative;
+  padding: 10px 18px;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .sheet-header > .profile,
+.application.sheet.black-flag.actor.pc.tov-header-prototype .sheet-header > .proficiency-bonus {
+  display: none !important;
+}
+.application.sheet.black-flag.actor.pc .tov-header-shell {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+}
+.application.sheet.black-flag.actor.pc .tov-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 16px;
+  height: 100%;
+}
+.application.sheet.black-flag.actor.pc .tov-header-identity {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-width: 0;
+  flex: 1;
+  gap: 4px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-edit-toggle {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  width: 29px;
+  height: 15px;
+  min-height: 15px;
+  padding: 2px;
+  border: 1px solid var(--tov-gold);
+  border-radius: 12px;
+  background: #283c50;
+  cursor: pointer;
+}
+.application.sheet.black-flag.actor.pc .tov-header-edit-toggle span {
+  display: block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #f1e5c7;
+  transition: transform 140ms ease;
+}
+.application.sheet.black-flag.actor.pc .tov-header-edit-toggle[aria-checked="true"] {
+  background: #967e49;
+}
+.application.sheet.black-flag.actor.pc .tov-header-edit-toggle[aria-checked="true"] span {
+  transform: translateX(13px);
+}
+.application.sheet.black-flag.actor.pc .tov-header-subtitle {
+  color: #e4d3aa;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.application.sheet.black-flag.actor.pc .tov-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-rest {
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--tov-gold);
+  font-size: 22px;
+  cursor: pointer;
+}
+.application.sheet.black-flag.actor.pc .tov-header-rest:hover {
+  border-color: var(--tov-gold);
+}
+.application.sheet.black-flag.actor.pc .tov-header-level {
+  position: relative;
+  width: 76px;
+  min-width: 76px;
+  height: 76px;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--tov-gold);
+  border-radius: 50%;
+  background: #132d46;
+  box-shadow: 0 0 0 4px rgb(7 20 33 / 50%);
+}
+.application.sheet.black-flag.actor.pc .tov-header-level-number {
+  font-size: 34px;
+  font-weight: 700;
+  color: #fff;
+}
+.application.sheet.black-flag.actor.pc .tov-header-progression-controls {
+  display: none;
+  position: absolute;
+  top: 82px;
+  right: 0;
+  z-index: 15;
+  width: 215px;
+  padding: 9px;
+  border: 1px solid var(--tov-gold);
+  border-radius: 6px;
+  background: #11263c;
+  box-shadow: 0 6px 15px #0009;
+}
+.application.sheet.black-flag.actor.pc .tov-header-editing .tov-header-progression-controls {
+  display: block;
+}
+.application.sheet.black-flag.actor.pc .tov-header-progression-controls .progression {
+  margin: 5px 0 0;
+  padding: 2px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-xp-values {
+  font-size: 11px;
+  color: #eee1c2;
+  text-align: center;
+  margin-bottom: 5px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-xp-track {
+  height: 6px;
+  border-radius: 4px;
+  background: #344a5a;
+  overflow: hidden;
+}
+.application.sheet.black-flag.actor.pc .tov-header-xp-track span {
+  display: block;
+  height: 100%;
+  background: var(--tov-gold);
+}
+
+
+/* Single-row abilities complete the header prototype. */
+.application.sheet.black-flag.actor.pc.tov-header-prototype {
+  --tov-header-height: 218px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-top {
+  height: 98px;
+  min-height: 98px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-abilities {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 7px;
+  width: 100%;
+  min-width: 0;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability {
+  min-width: 0;
+  height: 84px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border: 1px solid var(--tov-gold);
+  border-radius: 9px 9px 16px 16px;
+  background: linear-gradient(180deg,#173e61,#102940);
+  box-shadow: inset 0 0 0 2px #0a2138;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-label {
+  color: #e8d6a9;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-roll {
+  min-height: 31px;
+  padding: 0 8px;
+  color: #fff;
+  background: transparent;
+  border: 0;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-roll:hover,
+.application.sheet.black-flag.actor.pc .tov-header-ability-roll:focus-visible {
+  color: var(--tov-gold);
+  text-shadow: 0 0 8px #e5d4a866;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-score {
+  color: #e8d6a9;
+  font-size: 13px;
+}
+
+
+/* v0.1.27: progression expands the header instead of overlaying ability tiles. */
+.application.sheet.black-flag.actor.pc.tov-header-prototype:has(.tov-header-editing) {
+  --tov-header-height: 340px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-editing .tov-header-progression-controls {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: static;
+  width: 100%;
+  min-height: 105px;
+  padding: 8px 14px;
+  box-shadow: none;
+}
+.application.sheet.black-flag.actor.pc .tov-header-editing .tov-header-level {
+  position: static;
+}
+.application.sheet.black-flag.actor.pc .tov-header-editing.tov-header-shell {
+  height: auto;
+}
+.application.sheet.black-flag.actor.pc .tov-header-editing .tov-header-progression-controls .progression {
+  width: 100%;
+}
+
+
+/* v0.1.28: edit swaps the level medallion for progression in-place. */
+.application.sheet.black-flag.actor.pc.tov-header-prototype:has(.tov-header-editing) {
+  --tov-header-height: 218px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-right {
+  flex-shrink: 0;
+}
+.application.sheet.black-flag.actor.pc .tov-header-right > .tov-header-progression-controls {
+  display: none;
+  position: static;
+  width: 215px;
+  min-height: 76px;
+  max-height: 98px;
+  padding: 7px 10px;
+  margin: 0;
+  box-shadow: none;
+  overflow: auto;
+}
+.application.sheet.black-flag.actor.pc .tov-header-editing .tov-header-right > .tov-header-level {
+  display: none;
+}
+.application.sheet.black-flag.actor.pc .tov-header-editing .tov-header-right > .tov-header-progression-controls {
+  display: flex;
+}
+
+
+/* v0.1.29: 5e-inspired compact ability strip, under identity, centered. */
+.application.sheet.black-flag.actor.pc.tov-header-prototype,
+.application.sheet.black-flag.actor.pc.tov-header-prototype:has(.tov-header-editing) {
+  --tov-header-height: 178px;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .sheet-header {
+  padding: 8px 16px 10px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-shell {
+  gap: 4px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-top {
+  height: 88px;
+  min-height: 88px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-abilities {
+  width: min(100%, 690px);
+  margin: 0 auto;
+  gap: 6px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability {
+  height: 62px;
+  gap: 0;
+  border-radius: 7px 7px 12px 12px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-label {
+  font-size: 10px;
+  line-height: 13px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-roll {
+  min-height: 27px;
+  font-size: 22px;
+  line-height: 25px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-score {
+  font-size: 11px;
+  line-height: 13px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-right > .tov-header-progression-controls {
+  width: 150px;
+  min-height: 64px;
+  max-height: 78px;
+  padding: 5px 7px;
+  overflow: visible;
+}
+.application.sheet.black-flag.actor.pc .tov-header-progression-controls .progression {
+  margin: 0;
+}
+
+
+/* v0.1.30: 5e-reference shield silhouettes, located beneath right header region. */
+.application.sheet.black-flag.actor.pc.tov-header-prototype,
+.application.sheet.black-flag.actor.pc.tov-header-prototype:has(.tov-header-editing) {
+  --tov-header-height: 165px;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .sheet-header {
+  padding: 8px 17px 9px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-shell {
+  gap: 0;
+}
+.application.sheet.black-flag.actor.pc .tov-header-top {
+  height: 79px;
+  min-height: 79px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-abilities {
+  width: min(64%, 565px);
+  margin: 0 5% 0 auto;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 7px;
+  align-items: start;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability {
+  position: relative;
+  height: 67px;
+  padding: 5px 2px 9px;
+  gap: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  isolation: isolate;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 7px;
+  z-index: -2;
+  background: #a99b7c;
+  clip-path: polygon(50% 0, 100% 21%, 100% 85%, 50% 100%, 0 85%, 0 21%);
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability::after {
+  content: "";
+  position: absolute;
+  inset: 2px 2px 9px;
+  z-index: -1;
+  background: #1b2c3d;
+  clip-path: polygon(50% 0, 100% 21%, 100% 84%, 50% 100%, 0 84%, 0 21%);
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-label {
+  font-size: 10px;
+  line-height: 14px;
+  color: #d8c79d;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-roll {
+  min-height: 27px;
+  font-size: 21px;
+  line-height: 25px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-score {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 31px;
+  padding: 2px 6px;
+  background: #0c1118;
+  border: 1px solid #b4a783;
+  border-radius: 3px;
+  color: #e8d6a9;
+  font-size: 11px;
+  line-height: 13px;
+  text-align: center;
+}
+.application.sheet.black-flag.actor.pc .tov-header-right > .tov-header-progression-controls {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.application.sheet.black-flag.actor.pc .tov-header-progression-controls .progression {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-progression-controls .progression > legend {
+  width: 100%;
+  text-align: center;
+}
+.application.sheet.black-flag.actor.pc .tov-header-progression-controls .progression > legend blackflag-notification-badge,
+.application.sheet.black-flag.actor.pc .tov-header-progression-controls .progression > legend .notification-badge {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.application.sheet.black-flag.actor.pc .tov-header-progression-controls .progression > button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+
+/* v0.1.31 visual refinements against supplied 5e reference. */
+.application.sheet.black-flag.actor.pc .tov-header-abilities {
+  width: min(51%, 465px);
+  margin: 0 4.5% 0 auto;
+  gap: 6px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability {
+  height: 53px;
+  padding: 0 2px 7px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability::before { inset: 0 0 5px; }
+.application.sheet.black-flag.actor.pc .tov-header-ability::after { inset: 2px 2px 7px; }
+.application.sheet.black-flag.actor.pc .tov-header-ability-label {
+  font-size: 10px;
+  line-height: 12px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-roll {
+  font-size: 21px;
+  min-height: 25px;
+  line-height: 24px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-score {
+  bottom: -1px;
+  font-size: 11px;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype,
+.application.sheet.black-flag.actor.pc.tov-header-prototype:has(.tov-header-editing) {
+  --tov-header-height: 155px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-top {
+  height: 77px;
+  min-height: 77px;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype.tov-enhanced-ready .tov-static-panel {
+  position: relative;
+  z-index: 3;
+  margin-top: -46px;
+  min-height: calc(100% + 46px);
+  overflow-y: auto;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .tov-header-edit-toggle {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  box-sizing: border-box;
+  width: 29px;
+  min-width: 29px;
+  height: 16px;
+  min-height: 16px;
+  padding: 2px !important;
+  line-height: 1;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .tov-header-edit-toggle > span {
+  flex: 0 0 9px;
+  margin: 0 !important;
+  transform: translateX(0);
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .tov-header-edit-toggle[aria-checked="true"] > span {
+  transform: translateX(13px);
+}
+.application.sheet.black-flag.actor.pc .tov-header-progression-controls .progression {
+  position: relative;
+}
+.application.sheet.black-flag.actor.pc .tov-header-progression-controls .progression > legend {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+.application.sheet.black-flag.actor.pc .tov-header-progression-controls .progression [data-action="toggleProgression"] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+.application.sheet.black-flag.actor.pc .tov-header-progression-controls .tov-progression-notice {
+  color: #f0c94d !important;
+}
+
+
+/* v0.1.34: Main-only two-column layout. Other tabs are untouched. */
+.application.sheet.black-flag.actor.pc .tab[data-tab="main"].tov-main-reorganized {
+  display: block;
+  padding: 12px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-layout {
+  display: grid;
+  grid-template-columns: minmax(230px, .95fr) minmax(260px, 1.05fr);
+  align-items: start;
+  gap: 14px;
+  width: 100%;
+}
+.application.sheet.black-flag.actor.pc .tov-main-layout fieldset {
+  min-width: 0;
+  margin: 0 0 12px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills > .skills {
+  width: 100%;
+}
+.application.sheet.black-flag.actor.pc .tov-main-details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.application.sheet.black-flag.actor.pc .tov-main-saves {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 10px;
+  row-gap: 5px;
+  padding: 9px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-saves legend {
+  grid-column: 1 / -1;
+}
+.application.sheet.black-flag.actor.pc .tov-main-save-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  font-size: 12px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-save-row > span {
+  flex: 1;
+  min-width: 0;
+}
+.application.sheet.black-flag.actor.pc .tov-main-save-row > button {
+  flex: 0 0 auto;
+  border: 0;
+  background: transparent;
+  padding: 2px;
+  color: #eee;
+}
+.application.sheet.black-flag.actor.pc .tov-main-info {
+  padding: 8px 11px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-info-value {
+  font-size: 13px;
+  min-height: 16px;
+}
+/* Hide only the obsolete native Main layout, keeping it mounted so Black Flag
+   can still update actor fields and register its native event actions. */
+.application.sheet.black-flag.actor.pc .tab[data-tab="main"].tov-main-reorganized > .top,
+.application.sheet.black-flag.actor.pc .tab[data-tab="main"].tov-main-reorganized > .left,
+.application.sheet.black-flag.actor.pc .tab[data-tab="main"].tov-main-reorganized > .center,
+.application.sheet.black-flag.actor.pc .tab[data-tab="main"].tov-main-reorganized > .right {
+  display: none !important;
+}
+
+
+/* v0.1.35 — D&D 5e-inspired Main content styling, ToV blue/gold palette.
+   Main-only: header, portrait rail and other tabs remain untouched. */
+.application.sheet.black-flag.actor.pc .tab[data-tab="main"].tov-main-reorganized {
+  padding: 10px 12px 24px;
+  background: #1a1e24;
+}
+.application.sheet.black-flag.actor.pc .tov-main-layout {
+  grid-template-columns: minmax(225px, .93fr) minmax(275px, 1.07fr);
+  gap: 13px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-layout fieldset {
+  position: relative;
+  border: 1px solid #576478;
+  border-radius: 9px;
+  background: linear-gradient(155deg, #292e38, #242932);
+  box-shadow: inset 0 0 0 2px #20252d, 0 1px 0 #687488;
+  color: #dce0e8;
+}
+.application.sheet.black-flag.actor.pc .tov-main-layout fieldset > legend {
+  margin: 0 auto;
+  padding: 0 9px;
+  width: auto;
+  max-width: 94%;
+  color: #c3ae7f;
+  background: #252a33;
+  font-weight: 750;
+  font-size: 12px;
+  letter-spacing: .06em;
+  text-align: center;
+  text-transform: uppercase;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills > fieldset.skills {
+  padding: 7px 12px 11px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block {
+  display: flex;
+  min-height: 27px;
+  padding: 2px 0;
+  border-bottom: 1px dotted #535a66;
+  background: transparent;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block:last-child {
+  border-bottom: none;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block .unbutton {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  width: 100%;
+  gap: 7px;
+  padding: 2px 4px;
+  border: 0;
+  background: transparent;
+  color: #e1e2e5;
+  font-size: 12px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block .unbutton .name {
+  order: 2;
+  flex: 1;
+  text-align: left;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block .unbutton .ability {
+  order: 1;
+  width: 30px;
+  color: #c5b18b;
+  font-size: 10px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block .unbutton .mod {
+  order: 3;
+  min-width: 27px;
+  text-align: right;
+  font-weight: 750;
+  font-size: 13px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-saves {
+  padding: 11px 13px 13px;
+  gap: 8px 12px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-save-row {
+  padding: 3px 0;
+  border-bottom: 1px dotted #535a66;
+  font-size: 12px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-save-row > button {
+  min-width: 31px;
+  font-size: 14px;
+  font-weight: 750;
+  color: #e1e2e5;
+}
+.application.sheet.black-flag.actor.pc .tov-main-save-row > button svg.label {
+  display: none;
+}
+.application.sheet.black-flag.actor.pc .tov-main-info {
+  margin-bottom: 9px !important;
+  padding: 7px 12px 9px;
+  min-height: 46px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-info-value {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 23px;
+  font-size: 13px;
+  color: #e4e2df;
+}
+.application.sheet.black-flag.actor.pc .tov-main-info:nth-of-type(-n+4) {
+  background: linear-gradient(100deg,#323947,#252a33 85%);
+  border-left: 3px solid #a99160;
+}
+.application.sheet.black-flag.actor.pc .tov-main-info:nth-of-type(n+5) {
+  background: #242932;
+}
+
+
+/* v0.1.36: match the three specific 5e Main-tab reference treatments. */
+.application.sheet.black-flag.actor.pc .tov-main-details { gap: 0; }
+.application.sheet.black-flag.actor.pc .tov-main-layout .tov-main-saves {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 0 12px;
+  padding: 8px 12px 11px;
+  border: 2px solid #566278;
+  border-radius: 12px;
+  background: #292d37;
+  box-shadow: inset 0 0 0 3px #20252d, 0 0 0 1px #343e50;
+}
+.application.sheet.black-flag.actor.pc .tov-main-layout .tov-main-saves > legend {
+  color: #c4c6ca;
+  background: #292d37;
+  letter-spacing: .035em;
+  font-size: 12px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-save-row {
+  min-height: 34px;
+  gap: 8px;
+  border-bottom: 1px dotted #4e5562;
+}
+.application.sheet.black-flag.actor.pc .tov-main-save-row .proficiency-selector {
+  flex: 0 0 12px;
+  width: 12px;
+  height: 12px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-save-row > span {
+  font-size: 12px;
+  color: #d8d8db;
+}
+.application.sheet.black-flag.actor.pc .tov-main-save-row > button {
+  min-width: 32px;
+  font-weight: 750;
+  color: #e4e6eb;
+}
+/* 5e-style full-width identity strips, not framed fieldsets. */
+.application.sheet.black-flag.actor.pc .tov-main-layout fieldset.tov-main-identity-card {
+  min-height: 49px;
+  margin: 0 0 7px !important;
+  padding: 0;
+  border: 1px solid #404754;
+  border-left: 0;
+  border-radius: 5px;
+  box-shadow: none;
+  background: linear-gradient(100deg,#424957 0%,#303640 42%,#252a32 100%);
+  overflow: hidden;
+}
+.application.sheet.black-flag.actor.pc .tov-main-identity-card > legend {
+  display: none;
+}
+.application.sheet.black-flag.actor.pc .tov-main-identity-card .tov-main-info-value {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 47px;
+  padding: 4px 9px;
+  color: #d3bf90;
+  font-size: 14px;
+  font-weight: 700;
+}
+.application.sheet.black-flag.actor.pc .tov-main-identity-art {
+  width: 35px;
+  height: 35px;
+  flex: 0 0 35px;
+  object-fit: cover;
+  border: 1px solid #8b7955;
+  border-radius: 4px;
+}
+/* 5e proficiencies are unboxed icon headings with compact tags. */
+.application.sheet.black-flag.actor.pc .tov-main-layout fieldset.tov-main-proficiency-section {
+  min-height: 0;
+  margin: 4px 0 10px !important;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.application.sheet.black-flag.actor.pc .tov-main-layout .tov-main-proficiency-section > legend {
+  display: block;
+  width: 100%;
+  margin: 0 0 5px;
+  padding: 0;
+  text-align: left;
+  background: transparent;
+  color: #b9bdc5;
+  font-size: 11px;
+  letter-spacing: 0;
+}
+.application.sheet.black-flag.actor.pc .tov-main-proficiency-section > legend::before {
+  display: inline-block;
+  width: 17px;
+  margin-right: 3px;
+  color: #b4bac4;
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+}
+.application.sheet.black-flag.actor.pc .tov-main-info-senses > legend::before { content: "\\f06e"; }
+.application.sheet.black-flag.actor.pc .tov-main-info-armor > legend::before { content: "\\f3ed"; }
+.application.sheet.black-flag.actor.pc .tov-main-info-weapons > legend::before { content: "\\f71c"; }
+.application.sheet.black-flag.actor.pc .tov-main-info-languages > legend::before { content: "\\f024"; }
+.application.sheet.black-flag.actor.pc .tov-main-proficiency-section .tov-main-info-value {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  padding: 0;
+  min-height: 20px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-chip {
+  display: inline-block;
+  padding: 3px 7px;
+  border: 1px solid #596272;
+  border-radius: 3px;
+  background: #39414f;
+  color: #e3e6eb;
+  font-size: 10px;
+  line-height: 1.2;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+
+/* v0.1.37: Main-tab legibility and native proficiency state. */
+.application.sheet.black-flag.actor.pc .tov-main-layout {
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills > fieldset.skills {
+  padding: 7px 9px 11px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 7px;
+  min-width: 0;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block > .proficiency-selector {
+  flex: 0 0 13px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block > button.unbutton {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: 28px minmax(0,1fr) 26px;
+  gap: 5px;
+  min-width: 0;
+  width: auto;
+  padding: 2px 0;
+  font-size: 11px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block .unbutton .ability {
+  grid-column: 1;
+  grid-row: 1;
+  width: auto;
+  min-width: 0;
+  font-size: 10px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block .unbutton .name {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  font-size: 11px;
+  white-space: nowrap;
+  letter-spacing: -.015em;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block .unbutton .mod {
+  grid-column: 3;
+  grid-row: 1;
+  min-width: 0;
+  text-align: right;
+  font-size: 12px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block .proficiency-selector,
+.application.sheet.black-flag.actor.pc .tov-main-save-row .proficiency-selector {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 12px;
+  width: 12px;
+  height: 12px;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block .proficiency-selector blackFlag-icon,
+.application.sheet.black-flag.actor.pc .tov-main-save-row .proficiency-selector blackFlag-icon {
+  display: none !important;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block .proficiency-selector::after,
+.application.sheet.black-flag.actor.pc .tov-main-save-row .proficiency-selector::after {
+  content: "";
+  display: block;
+  width: 7px;
+  height: 7px;
+  border: 1px solid #bcb4a5;
+  border-radius: 50%;
+  background: transparent;
+  transform: none;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block .proficiency-selector:not([data-multiplier="0"])::after,
+.application.sheet.black-flag.actor.pc .tov-main-save-row .proficiency-selector:not([data-multiplier="0"])::after {
+  background: #c4b18a;
+}
+.application.sheet.black-flag.actor.pc .tov-main-save-row {
+  min-width: 0;
+  gap: 5px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-save-row > span {
+  white-space: nowrap;
+  font-size: 11px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-layout fieldset.tov-main-proficiency-section > legend::before {
+  content: none !important;
+}
+.application.sheet.black-flag.actor.pc .tov-main-proficiency-section > legend i {
+  display: inline-block;
+  width: 16px;
+  margin-right: 4px;
+  font-size: 11px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-chip {
+  padding: 2px 6px;
+  font-size: 10px;
+  line-height: 1.25;
+  font-weight: 600;
+}
+
+
+/* v0.1.38: precise alignment and externally mounted portrait handle. */
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready > .window-content > .tov-static-collapse {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: calc(var(--tov-header-height) + 10px);
+  left: calc(var(--tov-sidebar-width) - 2px);
+  right: auto;
+  width: 23px;
+  height: 43px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--tov-gold);
+  border-left: 0;
+  border-radius: 0 6px 6px 0;
+  background: #141c27;
+  color: var(--tov-gold);
+  box-shadow: 2px 2px 5px #0007;
+  z-index: 100;
+  cursor: pointer;
+  transition: left 220ms ease;
+}
+.application.sheet.black-flag.actor.pc.tov-static-collapsed > .window-content > .tov-static-collapse {
+  left: 0;
+  right: auto;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability {
+  display: grid;
+  grid-template-rows: 13px 25px 15px;
+  justify-items: center;
+  align-content: center;
+  row-gap: 0;
+  padding: 0 2px 7px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-label {
+  grid-row: 1;
+  align-self: center;
+  margin: 0;
+  line-height: 13px;
+  transform: none;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-roll {
+  grid-row: 2;
+  align-self: center;
+  justify-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 25px;
+  height: 25px;
+  padding: 0;
+  margin: 0;
+  line-height: 25px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-score {
+  grid-row: 3;
+  margin: 0;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block > button.unbutton {
+  grid-template-columns: 28px minmax(0,1fr) 33px;
+  padding-right: 8px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block .unbutton .mod {
+  padding-right: 2px;
+  text-align: right;
+}
+
+
+/* v0.1.42: calibrated header layout against supplied 5e reference.
+   One authoritative final header rule set instead of stacking 1.40 overrides.
+   Do not touch native Foundry chrome, Main, portrait or toggle logic. */
+.application.sheet.black-flag.actor.pc.tov-header-prototype,
+.application.sheet.black-flag.actor.pc.tov-header-prototype:has(.tov-header-editing) {
+  --tov-header-height: 179px;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .sheet-header {
+  min-height: 179px;
+  height: 179px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-shell {
+  position: relative;
+  gap: 0;
+}
+.application.sheet.black-flag.actor.pc .tov-header-top {
+  height: 94px;
+  min-height: 94px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-right {
+  position: relative;
+  padding-bottom: 0;
+}
+.application.sheet.black-flag.actor.pc .tov-header-play-xp {
+  position: absolute;
+  right: 72px;
+  top: 65px;
+  width: clamp(160px, 27vw, 225px);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  pointer-events: none;
+}
+.application.sheet.black-flag.actor.pc .tov-header-play-xp-values {
+  align-self: flex-start;
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: 600;
+  color: #d3c19a;
+}
+.application.sheet.black-flag.actor.pc .tov-header-play-xp-track {
+  width: 100%;
+  height: 5px;
+  overflow: hidden;
+  border: 1px solid #a58c5b;
+  border-radius: 3px;
+  background: #101924;
+}
+.application.sheet.black-flag.actor.pc .tov-header-play-xp-track > span {
+  display: block;
+  height: 100%;
+  background: #c8ad72;
+  transition: width .15s ease;
+}
+.application.sheet.black-flag.actor.pc .tov-header-editing .tov-header-play-xp {
+  display: none;
+}
+/* Six matching 5e-sized shields in one row; no change to roll handlers. */
+.application.sheet.black-flag.actor.pc .tov-header-abilities {
+  width: min(59%, 495px);
+  margin: 0 5% 0 auto;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+  align-items: start;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability {
+  position: relative;
+  display: grid;
+  grid-template-rows: 12px 24px;
+  align-content: start;
+  justify-items: center;
+  row-gap: 0;
+  min-width: 0;
+  height: 53px;
+  padding: 5px 2px 7px;
+  margin: 0;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability::before {
+  inset: 0 0 5px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability::after {
+  inset: 2px 2px 7px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-label {
+  position: relative;
+  grid-row: 1;
+  align-self: center;
+  justify-self: center;
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+  font-size: 10px;
+  line-height: 12px;
+  transform: none;
+  text-align: center;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-roll {
+  grid-row: 2;
+  align-self: center;
+  justify-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 24px;
+  height: 24px;
+  margin: 0;
+  padding: 0;
+  font-size: 21px;
+  line-height: 24px;
+  text-align: center;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-score {
+  position: absolute;
+  top: 39px;
+  bottom: auto; /* cancel earlier bottom:-1px; otherwise the badge stretches to the tab border */
+  grid-row: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  z-index: 2;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype.tov-enhanced-ready .tov-static-panel {
+  margin-top: -70px;
+  min-height: calc(100% + 70px);
+}
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready > .window-content > .tov-static-collapse {
+  top: calc(var(--tov-header-height) - 60px);
+}
+
+/* v0.1.44: 5e reference: framed rest controls, XP below rests, squat shield tiles.
+   Scope to header; do not change native rest handlers or progression behavior. */
+.application.sheet.black-flag.actor.pc .tov-header-right {
+  gap: 10px;
+  align-items: center;
+  padding-right: 0;
+}
+.application.sheet.black-flag.actor.pc .tov-header-rest {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 29px;
+  min-width: 29px;
+  height: 29px;
+  padding: 0;
+  border: 2px solid #a99670;
+  border-radius: 4px;
+  background: #131d2a;
+  box-shadow: inset 0 0 0 2px #26384a, 0 1px 3px #0009;
+  color: #d8c393;
+  font-size: 16px;
+  line-height: 1;
+}
+.application.sheet.black-flag.actor.pc .tov-header-rest:hover,
+.application.sheet.black-flag.actor.pc .tov-header-rest:focus-visible {
+  background: #284764;
+  border-color: #e5c987;
+}
+.application.sheet.black-flag.actor.pc .tov-header-play-xp {
+  right: 92px;
+  top: 66px;
+  width: 204px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-abilities {
+  width: min(59%, 495px);
+  margin: 0 5% 0 auto;
+  gap: 9px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability {
+  height: 51px;
+  padding: 5px 2px 7px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability::before {
+  inset: 0 2px 7px;
+  clip-path: polygon(50% 0%, 100% 17%, 100% 88%, 0% 88%, 0% 17%);
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability::after {
+  inset: 2px 4px 9px;
+  clip-path: polygon(50% 0%, 100% 16%, 100% 86%, 0% 86%, 0% 16%);
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-score {
+  top: 37px;
+  bottom: auto;
+}
+
+/* v0.1.45: ToV title typography and actual d20-outline attribute geometry. */
+.application.sheet.black-flag.actor.pc .tov-header-identity .document-name,
+.application.sheet.black-flag.actor.pc .tov-header-identity .document-name input {
+  font-family: Georgia, "Palatino Linotype", "Book Antiqua", serif;
+  font-weight: 900;
+  font-variant: small-caps;
+  letter-spacing: .018em;
+  color: #f6f4ee;
+  text-shadow: 0 2px 0 #24384b, 1px 3px 0 #13283c, 0 4px 4px #071320;
+}
+.application.sheet.black-flag.actor.pc .tov-header-subtitle {
+  font-family: Georgia, "Palatino Linotype", "Book Antiqua", serif;
+  font-variant: small-caps;
+  font-weight: 700;
+  letter-spacing: .035em;
+  color: #e2d1ae;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability::before {
+  inset: 0 1px 4px;
+  clip-path: polygon(50% 0%, 100% 23%, 100% 75%, 50% 100%, 0% 75%, 0% 23%);
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability::after {
+  inset: 2px 3px 6px;
+  clip-path: polygon(50% 0%, 100% 22%, 100% 74%, 50% 100%, 0% 74%, 0% 22%);
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-score {
+  top: 37px;
+  z-index: 3; /* score plate obscures the lower d20 point */
+}
+
+/* v0.1.46: reference-book condensed display serif, in white, for character name.
+   Grenze is a close web-font approximation; no claim of exact publisher font. */
+.application.sheet.black-flag.actor.pc .tov-header-identity .document-name,
+.application.sheet.black-flag.actor.pc .tov-header-identity .document-name input {
+  font-family: "Grenze", Georgia, serif !important;
+  font-weight: 900 !important;
+  font-variant: normal;
+  font-stretch: normal;
+  letter-spacing: .005em !important;
+  color: #fff !important;
+  text-shadow: 0 2px 1px #173451, 1px 3px 2px #071728 !important;
+}
+
+/* v0.1.47: remove name input chrome; lock d20 tiles and Main columns.
+   The reference sheet maintains fixed-size controls when its window expands. */
+.application.sheet.black-flag.actor.pc .tov-header-identity .document-name,
+.application.sheet.black-flag.actor.pc .tov-header-identity .document-name input {
+  border: 0 !important;
+  outline: 0;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.application.sheet.black-flag.actor.pc .tov-header-identity .document-name:focus-within {
+  outline: 1px dashed #bba574;
+  outline-offset: 3px;
+}
+/* Fixed 64px d20 faces; extra window width stays outside the six tiles. */
+.application.sheet.black-flag.actor.pc .tov-header-abilities {
+  grid-template-columns: repeat(6, 64px);
+  width: max-content;
+  min-width: 0;
+  max-width: none;
+  gap: 12px;
+  justify-content: start;
+  justify-items: center;
+  margin: 0 5% 0 auto;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability {
+  box-sizing: border-box;
+  width: 64px;
+  min-width: 64px;
+  max-width: 64px;
+  height: 51px;
+  flex: 0 0 64px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability::before {
+  inset: 0 2px 4px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability::after {
+  inset: 2px 4px 6px;
+}
+/* Keep the two Main columns at their default-window dimensions. */
+.application.sheet.black-flag.actor.pc .tov-main-layout {
+  grid-template-columns: 244px 270px;
+  width: max-content;
+  min-width: 0;
+  max-width: none;
+  gap: 13px;
+  justify-content: start;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills,
+.application.sheet.black-flag.actor.pc .tov-main-details {
+  min-width: 0;
+  width: 100%;
+}
+
+/* v0.1.48: restore the tall d20 silhouette without responsive stretching.
+   The score plate covers the bottom point as on the 5e reference. */
+.application.sheet.black-flag.actor.pc .tov-header-ability {
+  width: 64px;
+  min-width: 64px;
+  max-width: 64px;
+  height: 64px;
+  padding: 7px 2px 7px;
+  grid-template-rows: 12px 24px;
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability::before {
+  inset: 0 2px 4px;
+  clip-path: polygon(50% 0%, 100% 24%, 100% 70%, 50% 100%, 0% 70%, 0% 24%);
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability::after {
+  inset: 2px 4px 6px;
+  clip-path: polygon(50% 0%, 100% 24%, 100% 70%, 50% 100%, 0% 70%, 0% 24%);
+}
+.application.sheet.black-flag.actor.pc .tov-header-ability-score {
+  top: 47px;
+  bottom: auto;
+}
+
+/* Preserve the default 880px sheet height when the viewport fits it, and
+   allow shorter viewports to keep the bottom of the window visible. */
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready {
+  min-width: 820px !important;
+  min-height: min(880px, 85vh) !important;
+}
+
+/* v0.1.51: native interactive exhaustion pips; preserve portrait geometry. */
+.application.sheet.black-flag.actor.pc .tov-exhaustion .tov-exhaustion-pip {
+  appearance: none;
+  box-sizing: border-box;
+  flex: 0 0 17px;
+  width: 17px;
+  height: 17px;
+  min-width: 17px;
+  min-height: 17px;
+  margin: 0;
+  padding: 0;
+  border: 2px solid var(--tov-gold);
+  border-radius: 50%;
+  background: #0b0f14;
+  box-shadow: 0 1px 3px #000;
+  cursor: pointer;
+}
+.application.sheet.black-flag.actor.pc .tov-exhaustion .tov-exhaustion-pip.filled {
+  background: var(--tov-gold);
+  box-shadow: inset 0 0 0 2px #222a32, 0 1px 3px #000;
+}
+.application.sheet.black-flag.actor.pc .tov-exhaustion .tov-exhaustion-pip:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+.application.sheet.black-flag.actor.pc .tov-exhaustion .tov-exhaustion-pip:disabled {
+  cursor: default;
+  opacity: .75;
+}
+
+/* v0.1.54: shield stays clear of the nearest exhaustion pips.
+   Broader shoulders provide visual width without enlarging its footprint. */
+.application.sheet.black-flag.actor.pc .tov-ac-medallion {
+  width: 96px !important;
+  height: 92px !important;
+  clip-path: polygon(50% 0%, 97% 13%, 94% 65%, 77% 83%, 50% 100%, 23% 83%, 6% 65%, 3% 13%) !important;
+}
+
+/* v0.1.56: reserve actual room for the AC shield between exhaustion groups.
+   Previous widths only enlarged the shield inside a 68px grid column. */
+.application.sheet.black-flag.actor.pc .tov-core-cluster {
+  grid-template-columns: minmax(0, 1fr) 81px minmax(0, 1fr) !important;
+  column-gap: 0 !important;
+}
+.application.sheet.black-flag.actor.pc .tov-exhaustion {
+  gap: 2px !important;
+  justify-content: space-between !important;
+  min-width: 0;
+}
+.application.sheet.black-flag.actor.pc .tov-ac-medallion {
+  width: 81px !important;
+  height: 92px !important;
+}
+
+/* v0.1.57: tighten shield and vertical rail without moving portrait. */
+.application.sheet.black-flag.actor.pc .tov-core-cluster {
+  grid-template-columns: minmax(0,1fr) 75px minmax(0,1fr) !important;
+}
+.application.sheet.black-flag.actor.pc .tov-ac-medallion {
+  width: 75px !important;
+  height: 92px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-static-vitals {
+  margin-top: -8px !important;
+  min-height: 56px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-luck-pips .tov-luck-pip {
+  box-sizing: border-box;
+  width: 17px; height: 17px; min-width: 17px; min-height: 17px;
+  padding: 0; margin: 0;
+  border-radius: 50%;
+  border: 2px solid #d6e8f7;
+  background: #101e30;
+  cursor: pointer;
+}
+.application.sheet.black-flag.actor.pc .tov-luck-pips .tov-luck-pip.filled {
+  background: #438fc7;
+  box-shadow: 0 0 8px rgb(40 121 185 / 70%);
+}
+.application.sheet.black-flag.actor.pc .tov-luck-pips .tov-luck-pip:disabled { cursor: default; }
+.application.sheet.black-flag.actor.pc .tov-editable-resource,
+.application.sheet.black-flag.actor.pc .tov-hit-die-action { cursor: pointer; }
+.application.sheet.black-flag.actor.pc .tov-inline-resource-input {
+  width: 72px; max-width: 100%; height: 24px; padding: 0 3px;
+  color: white; background: #142b40; border: 1px solid #d6bd7a;
+  font: inherit; text-align: center;
+}
+
+/* v0.1.58: manual correction of available hit dice; no accidental rolling. */
+.application.sheet.black-flag.actor.pc .tov-hit-die-input {
+  width: 43px;
+  height: 22px;
+  margin-right: 2px;
+  font-size: 13px;
+}
+
+/* v0.1.59: favorites: native action shortcut, distinct from opening item. */
+.application.sheet.black-flag.actor.pc .tov-favorite-use {
+  flex: 0 0 auto; padding: 2px 5px; margin: 0;
+  border: 1px solid var(--tov-gold);
+  border-radius: 3px;
+  color: var(--tov-gold);
+  background: #172b3b;
+  font-size: 9px; font-weight: 900; line-height: 1.2;
+  cursor: pointer;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-use:hover {
+  background: #28445a; color: #fff;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-use:disabled {
+  opacity: .5; cursor: default;
+}
+
+/* v0.1.61: compact actionable Favorites and delayed descriptive hover. */
+.application.sheet.black-flag.actor.pc .tov-favorite-row { position:relative; padding:0; gap:0; }
+.application.sheet.black-flag.actor.pc .tov-favorite-body {
+  display:flex; align-items:center; gap:7px; flex:1; min-width:0;
+  padding:4px; border:0; background:transparent; color:var(--tov-text);
+  box-shadow:none; text-align:left; cursor:pointer;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-body img { flex:0 0 28px; }
+.application.sheet.black-flag.actor.pc .tov-favorite-label {
+  display:flex; flex-direction:column; flex:1; min-width:0;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-label strong {
+  overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
+  font: bold 12px Georgia,serif; color:#e8e5df;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-label small,
+.application.sheet.black-flag.actor.pc .tov-favorite-meta small {
+  font: 9px Arial,sans-serif; color:#aeb5bd;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-meta {
+  display:flex; flex-direction:column; align-items:flex-end;
+  flex:0 0 auto; font-size:12px; color:#e4e5e8;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-body:hover strong { color:var(--tov-gold); }
+.application.sheet.black-flag.actor.pc .tov-favorite-preview {
+  display:none; position:absolute; z-index:1000;
+  left:calc(100% + 10px); top:0; width:290px; max-height:340px;
+  overflow:auto; padding:12px; background:#eeeae3; color:#26272a;
+  border:1px solid #ad9976; border-radius:4px;
+  box-shadow:0 6px 20px #000a; pointer-events:none;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-row.tov-preview-open .tov-favorite-preview { display:block; }
+.application.sheet.black-flag.actor.pc .tov-favorite-preview header {
+  display:flex; align-items:center; gap:8px; font:bold 18px Georgia,serif;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-preview header img { width:40px;height:40px; }
+.application.sheet.black-flag.actor.pc .tov-favorite-preview-text {
+  margin-top:9px; white-space:pre-line; font:12px/1.45 Georgia,serif;
+}
+
+/* v0.1.62: hover card escapes the sidebar's clipped scroll container. */
+body > .tov-favorite-preview {
+  display:block !important; position:fixed !important; z-index:100000 !important;
+  width:290px; max-height:340px; overflow:auto; padding:12px;
+  background:#eeeae3; color:#26272a; border:1px solid #ad9976;
+  border-radius:4px; box-shadow:0 6px 20px #000a; pointer-events:none;
+}
+body > .tov-favorite-preview header {
+  display:flex; align-items:center; gap:8px; font:bold 18px Georgia,serif;
+}
+body > .tov-favorite-preview header img { width:40px; height:40px; object-fit:cover; }
+body > .tov-favorite-preview .tov-favorite-preview-text {
+  margin-top:9px; white-space:pre-line; font:12px/1.45 Georgia,serif;
+}
+
+/* v0.1.63: two-line Favorites rows with compact right-side details. */
+.application.sheet.black-flag.actor.pc .tov-favorite-label small {
+  white-space:normal; line-height:1.2;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-meta {
+  min-width:30px; align-self:center; gap:1px;
+}
+
+/* v0.1.64: Favorites must fit two lines and never bleed into adjacent rows. */
+.application.sheet.black-flag.actor.pc .tov-favorite-list { gap: 5px !important; }
+.application.sheet.black-flag.actor.pc .tov-favorite-row {
+  min-height: 45px !important;
+  overflow: hidden;
+  gap: 0 !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-body {
+  box-sizing: border-box;
+  min-height: 43px;
+  gap: 5px !important;
+  padding: 4px 2px !important;
+  overflow: hidden;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-body img {
+  flex: 0 0 29px !important;
+  width: 29px !important;
+  height: 29px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-label {
+  min-width: 0;
+  overflow: hidden;
+  gap: 1px;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-label strong {
+  display: block;
+  max-width: 100%;
+  font-size: 11px !important;
+  line-height: 14px;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-label small {
+  display: block;
+  font-size: 9px !important;
+  line-height: 12px;
+  white-space: nowrap !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-meta {
+  flex: 0 0 34px !important;
+  min-width: 34px !important;
+  max-width: 34px !important;
+  overflow: hidden;
+  gap: 1px;
+  line-height: 13px;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-meta strong,
+.application.sheet.black-flag.actor.pc .tov-favorite-meta small {
+  display: block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+  text-align: right;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-remove {
+  flex: 0 0 15px !important;
+  width: 15px !important;
+  margin: 0 !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-hint {
+  display: block;
+  min-height: 38px;
+  margin-top: 9px;
+  padding: 10px 4px;
+  font-weight: 700;
+  letter-spacing: .03em;
+}
+
+/* v0.1.65: accessible, two-line Favorites with no native button corner artifacts. */
+.application.sheet.black-flag.actor.pc .tov-favorites {
+  overflow: visible;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-list {
+  gap: 6px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-row {
+  min-height: 51px !important;
+  overflow: visible !important;
+  padding: 2px 3px !important;
+  border-radius: 3px;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-body {
+  min-height: 45px;
+  padding: 3px 1px !important;
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  gap: 6px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-body:focus,
+.application.sheet.black-flag.actor.pc .tov-favorite-body:active {
+  outline: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-body:focus-visible {
+  outline: 2px solid #d8c58b !important;
+  outline-offset: -2px;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-body::before,
+.application.sheet.black-flag.actor.pc .tov-favorite-body::after {
+  content: none !important;
+  display: none !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-body img {
+  width: 31px !important; height: 31px !important; flex-basis: 31px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-label strong {
+  font-size: 13px !important; line-height: 17px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-label small {
+  font-size: 11px !important; line-height: 15px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-meta {
+  flex: 0 0 42px !important; min-width: 42px !important;
+  max-width: 42px !important; font-size: 14px !important;
+  line-height: 16px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-meta small {
+  font-size: 11px !important; line-height: 14px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-remove {
+  width: 16px !important; flex-basis: 16px !important;
+  border: 0 !important; outline: none; box-shadow: none !important;
+  font-size: 14px !important;
+}
+
+/* v0.1.66: readable Favorites within the locked 242px portrait rail.
+   Return to an intermediate font size; reserve space for both metadata lines. */
+.application.sheet.black-flag.actor.pc .tov-favorites,
+.application.sheet.black-flag.actor.pc .tov-favorite-list {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-row {
+  box-sizing: border-box;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  min-height: 49px !important;
+  padding: 2px 3px !important;
+  gap: 0 !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-body {
+  flex: 1 1 0 !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  min-height: 43px !important;
+  padding: 3px 0 !important;
+  gap: 5px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-body img {
+  width: 28px !important;
+  height: 28px !important;
+  flex: 0 0 28px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-label {
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-label strong {
+  font-size: 12px !important;
+  line-height: 15px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-label small {
+  font-size: 10px !important;
+  line-height: 13px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-meta {
+  flex: 0 0 39px !important;
+  width: 39px !important;
+  min-width: 39px !important;
+  max-width: 39px !important;
+  overflow: hidden !important;
+  font-size: 12px !important;
+  line-height: 15px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-meta small {
+  font-size: 10px !important;
+  line-height: 13px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-remove {
+  flex: 0 0 13px !important;
+  width: 13px !important;
+  min-width: 13px !important;
+  padding: 0 !important;
+  font-size: 12px !important;
+}
+
+/* v0.1.67: borderless 5e-style favorites; reclaim width from X buttons. */
+.application.sheet.black-flag.actor.pc .tov-favorite-list { gap: 0 !important; }
+.application.sheet.black-flag.actor.pc .tov-favorite-row {
+  min-height: 42px !important;
+  padding: 3px 1px !important;
+  border: 0 !important;
+  border-bottom: 1px dotted rgb(201 180 124 / 27%) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-body {
+  min-height: 36px !important;
+  gap: 7px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-label strong {
+  font-size: 13px !important;
+  line-height: 16px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-label small {
+  font-size: 10px !important;
+  line-height: 13px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-meta {
+  flex: 0 0 41px !important;
+  width: 41px !important;
+  min-width: 41px !important;
+  max-width: 41px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-meta strong {
+  font-size: 12px !important;
+  line-height: 15px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-meta small {
+  font-size: 10px !important;
+  line-height: 13px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-hint {
+  margin-top: 9px !important;
+  min-height: 38px !important;
+}
+
+/* v0.1.68: respect Black Flag's native tab visibility.
+   The custom Main display:block must NEVER expose Main on other tabs. */
+.application.sheet.black-flag.actor.pc .sheet-body > .tab[data-tab="main"].tov-main-reorganized:not(.active) {
+  display: none !important;
+}
+.application.sheet.black-flag.actor.pc .sheet-body > .tab[data-tab="main"].tov-main-reorganized.active {
+  display: block !important;
+}
+
+/* v0.1.69: spell saves display three separate lines: ability, DC, range. */
+.application.sheet.black-flag.actor.pc .tov-favorite-meta:has(.tov-favorite-save-ability) {
+  gap: 0 !important;
+  line-height: 12px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-save-ability,
+.application.sheet.black-flag.actor.pc .tov-favorite-save-dc,
+.application.sheet.black-flag.actor.pc .tov-favorite-save-range {
+  display: block;
+  width: 100%;
+  white-space: nowrap;
+  text-align: right;
+  overflow: hidden;
+  font-family: Arial,sans-serif;
+  font-size: 10px;
+  line-height: 12px;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-save-ability,
+.application.sheet.black-flag.actor.pc .tov-favorite-save-dc {
+  color: #e8e6e1;
+  font-weight: 700;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-save-range { color: #aeb5bd; }
+
+/* The window-content flex item shrinks to the app height, giving the grid's
+   body row a real boundary. The body is the shared scroll area for every tab. */
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready
+  .sheet-body > .tab.active:not([data-tab="main"]) {
+  height: auto;
+  min-height: 100%;
+}
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-body {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #a99465 #151b23;
+}
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-body::-webkit-scrollbar { width: 9px; }
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-body::-webkit-scrollbar-thumb {
+  background: #a99465;
+  border-radius: 6px;
+}
+
+/* Keep the native roll action while removing its focused red button frame. */
+.application.sheet.black-flag.actor.pc .tov-header-ability-roll:is(:focus, :active, :focus-visible) {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+/* Original approved blue cover crop, kept under the character controls. */
+.application.sheet.black-flag.actor.pc.tov-header-prototype .sheet-header {
+  background-image: linear-gradient(90deg, rgb(8 27 47 / 76%), rgb(11 40 70 / 72%) 50%, rgb(8 27 47 / 75%)),
+    url("../assets/tov-header.webp");
+  background-size: cover;
+  background-position: center center;
+}
+
+/* D&D-style black wrench pill above the name, without changing window chrome. */
+.application.sheet.black-flag.actor.pc.tov-header-prototype .tov-header-identity {
+  padding-top: 12px;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .tov-header-identity .document-name {
+  box-sizing: border-box;
+  flex: 0 0 36px !important;
+  align-self: flex-start;
+  height: 36px !important;
+  min-height: 36px;
+  line-height: 36px !important;
+  text-align: left !important;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .tov-header-identity input.document-name {
+  width: min(100%, 320px) !important;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .tov-header-edit-toggle {
+  position: absolute;
+  top: -5px;
+  left: -7px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  width: 39px;
+  min-width: 39px;
+  height: 18px;
+  min-height: 18px;
+  padding: 0 3px !important;
+  border: 0;
+  border-radius: 12px;
+  background: #080b10;
+  color: #f4efe2;
+  box-shadow: 0 2px 5px rgb(0 0 0 / 50%);
+  line-height: 1;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .tov-header-edit-toggle[aria-checked="true"] {
+  background: #080b10;
+  color: #ebcf8e;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .tov-header-edit-toggle > i {
+  font-size: 11px;
+  pointer-events: none;
+  transition: transform 160ms ease;
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .tov-header-edit-toggle[aria-checked="true"] > i {
+  transform: translateX(19px);
+}
+.application.sheet.black-flag.actor.pc.tov-header-prototype .tov-header-edit-toggle:focus-visible {
+  outline: 2px solid var(--tov-gold);
+  outline-offset: 2px;
+}
+
+/* More legible Main rolls, with room for longer save names. */
+.application.sheet.black-flag.actor.pc .tov-main-layout {
+  grid-template-columns: 244px 285px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block .unbutton .name {
+  font-size: 12px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-skills .skill.stat-block .unbutton .mod {
+  font-size: 14px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-save-row > span {
+  font-size: 13px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-save-row > button {
+  font-size: 15px;
+}
+.application.sheet.black-flag.actor.pc .tov-main-save-row > button:is(:focus, :active, :focus-visible) {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+.application.sheet.black-flag.actor.pc .tov-main-save-row > button:focus-visible {
+  color: var(--tov-gold);
+  text-decoration: underline;
+}
+
+/* One-click weapon options on the native attack chat card. */
+.chat-message .tov-weapon-options {list-style:none;width:100%;margin:7px 0 0;padding:0;}
+.chat-message .tov-weapon-or {text-align:center;font-size:11px;font-weight:bold;margin:7px 0;opacity:.8;}
+.chat-message .tov-option {margin:4px 0;}
+.chat-message .tov-option>button {width:100%;}
+
+/* Conditions stay above the native Effects table; the shared sheet body
+   handles scrolling when effects extend below the visible sheet. */
+.application.sheet.black-flag.actor.pc .tab[data-tab="effects"] > .tov-conditions {
+  flex: 0 0 auto;
+  min-width: 0;
+  margin-bottom: 12px;
+  border: 1px solid rgb(201 180 124 / 48%);
+  background: #151c25;
+}
+.application.sheet.black-flag.actor.pc .tov-conditions > h3 {
+  margin: 0;
+  padding: 5px 9px;
+  border-bottom: 1px solid rgb(201 180 124 / 40%);
+  background: #263444;
+  color: #e8d09b;
+  font: 700 15px Georgia, serif;
+  font-variant: small-caps;
+}
+.application.sheet.black-flag.actor.pc .tov-condition-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+  gap: 1px;
+  background: #394553;
+}
+.application.sheet.black-flag.actor.pc .tov-condition {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 35px;
+  padding: 3px 6px;
+  background: #202832;
+  color: #d5d9de;
+  font: 12px Arial, sans-serif;
+}
+.application.sheet.black-flag.actor.pc .tov-condition:not([data-status-id="exhaustion"]) {
+  cursor: pointer;
+}
+.application.sheet.black-flag.actor.pc .tov-condition.active {
+  background: #273a48;
+  color: #f3dcaa;
+}
+.application.sheet.black-flag.actor.pc .tov-condition > img {
+  flex: 0 0 21px;
+  width: 21px;
+  height: 21px;
+  object-fit: contain;
+}
+.application.sheet.black-flag.actor.pc .tov-condition-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.application.sheet.black-flag.actor.pc .tov-condition button {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 22px;
+  height: 25px;
+  min-height: 25px;
+  margin: 0;
+  padding: 0 2px;
+  border: 0;
+  background: transparent;
+  color: #acb4be;
+  box-shadow: none;
+  font: 700 15px Arial, sans-serif;
+  line-height: 25px;
+}
+.application.sheet.black-flag.actor.pc .tov-condition.active button {
+  color: #dfc887;
+}
+.application.sheet.black-flag.actor.pc .tov-condition button:hover:not(:disabled),
+.application.sheet.black-flag.actor.pc .tov-condition button:focus-visible {
+  color: #fff3cf;
+  outline: 1px solid #dfc887;
+}
+.application.sheet.black-flag.actor.pc .tov-condition button:disabled {
+  opacity: .5;
+}
+.application.sheet.black-flag.actor.pc .tov-condition-toggle > i {
+  pointer-events: none;
+}
+.application.sheet.black-flag.actor.pc .tov-condition-count {
+  min-width: 12px;
+  text-align: center;
+  font-weight: 700;
+}
+
+/* Give native group headings the same blue-gray treatment as Conditions.
+   Keep the table cells and their native controls intact. */
+.application.sheet.black-flag.actor.pc .sheet-body > .tab:not([data-tab="main"])
+  tr.table-header > :is(td, th) {
+  background: #263444;
+  color: #e8d09b;
+  border-top: 1px solid rgb(201 180 124 / 40%);
+  border-bottom: 1px solid rgb(201 180 124 / 40%);
+}
+.application.sheet.black-flag.actor.pc .sheet-body > .tab:not([data-tab="main"])
+  tr.table-header > .name {
+  font: 700 15px Georgia, serif;
+  font-variant: small-caps;
+}
+.application.sheet.black-flag.actor.pc .tab[data-tab="biography"]
+  :is(.biography-block > h3, .characteristics > .tov-group-heading, .artwork figcaption),
+.application.sheet.black-flag.actor.pc .tab[data-tab="spellcasting"]
+  .spellcasting-origins .source-details > h3 {
+  box-sizing: border-box;
+  margin: 0 0 7px;
+  padding: 5px 9px;
+  border: 1px solid rgb(201 180 124 / 40%);
+  background: #263444;
+  color: #e8d09b;
+  font: 700 15px Georgia, serif;
+  font-variant: small-caps;
+}
+.application.sheet.black-flag.actor.pc .tab[data-tab="biography"]
+  .biography-block > h3 {
+  margin-bottom: 8px;
+}
+
+/* Clip the portrait from its right edge in lockstep with the shrinking grid
+   column and the handle. Keep its contents at full size while closing. */
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready > .window-content > .sheet-body {
+  position: relative;
+  z-index: 4;
+  background: linear-gradient(180deg, rgb(17 22 29 / 96%), rgb(8 11 16 / 98%)), #080b10;
+}
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready .tov-static-panel {
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 220ms ease;
+}
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready.tov-static-collapsed .tov-static-panel {
+  transform: none;
+  opacity: 1;
+  visibility: visible;
+  clip-path: inset(0 100% 0 0);
+  pointer-events: none;
+  transition: clip-path 220ms ease;
+}
+
+/* Death saves pull down from behind the raised portrait and Hit Dice card. */
+.application.sheet.black-flag.actor.pc .tov-death-anchor {
+  position: relative;
+  z-index: 5;
+  height: 0;
+}
+.application.sheet.black-flag.actor.pc .tov-death-drawer {
+  position: absolute;
+  top: -51px;
+  left: 1px;
+  right: 1px;
+  height: 51px;
+  transition: top 230ms ease;
+}
+.application.sheet.black-flag.actor.pc .tov-death-open .tov-death-drawer {
+  top: 2px;
+}
+.application.sheet.black-flag.actor.pc .tov-death-plate {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1fr 36px 1fr;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  height: 51px;
+  padding: 4px 9px;
+  background: #080909;
+  border: 2px solid #92845d;
+  border-radius: 4px;
+  box-shadow: 0 4px 7px rgb(0 0 0 / 80%), inset 0 0 0 1px #171917;
+}
+.application.sheet.black-flag.actor.pc .tov-death-pips {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 3px;
+}
+.application.sheet.black-flag.actor.pc .tov-death-pip,
+.application.sheet.black-flag.actor.pc .tov-death-roll,
+.application.sheet.black-flag.actor.pc .tov-death-pull {
+  appearance: none !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  cursor: pointer;
+}
+.application.sheet.black-flag.actor.pc .tov-death-pip {
+  flex: 0 0 17px;
+  width: 17px;
+  height: 17px;
+  border: 2px solid #a99a70 !important;
+  border-radius: 50% !important;
+  background: #050605 !important;
+}
+.application.sheet.black-flag.actor.pc .tov-death-pip[data-death-type="failure"].filled {
+  background: #a93f3d !important;
+}
+.application.sheet.black-flag.actor.pc .tov-death-pip[data-death-type="success"].filled {
+  background: #6b9977 !important;
+}
+.application.sheet.black-flag.actor.pc .tov-death-pip:hover:not(:disabled),
+.application.sheet.black-flag.actor.pc .tov-death-roll:hover:not(:disabled) {
+  filter: brightness(1.35);
+}
+.application.sheet.black-flag.actor.pc .tov-death-roll {
+  width: 36px;
+  height: 38px;
+  border: 0 !important;
+  background: transparent !important;
+  color: #b6a77a !important;
+  font-size: 29px;
+  line-height: 38px;
+}
+.application.sheet.black-flag.actor.pc .tov-death-pull {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  translate: -50% 0;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 20px;
+  border: 0 !important;
+  border-radius: 0 0 4px 4px !important;
+  background: #1b1c1d !important;
+  color: #a89b78 !important;
+  font-size: 13px;
+  line-height: 1;
+}
+.application.sheet.black-flag.actor.pc .tov-death-pull:hover {
+  color: #e1d1a0 !important;
+}
+.application.sheet.black-flag.actor.pc .tov-death-pip:focus-visible,
+.application.sheet.black-flag.actor.pc .tov-death-roll:focus-visible,
+.application.sheet.black-flag.actor.pc .tov-death-pull:focus-visible {
+  outline: 2px solid #e1d1a0 !important;
+  outline-offset: 2px;
+}
+
+/* Keep the raised card above the closed drawer; only its pull tab protrudes. */
+.application.sheet.black-flag.actor.pc .tov-static-stats {
+  position: relative;
+  z-index: 8;
 }
