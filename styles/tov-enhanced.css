@@ -2986,3 +2986,104 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
   pointer-events: none;
   transition: clip-path 220ms ease;
 }
+
+/* Death saves pull down from behind the raised portrait and Hit Dice card. */
+.application.sheet.black-flag.actor.pc .tov-death-anchor {
+  position: relative;
+  z-index: 5;
+  height: 0;
+}
+.application.sheet.black-flag.actor.pc .tov-death-drawer {
+  position: absolute;
+  top: -51px;
+  left: 1px;
+  right: 1px;
+  height: 51px;
+  transition: top 230ms ease;
+}
+.application.sheet.black-flag.actor.pc .tov-death-open .tov-death-drawer {
+  top: 2px;
+}
+.application.sheet.black-flag.actor.pc .tov-death-plate {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1fr 36px 1fr;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  height: 51px;
+  padding: 4px 9px;
+  background: #080909;
+  border: 2px solid #92845d;
+  border-radius: 4px;
+  box-shadow: 0 4px 7px rgb(0 0 0 / 80%), inset 0 0 0 1px #171917;
+}
+.application.sheet.black-flag.actor.pc .tov-death-pips {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 3px;
+}
+.application.sheet.black-flag.actor.pc .tov-death-pip,
+.application.sheet.black-flag.actor.pc .tov-death-roll,
+.application.sheet.black-flag.actor.pc .tov-death-pull {
+  appearance: none !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  cursor: pointer;
+}
+.application.sheet.black-flag.actor.pc .tov-death-pip {
+  flex: 0 0 17px;
+  width: 17px;
+  height: 17px;
+  border: 2px solid #a99a70 !important;
+  border-radius: 50% !important;
+  background: #050605 !important;
+}
+.application.sheet.black-flag.actor.pc .tov-death-pip[data-death-type="failure"].filled {
+  background: #a93f3d !important;
+}
+.application.sheet.black-flag.actor.pc .tov-death-pip[data-death-type="success"].filled {
+  background: #6b9977 !important;
+}
+.application.sheet.black-flag.actor.pc .tov-death-pip:hover:not(:disabled),
+.application.sheet.black-flag.actor.pc .tov-death-roll:hover:not(:disabled) {
+  filter: brightness(1.35);
+}
+.application.sheet.black-flag.actor.pc .tov-death-roll {
+  width: 36px;
+  height: 38px;
+  border: 0 !important;
+  background: transparent !important;
+  color: #b6a77a !important;
+  font-size: 29px;
+  line-height: 38px;
+}
+.application.sheet.black-flag.actor.pc .tov-death-pull {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  translate: -50% 0;
+  display: grid;
+  place-items: center;
+  width: 23px;
+  height: 17px;
+  border: 0 !important;
+  border-radius: 0 0 4px 4px !important;
+  background: #1b1c1d !important;
+  color: #a89b78 !important;
+  font-size: 11px;
+  line-height: 1;
+}
+.application.sheet.black-flag.actor.pc .tov-death-pull:hover {
+  color: #e1d1a0 !important;
+}
+.application.sheet.black-flag.actor.pc .tov-death-pip:focus-visible,
+.application.sheet.black-flag.actor.pc .tov-death-roll:focus-visible,
+.application.sheet.black-flag.actor.pc .tov-death-pull:focus-visible {
+  outline: 2px solid #e1d1a0 !important;
+  outline-offset: 2px;
+}
