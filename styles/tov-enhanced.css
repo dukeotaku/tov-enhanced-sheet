@@ -3126,6 +3126,23 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
   pointer-events: none;
 }
 
+/* Progression replaces the native body. Hide our exterior tabs until Return
+   restores it, and leave that action accessible even if the sheet is locked. */
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready[data-progression]
+  .sheet-navigation,
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready[data-progression]
+  .sheet-body {
+  display: none !important;
+}
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready[data-progression]
+  .tov-header-right > .tov-header-level {
+  display: none;
+}
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready[data-progression]
+  .tov-header-right > .tov-header-progression-controls {
+  display: flex;
+}
+
 .application.choose-features-dialog.tov-ambitious-dialog .tov-ambitious-filter {
   position: sticky;
   top: 0;
