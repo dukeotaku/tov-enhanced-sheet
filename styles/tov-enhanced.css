@@ -3118,3 +3118,41 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
   background: #a99465;
   border-radius: 6px;
 }
+
+/* A hidden Progression part must never intercept the play tabs after level-up. */
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready:not([data-progression])
+  > .window-content > [data-application-part="progression"] {
+  display: none !important;
+  pointer-events: none;
+}
+
+.application.choose-features-dialog.tov-ambitious-dialog .tov-ambitious-filter {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 8px 10px;
+  border: 1px solid #8e805d;
+  background: #263444;
+  color: #e8d09b;
+}
+.application.choose-features-dialog.tov-ambitious-dialog .tov-ambitious-filter label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-weight: 700;
+}
+.application.choose-features-dialog.tov-ambitious-dialog .tov-ambitious-filter select {
+  min-width: 135px;
+}
+.application.choose-features-dialog.tov-ambitious-dialog .tov-ambitious-options {
+  display: grid;
+  gap: 12px;
+}
+.application.choose-features-dialog.tov-ambitious-dialog .tov-ambitious-options > [hidden] {
+  display: none;
+}
+.application.choose-features-dialog.tov-ambitious-dialog .tov-ambitious-options .choose {
+  padding: 0 10px 10px;
+  text-align: right;
+}
