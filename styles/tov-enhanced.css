@@ -3069,13 +3069,13 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
   translate: -50% 0;
   display: grid;
   place-items: center;
-  width: 23px;
-  height: 17px;
+  width: 28px;
+  height: 20px;
   border: 0 !important;
   border-radius: 0 0 4px 4px !important;
   background: #1b1c1d !important;
   color: #a89b78 !important;
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1;
 }
 .application.sheet.black-flag.actor.pc .tov-death-pull:hover {
