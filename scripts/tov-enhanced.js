@@ -1,9 +1,147 @@
+let tovTalentCatalog;
+
+async function tovVisibleTalents() {
+  if (!tovTalentCatalog) tovTalentCatalog = (async () => {
+    const packs = [...game.packs].filter(pack => pack.visible && pack.metadata.type === "Item");
+    const results = await Promise.allSettled(packs.map(async pack => {
+      const index = await pack.getIndex({ fields: ["type", "system.type.category"] });
+      return Promise.all([...index].filter(entry => entry.type === "talent")
+        .map(entry => pack.getDocument(entry._id)));
+    }));
+    const byName = new Map();
+    for (const result of results) {
+      if (result.status !== "fulfilled") continue;
+      for (const item of result.value) {
+        if (item?.type !== "talent") continue;
+        byName.set(`${item.system.type?.category ?? "other"}:${item.name.toLowerCase()}`, item);
+      }
+    }
+    return [...byName.values()].sort((a, b) => a.name.localeCompare(b.name));
+  })().catch(error => {
+    tovTalentCatalog = null;
+    throw error;
+  });
+  return tovTalentCatalog;
+}
+
+async function tovEnhanceAmbitiousDialog(app, root) {
+  const advancement = app.advancement;
+  if (advancement?.configuration?.type !== "talent" || advancement.item?.name !== "Ambitious") return;
+  const contents = root.querySelector(".contents");
+  if (!contents || contents.querySelector(".tov-ambitious-filter")) return;
+
+  const filter = document.createElement("div");
+  filter.className = "tov-ambitious-filter";
+  const label = document.createElement("label");
+  label.textContent = "Talent list";
+  const select = document.createElement("select");
+  select.setAttribute("aria-label", "Filter talents by list");
+  for (const [value, name] of [["all", "All"], ["martial", "Martial"], ["magic", "Magic"], ["technical", "Technical"]]) {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = name;
+    select.append(option);
+  }
+  label.append(select);
+  filter.append(label);
+  contents.prepend(filter);
+  root.classList.add("tov-ambitious-dialog");
+  const loading = document.createElement("p");
+  loading.className = "tov-ambitious-loading";
+  loading.textContent = "Loading talents…";
+  filter.after(loading);
+
+  try {
+    const talents = await tovVisibleTalents();
+    if (!talents.length) {
+      loading.remove();
+      filter.remove();
+      return;
+    }
+    const list = document.createElement("div");
+    list.className = "tov-ambitious-options";
+    for (const talent of talents) {
+      let choice, valid;
+      try {
+        choice = await app.getChoiceData(talent);
+        valid = !choice.invalid && !advancement.selectionLimitReached(talent)
+          && advancement._validateItemType(talent, { flow: true, strict: false });
+      } catch (error) {
+        console.warn(`ToV skipped talent ${talent.name}`, error);
+        continue;
+      }
+      const card = document.createElement("section");
+      card.className = "option";
+      card.dataset.uuid = talent.uuid;
+      card.dataset.category = talent.system.type?.category ?? "other";
+      const info = document.createElement("div");
+      info.className = "info";
+      const header = document.createElement("header");
+      const name = document.createElement("div");
+      name.className = "name";
+      name.textContent = talent.name;
+      const source = document.createElement("div");
+      source.className = "source";
+      source.textContent = talent.system.description?.source?.label ?? "";
+      header.append(name, source);
+      const description = document.createElement("div");
+      description.className = "description";
+      if (choice.prerequisite) {
+        const prerequisite = document.createElement("p");
+        prerequisite.className = "prerequisite";
+        prerequisite.innerHTML = `<strong>Prerequisites:</strong> ${choice.prerequisite}`;
+        description.append(prerequisite);
+      }
+      const text = document.createElement("div");
+      text.innerHTML = choice.enriched.description;
+      description.append(text);
+      info.append(header, description);
+      const actions = document.createElement("div");
+      actions.className = "choose";
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "light-button";
+      button.dataset.action = "choose";
+      button.textContent = "Choose Trait";
+      button.disabled = !valid;
+      actions.append(button);
+      card.append(info, actions);
+      list.append(card);
+    }
+    loading.remove();
+    if (!list.childElementCount) {
+      filter.remove();
+      return;
+    }
+    contents.querySelector(".drop-area")?.remove();
+    contents.append(list);
+    const applyFilter = () => {
+      for (const card of list.children) card.hidden = select.value !== "all" && card.dataset.category !== select.value;
+    };
+    select.addEventListener("change", applyFilter);
+  } catch (error) {
+    loading.remove();
+    filter.remove();
+    console.error("ToV Ambitious talent list could not load", error);
+    ui.notifications?.warn("Could not load talent choices. Drag and drop remains available.");
+  }
+}
+
 Hooks.on("renderApplicationV2", (app, html) => {
   const root = html instanceof HTMLElement ? html : html?.[0];
   if (!root) return;
 
+  if (root.classList.contains("choose-features-dialog")) {
+    void tovEnhanceAmbitiousDialog(app, root);
+    return;
+  }
+
   const sheet = root.closest?.(".application.sheet.black-flag.actor.pc") ?? root;
   if (!sheet.matches?.(".application.sheet.black-flag.actor.pc")) return;
+  // Inline advancement flows also render inside the PC sheet. Only the PC
+  // application may rebuild header, tabs, conditions, and the portrait rail.
+  if (typeof app.progressionView !== "boolean") return;
+  sheet.toggleAttribute("data-progression", app.progressionView);
 
   // Give the existing Black Flag tabs clear icons without replacing its tab logic.
   const icons = {
@@ -239,7 +377,10 @@ Hooks.on("renderApplicationV2", (app, html) => {
     const effectsTab = body.querySelector('.tab[data-tab="effects"]');
     if (effectsTab && actorForHeader) {
       let conditions = effectsTab.querySelector(".tov-conditions");
-      if (!conditions) {
+      // Foundry can replace a tab's contents during advancement while leaving
+      // our injected markup in place. Recreate its listeners on every render.
+      conditions?.remove();
+      {
         conditions = document.createElement("section");
         conditions.className = "tov-conditions";
         conditions.setAttribute("aria-label", "Conditions");
@@ -483,6 +624,7 @@ Hooks.on("renderApplicationV2", (app, html) => {
 
   // Persistent character rail: clone live Black Flag controls rather than
   // reimplementing actor updates/roll handlers.
+  sheet.classList.add("tov-enhanced-ready");
   if (sheet.querySelector(".tov-static-panel")) return;
   if (!body) return;
 
