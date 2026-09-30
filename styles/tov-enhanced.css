@@ -2967,18 +2967,22 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
   margin-bottom: 8px;
 }
 
-/* Slide the page over the portrait as the sidebar column closes. The portrait
-   remains inside the sheet and is covered by the opaque page, while the handle
-   follows the column boundary. */
+/* Clip the portrait from its right edge in lockstep with the shrinking grid
+   column and the handle. Keep its contents at full size while closing. */
 .application.sheet.black-flag.actor.pc.tov-enhanced-ready > .window-content > .sheet-body {
   position: relative;
   z-index: 4;
   background: linear-gradient(180deg, rgb(17 22 29 / 96%), rgb(8 11 16 / 98%)), #080b10;
 }
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready .tov-static-panel {
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 220ms ease;
+}
 .application.sheet.black-flag.actor.pc.tov-enhanced-ready.tov-static-collapsed .tov-static-panel {
   transform: none;
   opacity: 1;
-  visibility: hidden;
+  visibility: visible;
+  clip-path: inset(0 100% 0 0);
   pointer-events: none;
-  transition: visibility 0s linear 220ms;
+  transition: clip-path 220ms ease;
 }
