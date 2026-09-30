@@ -349,6 +349,12 @@ Hooks.on("renderApplicationV2", (app, html) => {
       // editors, and image actions. Keep our switch tied to that same mode.
       const nativeToggle = sheet.querySelector('.window-header .mode-toggle[data-action="toggleSheetMode"]');
       if (!nativeToggle) return;
+      // Locking after advancement must also leave Black Flag's Progression
+      // view. Otherwise its hidden sheet body makes every play tab inert.
+      if (app.progressionView && app._mode === app.constructor.MODES?.EDIT) {
+        app.progressionView = false;
+        sheet.removeAttribute("data-progression");
+      }
       toggle.setAttribute("aria-checked", String(toggle.getAttribute("aria-checked") !== "true"));
       nativeToggle.click();
     });
