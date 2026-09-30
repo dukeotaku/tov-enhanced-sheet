@@ -514,6 +514,8 @@ Hooks.on("renderApplicationV2", (app, html) => {
 
   const setCollapsed = collapsed => {
     sheet.classList.toggle("tov-static-collapsed", collapsed);
+    panel.inert = collapsed;
+    panel.setAttribute("aria-hidden", String(collapsed));
     collapse.title = collapsed ? "Expand Portrait Static Panel" : "Collapse Portrait Static Panel";
     collapse.setAttribute("aria-label", collapse.title);
     collapse.innerHTML = collapsed
