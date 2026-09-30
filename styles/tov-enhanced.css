@@ -3087,3 +3087,9 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
   outline: 2px solid #e1d1a0 !important;
   outline-offset: 2px;
 }
+
+/* Keep the raised card above the closed drawer; only its pull tab protrudes. */
+.application.sheet.black-flag.actor.pc .tov-static-stats {
+  position: relative;
+  z-index: 8;
+}
