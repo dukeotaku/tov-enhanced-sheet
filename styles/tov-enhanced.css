@@ -3093,3 +3093,28 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
   position: relative;
   z-index: 8;
 }
+
+/* Black Flag's Progression part replaces the regular sheet body. Give it the
+   same bounded scroll row as the other pages beside the portrait panel. */
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready[data-progression]
+  > .window-content > [data-application-part="progression"] {
+  grid-column: 2;
+  grid-row: 2;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 12px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #a99465 #151b23;
+}
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready[data-progression]
+  > .window-content > [data-application-part="progression"]::-webkit-scrollbar {
+  width: 9px;
+}
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready[data-progression]
+  > .window-content > [data-application-part="progression"]::-webkit-scrollbar-thumb {
+  background: #a99465;
+  border-radius: 6px;
+}
