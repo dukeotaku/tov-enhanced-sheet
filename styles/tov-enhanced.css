@@ -3143,6 +3143,41 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
   display: flex;
 }
 
+/* Temporary tap inspection for the Forge iPad regression. */
+.application.sheet.black-flag.actor.pc .sheet-navigation > .tov-tap-probe {
+  width: var(--tov-tab-size);
+  height: 28px;
+  padding: 0;
+  border: 0;
+  background: #162637;
+  color: var(--tov-gold);
+  cursor: pointer;
+}
+.application.sheet.black-flag.actor.pc .tov-tap-report {
+  position: absolute;
+  top: calc(var(--tov-header-height) + 8px);
+  right: 12px;
+  z-index: 1000;
+  box-sizing: border-box;
+  max-width: min(600px, 90%);
+  padding: 10px;
+  border: 1px solid var(--tov-gold);
+  background: #102234;
+  color: white;
+  box-shadow: 0 5px 20px #000b;
+}
+.application.sheet.black-flag.actor.pc .tov-tap-report pre {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: 12px/1.4 monospace;
+}
+.application.sheet.black-flag.actor.pc .tov-tap-report button {
+  float: right;
+  margin-left: 8px;
+  color: white;
+}
+
 .application.choose-features-dialog.tov-ambitious-dialog .tov-ambitious-filter {
   position: sticky;
   top: 0;
