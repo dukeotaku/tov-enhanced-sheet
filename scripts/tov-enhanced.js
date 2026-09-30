@@ -495,6 +495,20 @@ Hooks.on("renderApplicationV2", (app, html) => {
       <section class="tov-static-vitals"></section>
       <section class="tov-static-health"></section>
     </section>
+    <section class="tov-death-anchor" aria-label="Death saves">
+      <div class="tov-death-drawer">
+        <div class="tov-death-plate">
+          <div class="tov-death-pips" role="group" aria-label="Death save failures">
+            ${[1, 2, 3].map(n => `<button type="button" class="tov-death-pip" data-death-type="failure" data-death-count="${n}" aria-label="${n} death save ${n === 1 ? "failure" : "failures"}"></button>`).join("")}
+          </div>
+          <button type="button" class="tov-death-roll" title="Roll death save" aria-label="Roll death save"><i class="fa-solid fa-skull" aria-hidden="true"></i></button>
+          <div class="tov-death-pips" role="group" aria-label="Death save successes">
+            ${[1, 2, 3].map(n => `<button type="button" class="tov-death-pip" data-death-type="success" data-death-count="${n}" aria-label="${n} death save ${n === 1 ? "success" : "successes"}"></button>`).join("")}
+          </div>
+        </div>
+        <button type="button" class="tov-death-pull" aria-label="Expand death saves" title="Expand death saves" aria-expanded="false"><i class="fa-solid fa-skull" aria-hidden="true"></i></button>
+      </div>
+    </section>
     <section class="tov-favorites">
       <h3><i class="fa-solid fa-bookmark" aria-hidden="true"></i> Favorites</h3>
       <div class="tov-favorites-empty">Favorites coming next</div>
@@ -840,6 +854,67 @@ Hooks.on("renderApplicationV2", (app, html) => {
       });
     }
 
+  }
+
+
+  // A small pull tab reveals Black Flag's death-save counters. The actor's
+  // native roll method owns the chat message, criticals, and counter updates.
+  const deathActor = actorForHeader;
+  const deathAnchor = panel.querySelector(".tov-death-anchor");
+  if (deathActor?.system?.attributes?.death && deathAnchor) {
+    const pull = deathAnchor.querySelector(".tov-death-pull");
+    const plate = deathAnchor.querySelector(".tov-death-plate");
+    const roll = deathAnchor.querySelector(".tov-death-roll");
+    plate.inert = true;
+    plate.setAttribute("aria-hidden", "true");
+    const paintDeath = () => {
+      const death = deathActor.system?.attributes?.death;
+      for (const pip of deathAnchor.querySelectorAll(".tov-death-pip")) {
+        const count = Number(death?.[pip.dataset.deathType]) || 0;
+        const filled = Number(pip.dataset.deathCount) <= count;
+        pip.classList.toggle("filled", filled);
+        pip.setAttribute("aria-pressed", String(filled));
+        pip.title = `${pip.dataset.deathType === "failure" ? "Failures" : "Successes"}: ${count} (click to ${filled && Number(pip.dataset.deathCount) === count ? "clear this mark" : "set this count"})`;
+        pip.disabled = !deathActor.isOwner;
+      }
+      roll.disabled = !deathActor.isOwner;
+    };
+    paintDeath();
+    pull.addEventListener("click", () => {
+      const open = deathAnchor.classList.toggle("tov-death-open");
+      plate.inert = !open;
+      plate.setAttribute("aria-hidden", String(!open));
+      pull.setAttribute("aria-expanded", String(open));
+      pull.setAttribute("aria-label", `${open ? "Collapse" : "Expand"} death saves`);
+      pull.title = pull.getAttribute("aria-label");
+    });
+    deathAnchor.addEventListener("click", async event => {
+      const pip = event.target.closest(".tov-death-pip");
+      if (!pip || !deathActor.isOwner) return;
+      const type = pip.dataset.deathType;
+      const selected = Number(pip.dataset.deathCount);
+      const previous = Number(deathActor.system.attributes.death[type]) || 0;
+      try {
+        await deathActor.update({ [`system.attributes.death.${type}`]: selected === previous ? selected - 1 : selected });
+        paintDeath();
+      } catch (error) {
+        console.error("ToV death save update failed", error);
+        ui.notifications?.error("Could not update death saves.");
+      }
+    });
+    roll.addEventListener("click", async () => {
+      if (!deathActor.isOwner || roll.disabled) return;
+      roll.disabled = true;
+      try { await deathActor.rollDeathSave(); }
+      catch (error) {
+        console.error("ToV death save roll failed", error);
+        ui.notifications?.error("Could not roll a death save.");
+      } finally { paintDeath(); }
+    });
+    const deathHook = Hooks.on("updateActor", updated => {
+      if (!deathAnchor.isConnected) Hooks.off("updateActor", deathHook);
+      else if (updated.id === deathActor.id) paintDeath();
+    });
   }
 
 
