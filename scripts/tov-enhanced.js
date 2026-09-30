@@ -186,63 +186,6 @@ Hooks.on("renderApplicationV2", (app, html) => {
     if (tab) navigation.append(tab);
   }
 
-  // Temporary iPad diagnostic: identify the element receiving a tap when
-  // visible sheet controls do not respond after advancement.
-  navigation?.querySelector(".tov-tap-probe")?.remove();
-  if (navigation) {
-    const probe = document.createElement("button");
-    probe.type = "button";
-    probe.className = "tov-tap-probe";
-    probe.title = "Check an unresponsive tap";
-    probe.setAttribute("aria-label", probe.title);
-    probe.innerHTML = '<i class="fa-solid fa-bug" aria-hidden="true"></i>';
-    navigation.append(probe);
-    probe.addEventListener("click", () => {
-      const old = sheet.querySelector(".tov-tap-report");
-      old?.remove();
-      const report = document.createElement("div");
-      report.className = "tov-tap-report";
-      report.textContent = "Tap one unresponsive control now.";
-      sheet.querySelector(".window-content")?.append(report);
-      const describe = element => {
-        if (!element) return "none";
-        const name = element.tagName.toLowerCase();
-        const classes = [...element.classList].slice(0, 3).join(".");
-        return name + (classes ? "." + classes : "") + (element.disabled ? " [disabled]" : "");
-      };
-      document.addEventListener("pointerdown", event => {
-        const stack = document.elementsFromPoint(event.clientX, event.clientY).slice(0, 6);
-        const body = sheet.querySelector(".sheet-body");
-        const progression = sheet.querySelector('[data-application-part="progression"]');
-        report.replaceChildren();
-        const close = document.createElement("button");
-        close.type = "button";
-        close.textContent = "×";
-        close.title = "Close tap report";
-        close.addEventListener("click", () => report.remove());
-        const detail = document.createElement("pre");
-        detail.textContent = [
-          `Hit: ${describe(event.target)}`,
-          `Stack: ${stack.map(describe).join(" > ")}`,
-          `Sheet inert: ${sheet.inert}; owner: ${Boolean((app.actor ?? app.document)?.isOwner)}`,
-          `Progression: ${app.progressionView}; body: ${body ? getComputedStyle(body).display : "missing"}; overlay: ${progression ? getComputedStyle(progression).display : "missing"}`
-        ].join("\n");
-        report.append(close, detail);
-        let clicked = false;
-        const captureClick = click => {
-          clicked = true;
-          detail.textContent += `\nClick: ${describe(click.target)}`;
-        };
-        document.addEventListener("click", captureClick, { capture: true, once: true });
-        setTimeout(() => {
-          if (clicked) return;
-          document.removeEventListener("click", captureClick, true);
-          detail.textContent += "\nClick: none";
-        }, 800);
-      }, { capture: true, once: true });
-    });
-  }
-
   // Header prototype on its own branch; the existing v0.1.25 release is untouched.
   // Retain Black Flag's native progression button so its own action handler opens the screen.
   const nativeHeader = sheet.querySelector(".sheet-header");
