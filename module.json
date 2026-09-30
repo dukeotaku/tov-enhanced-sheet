@@ -20,8 +20,8 @@
     ]
   },
   "url": "https://github.com/dukeotaku/tov-enhanced-sheet",
-  "manifest": "https://raw.githubusercontent.com/dukeotaku/tov-enhanced-sheet/feature/static-header-prep/module.json",
-  "download": "https://github.com/dukeotaku/tov-enhanced-sheet/archive/refs/heads/feature/static-header-prep.zip",
+  "manifest": "https://raw.githubusercontent.com/dukeotaku/tov-enhanced-sheet/main/module.json",
+  "download": "https://github.com/dukeotaku/tov-enhanced-sheet/archive/refs/heads/main.zip",
   "scripts": [
     "scripts/tov-enhanced.js",
     "scripts/tov-weapon-options.js"
