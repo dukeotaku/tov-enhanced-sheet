@@ -3184,3 +3184,63 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
   padding: 0 10px 10px;
   text-align: right;
 }
+
+
+/* v0.1.101 — compact currency bar at top of Inventory */
+.tov-enhanced-ready .tab[data-tab="inventory"] > blackflag-currency.tov-native-currency-hidden {
+  display: none !important;
+}
+.tov-enhanced-ready .tov-currency-bar {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: 100%;
+  margin: 0 0 12px;
+  border: 1px solid var(--color-border-light-2, rgba(0, 0, 0, 0.25));
+  border-radius: 6px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.04);
+}
+.tov-enhanced-ready .tov-currency-cell {
+  min-width: 0;
+  padding: 7px 8px 6px;
+  text-align: center;
+  border-right: 1px solid var(--color-border-light-2, rgba(0, 0, 0, 0.25));
+}
+.tov-enhanced-ready .tov-currency-cell:last-child { border-right: 0; }
+.tov-enhanced-ready .tov-currency-heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+.tov-enhanced-ready .tov-currency-heading img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  border: 0;
+}
+.tov-enhanced-ready input.tov-currency-quantity {
+  display: block;
+  width: 100%;
+  height: 28px;
+  margin: 5px 0 2px;
+  padding: 0 4px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  text-align: center;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+.tov-enhanced-ready .tov-currency-weight {
+  opacity: 0.68;
+  font-size: 0.75rem;
+  line-height: 1.1;
+}
+@media (max-width: 700px) {
+  .tov-enhanced-ready .tov-currency-cell { padding-inline: 4px; }
+  .tov-enhanced-ready .tov-currency-heading { gap: 3px; font-size: 0.82rem; }
+  .tov-enhanced-ready .tov-currency-heading img { width: 18px; height: 18px; }
+}
