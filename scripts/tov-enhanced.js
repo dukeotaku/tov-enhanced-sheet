@@ -507,6 +507,101 @@ Hooks.on("renderApplicationV2", (app, html) => {
       }
     }
 
+    // Inventory: replace Black Flag's vertical currency table with a compact
+    // four-denomination bar. Currency is still stored as native Black Flag
+    // currency Items, so other system features continue to see the same data.
+    const inventoryTab = body.querySelector('.tab[data-tab="inventory"]');
+    if (inventoryTab && actorForHeader) {
+      const nativeCurrency = inventoryTab.querySelector("blackflag-currency");
+      nativeCurrency?.classList.add("tov-native-currency-hidden");
+
+      inventoryTab.querySelector(".tov-currency-bar")?.remove();
+      const currencyBar = document.createElement("section");
+      currencyBar.className = "tov-currency-bar";
+      currencyBar.setAttribute("aria-label", "Currency");
+
+      const denominations = [
+        ["cp", "Copper", "icons/commodities/currency/coin-oval-rune-copper.webp"],
+        ["sp", "Silver", "icons/commodities/currency/coin-inset-snail-silver.webp"],
+        ["gp", "Gold", "icons/commodities/currency/coin-inset-insect-gold.webp"],
+        ["pp", "Platinum", "icons/commodities/currency/coin-embossed-crown-silver.webp"]
+      ];
+      const currencyItems = [...actorForHeader.items].filter(item => item.type === "currency");
+      const identifierOf = item => item.system?.identifier?.value ?? item.identifier
+        ?? ({ copper: "cp", silver: "sp", gold: "gp", platinum: "pp" }[item.name?.toLowerCase()]);
+
+      for (const [identifier, name, fallbackImg] of denominations) {
+        const matches = currencyItems.filter(item => identifierOf(item) === identifier);
+        const quantity = matches.reduce((sum, item) => sum + (Number(item.system?.quantity) || 0), 0);
+        const cell = document.createElement("div");
+        cell.className = "tov-currency-cell";
+        cell.dataset.denomination = identifier;
+        const heading = document.createElement("div");
+        heading.className = "tov-currency-heading";
+        const icon = document.createElement("img");
+        icon.src = matches[0]?.img ?? fallbackImg;
+        icon.alt = "";
+        const label = document.createElement("span");
+        label.textContent = name;
+        heading.append(icon, label);
+
+        const input = document.createElement("input");
+        input.className = "tov-currency-quantity";
+        input.type = "number";
+        input.inputMode = "numeric";
+        input.min = "0";
+        input.step = "1";
+        input.value = String(quantity);
+        input.disabled = !actorForHeader.isOwner;
+        input.setAttribute("aria-label", name + " quantity");
+
+        const weight = document.createElement("div");
+        weight.className = "tov-currency-weight";
+        const paintWeight = value => {
+          const pounds = Math.max(0, Number(value) || 0) / 50;
+          weight.textContent = (Number.isInteger(pounds) ? pounds : pounds.toFixed(2).replace(/0+$/, "").replace(/\\.$/, "")) + " lbs";
+        };
+        paintWeight(quantity);
+
+        input.addEventListener("change", async () => {
+          if (!actorForHeader.isOwner) return;
+          const desired = Math.max(0, Math.floor(Number(input.value) || 0));
+          input.value = String(desired);
+          input.disabled = true;
+          try {
+            const current = [...actorForHeader.items].filter(item => item.type === "currency" && identifierOf(item) === identifier);
+            if (current.length) {
+              // Consolidate duplicate denomination values without deleting Items:
+              // the first native currency Item owns the total and duplicates are zeroed.
+              const updates = current.map((item, index) => ({
+                _id: item.id,
+                "system.quantity": index === 0 ? desired : 0
+              }));
+              await actorForHeader.updateEmbeddedDocuments("Item", updates);
+            } else if (desired > 0) {
+              const uuid = CONFIG.BlackFlag?.currencies?.[identifier]?.uuid;
+              const source = uuid && typeof fromUuid === "function" ? await fromUuid(uuid) : null;
+              if (!source) throw new Error("Currency source not found for " + identifier);
+              const data = source.toObject();
+              delete data._id;
+              data.system.quantity = desired;
+              await actorForHeader.createEmbeddedDocuments("Item", [data]);
+            }
+            paintWeight(desired);
+          } catch (error) {
+            console.error("ToV: unable to update currency", error);
+            ui.notifications?.error("Could not update " + name + ".");
+          } finally {
+            input.disabled = !actorForHeader.isOwner;
+          }
+        });
+
+        cell.append(heading, input, weight);
+        currencyBar.append(cell);
+      }
+      inventoryTab.prepend(currencyBar);
+    }
+
     const biographyCharacteristics = body.querySelector('.tab[data-tab="biography"] .characteristics');
     if (biographyCharacteristics && !biographyCharacteristics.querySelector(".tov-group-heading")) {
       const title = document.createElement("h3");
