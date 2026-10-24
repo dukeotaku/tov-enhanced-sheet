@@ -1164,8 +1164,11 @@ Hooks.on("renderApplicationV2", (app, html) => {
           const from = ids.indexOf(data.itemId);
           if (from < 0) return;
           const target = event.target.closest(".tov-favorite-row")?.dataset.itemId;
-          const to = target ? ids.indexOf(target) : ids.length - 1;
+          if (target === data.itemId) return;
           ids.splice(from, 1);
+          // Resolve the insertion point after removal so row drops always
+          // insert before the target, while non-row drops append to the list.
+          const to = target ? ids.indexOf(target) : ids.length;
           ids.splice(Math.min(Math.max(to, 0), ids.length), 0, data.itemId);
         } else {
           if (data?.type !== "Item") return;
