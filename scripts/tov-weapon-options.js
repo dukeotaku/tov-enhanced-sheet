@@ -63,6 +63,10 @@ async function promptWeaponSave(message, details, event) {
  // A defender can select their token; a GM can target the affected token.
  const targeted = [...(game.user.targets ?? [])];
  const tokens = targeted.length ? targeted : [...(canvas.tokens?.controlled ?? [])];
+ if (tokens.length > 1) {
+  ui.notifications?.warn("Target or select just one defender before rolling its save.");
+  return;
+ }
  const eligible = tokens.filter(token => token.actor
   && (game.user.isGM || token.actor.isOwner)
   && typeof token.actor.rollAbilitySave === "function");
@@ -79,27 +83,21 @@ async function promptWeaponSave(message, details, event) {
  }
  const content = `<p><strong>Attacker's DC: ${dc}</strong> (8 + proficiency bonus + higher STR/DEX modifier).</p>
   <p>The defender chooses STR or DEX for the saving throw.</p>
-  <label>Save for <select name="tov-save-target">${eligible.map((token, index) =>
-   `<option value="${index}">${escapeHTML(token.name ?? token.actor.name)}</option>`).join("")}</select></label>
+  <p>Defender: <strong>${escapeHTML(eligible[0].name ?? eligible[0].actor.name)}</strong></p>
   ${details.key === "trip" ? "<p>Large or smaller targets. Mounted targets have advantage; choose Advantage in the roll window.</p>"
    : details.key === "pinningShot" ? "<p>Large or smaller targets.</p>" : ""}`;
  const selection = await new Promise(resolve => {
-  const choose = (html, saveAbility) => {
-   const root = html instanceof HTMLElement ? html : html[0];
-   resolve({ target: Number(root.querySelector('[name="tov-save-target"]').value),
-    saveAbility });
-  };
   new Dialog({ title: `${label(details.key)} — Save vs`, content,
    buttons: {
-    strength: { label: "STR Save", callback: html => choose(html, "strength") },
-    dexterity: { label: "DEX Save", callback: html => choose(html, "dexterity") }
+    strength: { label: "STR Save", callback: () => resolve("strength") },
+    dexterity: { label: "DEX Save", callback: () => resolve("dexterity") }
    }, close: () => resolve(null)
   }).render(true);
  });
  if (!selection) return;
- const token = eligible[selection.target];
+ const token = eligible[0];
  if (!token?.actor || !(game.user.isGM || token.actor.isOwner) || !Number.isFinite(dc)) return;
- await token.actor.rollAbilitySave({ ability: selection.saveAbility, target: dc, event }, {}, {
+ await token.actor.rollAbilitySave({ ability: selection, target: dc, event }, {}, {
   data: { speaker: ChatMessage.getSpeaker({ actor: token.actor, token: token.document }),
    "flags.black-flag.originatingMessage": message.id }
  });
