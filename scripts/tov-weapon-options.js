@@ -48,9 +48,9 @@ const saveDetails = activity => {
   const mod = ability(actor, id);
   return mod === null ? [] : [{ ability: id, dc: 8 + pb + mod }];
  });
- return { key, dcs, preferred: activity.ability };
+ return { key, dc: dcs.length ? Math.max(...dcs.map(entry => entry.dc)) : null };
 };
-// Record DC choices with the attack so later stat changes don't alter its save.
+// Lock the higher attacker STR/DEX DC when the attack is rolled.
 Hooks.on("blackFlag.preRollAttack", (config, dialog, message) => {
  const details = saveDetails(config.subject);
  if (!details) return;
@@ -70,22 +70,24 @@ async function promptWeaponSave(message, details, event) {
   ui.notifications?.warn("Target a token you can roll for, or select your own token. The GM can roll for other targets.");
   return;
  }
- if (!details.dcs?.length) {
+ // Older attack messages stored both DC candidates; use their higher value too.
+ const dc = numeric(details.dc) ?? Math.max(...(details.dcs ?? [])
+  .map(entry => numeric(entry.dc)).filter(value => value !== null));
+ if (!Number.isFinite(dc)) {
   ui.notifications?.warn("Cannot determine this weapon option's save DC from its attacker.");
   return;
  }
- const content = `<p>After resolving the hit, choose the attacker's DC. The defender chooses STR or DEX for the save.</p>
+ const content = `<p><strong>Attacker's DC: ${dc}</strong> (8 + proficiency bonus + higher STR/DEX modifier).</p>
+  <p>The defender chooses STR or DEX for the saving throw.</p>
   <label>Save for <select name="tov-save-target">${eligible.map((token, index) =>
    `<option value="${index}">${escapeHTML(token.name ?? token.actor.name)}</option>`).join("")}</select></label>
-  <label>Attacker's DC <select name="tov-save-dc">${details.dcs.map((entry, index) =>
-   `<option value="${index}" ${entry.ability === details.preferred ? "selected" : ""}>${escapeHTML(entry.ability.toUpperCase())}: DC ${entry.dc}</option>`).join("")}</select></label>
   ${details.key === "trip" ? "<p>Large or smaller targets. Mounted targets have advantage; choose Advantage in the roll window.</p>"
    : details.key === "pinningShot" ? "<p>Large or smaller targets.</p>" : ""}`;
  const selection = await new Promise(resolve => {
   const choose = (html, saveAbility) => {
    const root = html instanceof HTMLElement ? html : html[0];
    resolve({ target: Number(root.querySelector('[name="tov-save-target"]').value),
-    dc: Number(root.querySelector('[name="tov-save-dc"]').value), saveAbility });
+    saveAbility });
   };
   new Dialog({ title: `${label(details.key)} — Save vs`, content,
    buttons: {
@@ -96,7 +98,6 @@ async function promptWeaponSave(message, details, event) {
  });
  if (!selection) return;
  const token = eligible[selection.target];
- const dc = details.dcs[selection.dc]?.dc;
  if (!token?.actor || !(game.user.isGM || token.actor.isOwner) || !Number.isFinite(dc)) return;
  await token.actor.rollAbilitySave({ ability: selection.saveAbility, target: dc, event }, {}, {
   data: { speaker: ChatMessage.getSpeaker({ actor: token.actor, token: token.document }),
@@ -145,8 +146,8 @@ function render(message,html){
  const li=document.createElement("li");li.className="tov-weapon-options";
  const or=document.createElement("div");or.className="tov-weapon-or";or.textContent="OR — WEAPON OPTIONS";li.append(or);
  const pb=proficiency(actor),str=ability(actor,"strength"),dex=ability(actor,"dexterity");
- const dcText=pb===null||(str===null&&dex===null)?"DC = 8 + PB + attacker-chosen STR or DEX modifier":
-  [str===null?null:"STR DC "+(8+pb+str),dex===null?null:"DEX DC "+(8+pb+dex)].filter(Boolean).join(" / ");
+ const dcText=pb===null||(str===null&&dex===null)?"DC = 8 + PB + higher attacker STR/DEX modifier":
+  "DC "+(8+pb+Math.max(...[str,dex].filter(value=>value!==null)));
  for(const key of keys){
   const wrap=document.createElement("div");wrap.className="tov-option";
   const btn=document.createElement("button");btn.type="button";btn.className="light-button";btn.textContent=label(key);
