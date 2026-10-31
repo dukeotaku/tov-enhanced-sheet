@@ -1040,15 +1040,22 @@ Hooks.on("renderApplicationV2", (app, html) => {
         body.addEventListener("click", async event => {
           event.preventDefault();
           event.stopPropagation();
-          // Inventory activates Black Flag activities directly. Weapons need
-          // not have a rendered Main-tab row to use that same attack flow.
+          // A weapon Favorite is a normal attack shortcut, not an item/action
+          // card. Use Black Flag's roll flow (including mode/ammo selection).
           if (item.type === "weapon") {
             const attacks = [...(item.system?.activities?.values?.() ?? [])]
               .filter(candidate => candidate.type === "attack"
-                && candidate.canUse !== false && typeof candidate.activate === "function");
+                && candidate.canUse !== false && typeof candidate.rollAttack === "function");
+            const attackLabel = game.i18n.localize("BF.ATTACK.Label");
+            const normalAttacks = attacks.filter(candidate =>
+              [attackLabel, "Attack"].includes(candidate.name));
+            const attack = attacks.length === 1 ? attacks[0]
+              : normalAttacks.length === 1 ? normalAttacks[0] : null;
             try {
-              if (attacks.length === 1) {
-                await attacks[0].activate({ event }, { options: { sheet: app } });
+              if (attack) {
+                await attack.rollAttack({ event }, { options: { sheet: app } }, {
+                  data: { flags: { "tov-enhanced-sheet": { favoriteAttack: true } } }
+                });
               } else if (typeof item.activate === "function") {
                 await item.activate({ event }, { options: { sheet: app } });
               } else {
@@ -1242,3 +1249,44 @@ Hooks.on("renderApplicationV2", (app, html) => {
 
   sheet.classList.add("tov-enhanced-ready");
 });
+
+// Only direct Favorite attack results receive this follow-up control. Native
+// attack/damage math, ammunition handling, and roll dialogs stay in Black Flag.
+(() => {
+  const renderFavoriteAttack = (message, html) => {
+    const root = html instanceof HTMLElement ? html : html?.[0];
+    if (!root || !message.getFlag("tov-enhanced-sheet", "favoriteAttack")
+      || message.getFlag("black-flag", "roll.type") !== "attack"
+      || root.querySelector(".tov-favorite-damage")) return;
+    const activity = message.getAssociatedActivity?.();
+    if (!activity?.hasDamage || typeof activity.rollDamage !== "function"
+      || !(game.user.isGM || activity.actor?.isOwner)) return;
+    const content = root.querySelector(".message-content");
+    if (!content) return;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "light-button tov-favorite-damage";
+    button.textContent = game.i18n.localize("BF.DAMAGE.Label");
+    button.addEventListener("click", async event => {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      if (button.disabled || !(game.user.isGM || activity.actor?.isOwner)) return;
+      button.disabled = true;
+      try {
+        const attackMode = message.getFlag("black-flag", "roll.attackMode");
+        const ammunition = activity.actor?.items.get(message.getFlag("black-flag", "roll.ammunition"));
+        await activity.rollDamage({ event, attackMode, ammunition }, {}, {
+          data: { "flags.black-flag.originatingMessage": message.id }
+        });
+      } catch (error) {
+        console.error("ToV Favorites damage roll failed", error);
+        ui.notifications?.error("Could not roll weapon damage. Check the console for details.");
+      } finally {
+        button.disabled = false;
+      }
+    });
+    content.append(button);
+  };
+  Hooks.on("renderChatMessageHTML", renderFavoriteAttack);
+  Hooks.on("renderChatMessage", renderFavoriteAttack);
+})();
