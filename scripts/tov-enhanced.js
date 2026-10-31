@@ -933,7 +933,7 @@ Hooks.on("renderApplicationV2", (app, html) => {
     const hint = favorites.querySelector(".tov-favorite-hint");
     let ids = [...new Set(actor.getFlag(MODULE, "favorites") ?? [])]
       .filter(id => actor.items.get(id));
-    const save = async () => {
+    const persistFavorites = async () => {
       if (!actor.isOwner) return;
       try { await actor.setFlag(MODULE, "favorites", ids); }
       catch (error) { console.error("ToV Favorites could not save", error); ui.notifications?.error("Could not save Favorites."); }
@@ -1037,9 +1037,29 @@ Hooks.on("renderApplicationV2", (app, html) => {
         }
         body.append(img, label, meta);
         body.title = "Activate " + item.name;
-        body.addEventListener("click", event => {
+        body.addEventListener("click", async event => {
           event.preventDefault();
           event.stopPropagation();
+          // Inventory activates Black Flag activities directly. Weapons need
+          // not have a rendered Main-tab row to use that same attack flow.
+          if (item.type === "weapon") {
+            const attacks = [...(item.system?.activities?.values?.() ?? [])]
+              .filter(candidate => candidate.type === "attack"
+                && candidate.canUse !== false && typeof candidate.activate === "function");
+            try {
+              if (attacks.length === 1) {
+                await attacks[0].activate({ event }, { options: { sheet: app } });
+              } else if (typeof item.activate === "function") {
+                await item.activate({ event }, { options: { sheet: app } });
+              } else {
+                ui.notifications?.warn("No native weapon attack is available for this favorite.");
+              }
+            } catch (error) {
+              console.error("ToV Favorites weapon activation failed", error);
+              ui.notifications?.error("Could not activate this weapon. Check the console for details.");
+            }
+            return;
+          }
           const currentRows = nativeRows();
           // Weapons commonly expose more than one native action (e.g. attack
           // and damage). Select the ATTACK row, never the item sheet.
@@ -1062,6 +1082,32 @@ Hooks.on("renderApplicationV2", (app, html) => {
         // Unpinning remains available from the context menu, freeing the
         // full row width for readable names and attack/save information.
         row.append(body);
+        if (actor.isOwner) {
+          const controls = document.createElement("span");
+          controls.className = "tov-favorite-reorder";
+          for (const [offset, text, direction] of [[-1, "↑", "up"], [1, "↓", "down"]]) {
+            const move = document.createElement("button");
+            move.type = "button";
+            move.textContent = text;
+            move.title = `Move ${item.name} ${direction}`;
+            move.setAttribute("aria-label", move.title);
+            move.disabled = ids.indexOf(id) + offset < 0 || ids.indexOf(id) + offset >= ids.length;
+            move.addEventListener("click", async event => {
+              event.preventDefault();
+              event.stopPropagation();
+              const from = ids.indexOf(id);
+              const to = from + offset;
+              if (from < 0 || to < 0 || to >= ids.length) return;
+              [ids[from], ids[to]] = [ids[to], ids[from]];
+              hidePreview();
+              render();
+              await persistFavorites();
+              list.querySelector(`[data-item-id="${id}"] .tov-favorite-reorder button:nth-child(${offset < 0 ? 1 : 2})`)?.focus();
+            });
+            controls.append(move);
+          }
+          row.append(controls);
+        }
         row.addEventListener("contextmenu", async event => {
           event.preventDefault();
           if (!actor.isOwner) return;
@@ -1072,7 +1118,7 @@ Hooks.on("renderApplicationV2", (app, html) => {
           if (!confirmed) return;
           ids = ids.filter(saved => saved !== id);
           render();
-          await save();
+          await persistFavorites();
         });
         // Native Black Flag hover cards are exposed by its item components.
         // Provide a standalone equivalent for custom sidebar entries.
@@ -1133,7 +1179,7 @@ Hooks.on("renderApplicationV2", (app, html) => {
       }
       // Keep a visible drop target even when favorites are populated.
       hint.hidden = false;
-      hint.textContent = ids.length ? "DROP FAVORITE" : "Drag a weapon, spell, or feature here to pin it.";
+      hint.textContent = ids.length ? "Drag to reorder · ↑ ↓ to move · Drop here to move last" : "Drag a weapon, spell, or feature here to pin it.";
     };
     render();
     if (actor.isOwner) {
@@ -1189,7 +1235,7 @@ Hooks.on("renderApplicationV2", (app, html) => {
           ids.push(item.id);
         }
         render();
-        await save();
+        await persistFavorites();
       });
     }
   }
