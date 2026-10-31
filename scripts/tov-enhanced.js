@@ -1040,26 +1040,14 @@ Hooks.on("renderApplicationV2", (app, html) => {
         body.addEventListener("click", async event => {
           event.preventDefault();
           event.stopPropagation();
-          // A weapon Favorite is a normal attack shortcut, not an item/action
-          // card. Use Black Flag's roll flow (including mode/ammo selection).
+          // Keep Black Flag's activity chooser so weapon options remain available.
+          // The normal Attack activity is routed to its roll dialog below.
           if (item.type === "weapon") {
-            const attacks = [...(item.system?.activities?.values?.() ?? [])]
-              .filter(candidate => candidate.type === "attack"
-                && candidate.canUse !== false && typeof candidate.rollAttack === "function");
-            const attackLabel = game.i18n.localize("BF.ATTACK.Label");
-            const normalAttacks = attacks.filter(candidate =>
-              [attackLabel, "Attack"].includes(candidate.name));
-            const attack = attacks.length === 1 ? attacks[0]
-              : normalAttacks.length === 1 ? normalAttacks[0] : null;
             try {
-              if (attack) {
-                await attack.rollAttack({ event }, { options: { sheet: app } }, {
-                  data: { flags: { "tov-enhanced-sheet": { favoriteAttack: true } } }
-                });
-              } else if (typeof item.activate === "function") {
+              if (typeof item.activate === "function") {
                 await item.activate({ event }, { options: { sheet: app } });
               } else {
-                ui.notifications?.warn("No native weapon attack is available for this favorite.");
+                ui.notifications?.warn("No native weapon action is available for this favorite.");
               }
             } catch (error) {
               console.error("ToV Favorites weapon activation failed", error);
@@ -1250,12 +1238,34 @@ Hooks.on("renderApplicationV2", (app, html) => {
   sheet.classList.add("tov-enhanced-ready");
 });
 
-// Only direct Favorite attack results receive this follow-up control. Native
-// attack/damage math, ammunition handling, and roll dialogs stay in Black Flag.
+// Keep the native weapon activity chooser, but make its normal Attack choice
+// open the roll dialog without posting a preliminary action card. Consumption
+// and activation hooks still run through Black Flag before the roll opens.
 (() => {
+  Hooks.on("blackFlag.preActivateActivity", (activity, config, dialog, message) => {
+    const attackLabel = game.i18n.localize("BF.ATTACK.Label");
+    if (activity.item?.type !== "weapon" || activity.type !== "attack"
+      || ![attackLabel, "Attack"].includes(activity.name)
+      || typeof activity.rollAttack !== "function") return;
+    config.tovDirectAttack = true;
+    config.subsequentActions = false;
+    message.create = false;
+  });
+  Hooks.on("blackFlag.postActivateActivity", (activity, config) => {
+    if (!config.tovDirectAttack) return;
+    // postActivateActivity is reached only after native consumption succeeds.
+    // Disable the native subsequent action above to prevent a second roll.
+    activity.rollAttack({ event: config.event }, {}, {
+      data: { flags: { "tov-enhanced-sheet": { directAttack: true } } }
+    }).catch(error => {
+      console.error("ToV weapon attack roll failed", error);
+      ui.notifications?.error("Could not roll weapon attack. Check the console for details.");
+    });
+  });
   const renderFavoriteAttack = (message, html) => {
     const root = html instanceof HTMLElement ? html : html?.[0];
-    if (!root || !message.getFlag("tov-enhanced-sheet", "favoriteAttack")
+    if (!root || !(message.getFlag("tov-enhanced-sheet", "directAttack")
+      || message.getFlag("tov-enhanced-sheet", "favoriteAttack"))
       || message.getFlag("black-flag", "roll.type") !== "attack"
       || root.querySelector(".tov-favorite-damage")) return;
     const activity = message.getAssociatedActivity?.();
