@@ -3093,3 +3093,22 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
   position: relative;
   z-index: 8;
 }
+
+.application.sheet.black-flag.actor.pc .tov-favorite-reorder {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 20px;
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-reorder button {
+  width: 20px;
+  min-width: 20px;
+  height: 19px;
+  min-height: 19px;
+  padding: 0;
+  margin: 0;
+  line-height: 17px;
+  border: 0;
+  background: transparent;
+  color: var(--tov-gold, #c9b47c);
+}
+.application.sheet.black-flag.actor.pc .tov-favorite-reorder button:disabled { opacity: 0.3; }
