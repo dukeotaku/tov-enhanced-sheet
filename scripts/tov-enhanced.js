@@ -950,6 +950,7 @@ Hooks.on("renderApplicationV2", (app, html) => {
         const img = document.createElement("img");
         img.src = item.img || "icons/svg/item-bag.svg";
         img.alt = "";
+        img.draggable = false;
         // Match the compact 5e favorite row. The entire item body activates
         // Black Flag's native action, not its item sheet.
         const body = document.createElement("button");
@@ -1165,11 +1166,16 @@ Hooks.on("renderApplicationV2", (app, html) => {
         row.addEventListener("mouseleave", hidePreview);
         row.addEventListener("dragstart", hidePreview, { once: true });
         row.addEventListener("dragstart", event => {
-          event.dataTransfer.setData("text/plain", JSON.stringify({
+          if (!actor.isOwner || !event.dataTransfer) return;
+          event.stopPropagation();
+          const payload = JSON.stringify({
             type: "ToVFavorite", itemId: id
-          }));
+          });
+          event.dataTransfer.setData("application/x-tov-favorite", payload);
+          event.dataTransfer.setData("text/plain", payload);
           event.dataTransfer.effectAllowed = "move";
         });
+        row.addEventListener("dragend", () => favorites.classList.remove("tov-favorites-dragover"));
         list.append(row);
       }
       // Keep a visible drop target even when favorites are populated.
@@ -1179,9 +1185,12 @@ Hooks.on("renderApplicationV2", (app, html) => {
     render();
     if (actor.isOwner) {
       favorites.addEventListener("dragover", event => {
-        if (!["text/plain", "application/json"].some(type => event.dataTransfer?.types.includes(type))) return;
+        const types = Array.from(event.dataTransfer?.types ?? []);
+        if (!["application/x-tov-favorite", "text/plain", "application/json"].some(type => types.includes(type))) return;
         event.preventDefault();
-        event.dataTransfer.dropEffect = "copy";
+        event.stopPropagation();
+        // A move-only drag cannot be dropped on a copy-only target.
+        event.dataTransfer.dropEffect = types.includes("application/x-tov-favorite") ? "move" : "copy";
         favorites.classList.add("tov-favorites-dragover");
       });
       favorites.addEventListener("dragleave", event => {
@@ -1189,12 +1198,14 @@ Hooks.on("renderApplicationV2", (app, html) => {
       });
       favorites.addEventListener("drop", async event => {
         event.preventDefault();
+        event.stopPropagation();
         favorites.classList.remove("tov-favorites-dragover");
         let data;
         try {
           // Foundry uses text/plain for document drags; some components also
           // publish application/json. Accept both without requiring either.
-          const raw = event.dataTransfer.getData("text/plain")
+          const raw = event.dataTransfer.getData("application/x-tov-favorite")
+            || event.dataTransfer.getData("text/plain")
             || event.dataTransfer.getData("application/json");
           data = JSON.parse(raw);
         } catch (error) {
@@ -1238,14 +1249,12 @@ Hooks.on("renderApplicationV2", (app, html) => {
   sheet.classList.add("tov-enhanced-ready");
 });
 
-// Keep the native weapon activity chooser, but make its normal Attack choice
+// Keep the native weapon activity chooser, but make all its attack choices
 // open the roll dialog without posting a preliminary action card. Consumption
 // and activation hooks still run through Black Flag before the roll opens.
 (() => {
   Hooks.on("blackFlag.preActivateActivity", (activity, config, dialog, message) => {
-    const attackLabel = game.i18n.localize("BF.ATTACK.Label");
     if (activity.item?.type !== "weapon" || activity.type !== "attack"
-      || ![attackLabel, "Attack"].includes(activity.name)
       || typeof activity.rollAttack !== "function") return;
     config.tovDirectAttack = true;
     config.subsequentActions = false;
