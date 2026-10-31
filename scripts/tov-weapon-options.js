@@ -130,34 +130,6 @@ function renderWeaponSave(message, html) {
 }
 Hooks.on("renderChatMessageHTML", renderWeaponSave);
 Hooks.on("renderChatMessage", renderWeaponSave);
-// Secondary attacks use the same native Luck controls as standard attacks.
-// Render missing controls through Black Flag so spending, rerolls, eligibility,
-// and the GM's Grant Luck action all retain the system's own behavior.
-function renderWeaponLuck(message, html) {
- const root = html instanceof HTMLElement ? html : html?.[0];
- if (!root || message.isContentVisible === false
-  || message.getFlag?.("black-flag", "roll.type") !== "attack"
-  || typeof message._renderLuckInterface !== "function") return;
- const activity = message.getAssociatedActivity?.();
- const item = activity?.item ?? message.getAssociatedItem?.();
- if (item?.type !== "weapon") return;
- const content = root.querySelector(".message-content");
- if (!content) return;
- const hasLuck = !!content.querySelector("blackflag-messageluck, .luck-controls");
- const hasGrant = !!content.querySelector('[data-action="grantLuck"]');
- if (hasLuck && hasGrant) return;
- const staging = document.createElement("div");
- staging.innerHTML = '<div class="message-content"></div>';
- message._renderLuckInterface(staging);
- const luck = staging.querySelector("blackflag-messageluck");
- if (!hasLuck && luck) content.append(luck);
- const grant = staging.querySelector('[data-action="grantLuck"]');
- if (!hasGrant && grant && typeof message._renderMenuButton === "function") {
-  message._renderMenuButton(root, grant);
- }
-}
-Hooks.on("renderChatMessageHTML", renderWeaponLuck);
-Hooks.on("renderChatMessage", renderWeaponLuck);
 function render(message,html){
  const root=html instanceof HTMLElement?html:html?.[0];
  if(!root||root.querySelector(".tov-weapon-options"))return;
