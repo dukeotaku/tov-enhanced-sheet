@@ -3112,3 +3112,261 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
   color: var(--tov-gold, #c9b47c);
 }
 .application.sheet.black-flag.actor.pc .tov-favorite-reorder button:disabled { opacity: 0.3; }
+
+/* Chat: compact dark cards shared by rolls, items, activities, and messages.
+   Style native elements in place so their listeners and collapse state survive. */
+.chat-message {
+  --tov-chat-bg: #11171f;
+  --tov-chat-panel: #1d2734;
+  --tov-chat-line: #354253;
+  --tov-chat-gold: #c9b47c;
+  --tov-chat-text: #e8e9e7;
+  --tov-chat-muted: #a6afba;
+  --bf-background-color-half-white: #1d2734;
+  --bf-border-color-gray: #354253;
+  --bf-border-color-blue: #6a8ba8;
+  --bf-icon-color-black: #c9b47c;
+  --bf-dice-color-critical-success: #a5dfb1;
+  --bf-dice-color-critical-failure: #ffb1aa;
+  --bf-dice-color-success: #69a77c;
+  --bf-dice-color-success-background: #20392e;
+  --bf-dice-color-failure: #b47070;
+  --bf-dice-color-failure-background: #3c272c;
+  background: linear-gradient(145deg, #18202a, var(--tov-chat-bg) 65%);
+  color: var(--tov-chat-text);
+  border: 1px solid var(--tov-chat-line);
+  border-left: 2px solid #887a58;
+  border-radius: 6px;
+  padding: 9px 10px;
+  margin-block: 0 7px;
+  box-shadow: 0 2px 5px #0004;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.chat-message.whisper { border-left-color: #ae9ac9; }
+.chat-message.blind { border-left-color: #83b0ca; }
+.chat-message .message-header {
+  color: var(--tov-chat-muted);
+  margin-bottom: 5px;
+  line-height: 1.25;
+}
+.chat-message .message-header .message-sender {
+  color: #efeadc;
+  font-family: Georgia, serif;
+  font-size: 14px;
+  font-weight: 700;
+  font-variant: small-caps;
+  letter-spacing: .15px;
+}
+.chat-message .message-header :is(.message-metadata, .message-timestamp) {
+  color: var(--tov-chat-muted);
+  font-size: 10px;
+}
+.chat-message :is(.message-header a, .whisper-to) { color: var(--tov-chat-muted); }
+.chat-message .message-content { color: var(--tov-chat-text); }
+.chat-message :is(.flavor-text, .dice-flavor) {
+  display: block;
+  margin-block: 2px 6px;
+  color: #b8bec5;
+  font-size: 12px;
+  line-height: 1.35;
+}
+.chat-message .message-content p { margin-block: 5px; }
+.chat-message .message-content :is(h1, h2, h3, h4, h5) {
+  color: #eee6d2;
+  border-color: var(--tov-chat-line);
+  font-family: Georgia, serif;
+  text-shadow: none;
+}
+.chat-message .message-content :is(a, .content-link, .inline-roll) {
+  color: #e1d2a5;
+  border-color: #59616b;
+  background-color: #202a36;
+  border-radius: 3px;
+}
+.chat-message .message-content :is(a:hover, a:focus-visible) { color: #fff1c9; }
+.chat-message .message-content :is(code, pre, blockquote, table) {
+  background: #17202b;
+  color: var(--tov-chat-text);
+  border-color: var(--tov-chat-line);
+}
+.chat-message .message-content :is(th, td) { border-color: var(--tov-chat-line); }
+.chat-message .message-content tr:nth-child(even) { background: #ffffff06; }
+.chat-message .chat-card .card-header {
+  padding-bottom: 6px;
+  margin-bottom: 6px;
+  border-bottom: 1px dotted #666147;
+}
+.chat-message .chat-card .card-header > header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.chat-message .chat-card .card-header header > img {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  object-fit: cover;
+  border: 1px solid #887a58;
+  border-radius: 4px;
+  background: #0b1119;
+}
+.chat-message .chat-card .card-header .name { flex: 1; min-width: 0; }
+.chat-message .chat-card .card-header h5 {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.2;
+}
+.chat-message .chat-card .card-header .name p {
+  color: var(--tov-chat-muted);
+  margin: 2px 0 0;
+  font-size: 11px;
+}
+.chat-message .chat-card .dropdown-block {
+  color: var(--tov-chat-text);
+  background: transparent;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.chat-message .chat-card .menu { padding: 0; margin-block: 6px; list-style: none; }
+.chat-message .chat-card .menu > li + li { margin-top: 4px; }
+.chat-message .chat-card .tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 4px;
+  padding: 6px 0 0;
+  margin: 6px 0 0;
+  border-top: 1px dotted var(--tov-chat-line);
+}
+.chat-message .chat-card :is(.tag, .tags > li) {
+  padding: 1px 5px;
+  color: #bfc9d2;
+  background: #202a36;
+  border: 1px solid #435061;
+  border-radius: 3px;
+  font: 10px/1.5 Arial, sans-serif;
+}
+/* Formula and result share one row; expanded dice remain underneath. */
+.chat-message .dice-roll { margin-block: 5px; }
+.chat-message .dice-roll .dice-result {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(46px, max-content);
+  gap: 0;
+  align-items: stretch;
+}
+.chat-message .dice-roll .dice-formula {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 0;
+  margin: 0;
+  padding: 7px 10px;
+  color: #bdc7d1;
+  background: var(--tov-chat-panel);
+  border: 1px solid var(--tov-chat-line);
+  border-right: 0;
+  border-radius: 4px 0 0 4px;
+  box-shadow: none;
+  font: 12px/1.3 Arial, sans-serif;
+  text-shadow: none;
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+.chat-message .dice-roll .dice-total {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 46px;
+  margin: 0;
+  padding: 3px 8px;
+  color: #faf4df;
+  background: #263242;
+  border: 1px solid #9a8b61;
+  border-radius: 0 4px 4px 0;
+  box-shadow: none;
+  font: 700 22px/1.3 Georgia, serif;
+  text-shadow: none;
+}
+.chat-message .dice-roll .dice-total .damage-type {
+  color: var(--tov-chat-muted);
+  font: 10px/1.2 Arial, sans-serif;
+}
+.chat-message .dice-roll .dice-tooltip {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  margin: 0;
+  padding-inline: 6px;
+  color: var(--tov-chat-text);
+  background: #141e29;
+  border-color: var(--tov-chat-line);
+  box-shadow: none;
+  z-index: auto;
+}
+.chat-message .dice-roll .dice-tooltip .part-total { color: var(--tov-chat-text); background: #263242; }
+.chat-message .dice-roll.success .dice-total { border-color: #69a77c; background: #20392e; }
+.chat-message .dice-roll.failure .dice-total { border-color: #b47070; background: #3c272c; }
+.chat-message .dice-roll.critical-success .dice-total { color: #a5dfb1; }
+.chat-message .dice-roll.critical-failure .dice-total { color: #ffb1aa; }
+/* Keep native buttons and their permissions/disabled states intact. */
+.chat-message .message-content button {
+  color: #e4ded0;
+  background: #202d3b;
+  border-color: #596571;
+  border-radius: 4px;
+  box-shadow: none;
+  text-shadow: none;
+}
+.chat-message .message-content :is(button.light-button, .chat-card .menu > li > button,
+  button.tov-weapon-save, button.tov-favorite-damage) {
+  width: 100%;
+  min-height: 29px;
+  height: auto;
+  margin-block: 3px;
+  padding: 4px 7px;
+  font: 600 12px/1.4 Arial, sans-serif;
+  white-space: normal;
+}
+.chat-message .message-content button:not(:disabled):hover {
+  color: #fff4d3;
+  background: #2b3e50;
+  border-color: var(--tov-chat-gold);
+}
+.chat-message .message-content button:focus-visible {
+  outline: 2px solid #d8c58e;
+  outline-offset: 2px;
+}
+.chat-message .message-content button:disabled { opacity: .45; cursor: default; }
+.chat-message .luck-controls {
+  gap: 3px;
+  margin-top: 6px;
+  padding: 3px;
+  background: #17222e;
+  border-color: var(--tov-chat-line);
+  border-radius: 4px;
+  font-size: 10px;
+}
+.chat-message .luck-controls > * { min-width: 0; padding-block: 3px; }
+.chat-message .luck-controls .luck-total { gap: 5px; padding-inline: 4px; }
+.chat-message .luck-controls .luck-total > span { color: var(--tov-chat-gold); }
+.chat-message .luck-controls button { border-radius: 3px; background: #263242; }
+.chat-message .luck-controls .luck-point { border-color: #8d9eaf; }
+.chat-message .luck-controls .luck-point.selected { background: #c9b47c; border-color: #dfd0aa; }
+.chat-message .card-tray {
+  color: var(--tov-chat-text);
+  background: #141e29;
+  border-color: var(--tov-chat-line);
+  border-radius: 4px;
+  margin-top: 6px;
+}
+.chat-message .card-tray > label { color: #b3bdc8; font-size: 11px; }
+.chat-message .card-tray :is(.name, .name-stacked) { color: var(--tov-chat-text); }
+.chat-message .tov-weapon-or { color: var(--tov-chat-gold); font-size: 10px; letter-spacing: .7px; }
