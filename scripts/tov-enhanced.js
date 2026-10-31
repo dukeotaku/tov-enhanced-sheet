@@ -933,7 +933,7 @@ Hooks.on("renderApplicationV2", (app, html) => {
     const hint = favorites.querySelector(".tov-favorite-hint");
     let ids = [...new Set(actor.getFlag(MODULE, "favorites") ?? [])]
       .filter(id => actor.items.get(id));
-    const save = async () => {
+    const persistFavorites = async () => {
       if (!actor.isOwner) return;
       try { await actor.setFlag(MODULE, "favorites", ids); }
       catch (error) { console.error("ToV Favorites could not save", error); ui.notifications?.error("Could not save Favorites."); }
@@ -950,6 +950,7 @@ Hooks.on("renderApplicationV2", (app, html) => {
         const img = document.createElement("img");
         img.src = item.img || "icons/svg/item-bag.svg";
         img.alt = "";
+        img.draggable = false;
         // Match the compact 5e favorite row. The entire item body activates
         // Black Flag's native action, not its item sheet.
         const body = document.createElement("button");
@@ -1037,9 +1038,24 @@ Hooks.on("renderApplicationV2", (app, html) => {
         }
         body.append(img, label, meta);
         body.title = "Activate " + item.name;
-        body.addEventListener("click", event => {
+        body.addEventListener("click", async event => {
           event.preventDefault();
           event.stopPropagation();
+          // Keep Black Flag's activity chooser so weapon options remain available.
+          // The normal Attack activity is routed to its roll dialog below.
+          if (item.type === "weapon") {
+            try {
+              if (typeof item.activate === "function") {
+                await item.activate({ event }, { options: { sheet: app } });
+              } else {
+                ui.notifications?.warn("No native weapon action is available for this favorite.");
+              }
+            } catch (error) {
+              console.error("ToV Favorites weapon activation failed", error);
+              ui.notifications?.error("Could not activate this weapon. Check the console for details.");
+            }
+            return;
+          }
           const currentRows = nativeRows();
           // Weapons commonly expose more than one native action (e.g. attack
           // and damage). Select the ATTACK row, never the item sheet.
@@ -1062,6 +1078,32 @@ Hooks.on("renderApplicationV2", (app, html) => {
         // Unpinning remains available from the context menu, freeing the
         // full row width for readable names and attack/save information.
         row.append(body);
+        if (actor.isOwner) {
+          const controls = document.createElement("span");
+          controls.className = "tov-favorite-reorder";
+          for (const [offset, text, direction] of [[-1, "↑", "up"], [1, "↓", "down"]]) {
+            const move = document.createElement("button");
+            move.type = "button";
+            move.textContent = text;
+            move.title = `Move ${item.name} ${direction}`;
+            move.setAttribute("aria-label", move.title);
+            move.disabled = ids.indexOf(id) + offset < 0 || ids.indexOf(id) + offset >= ids.length;
+            move.addEventListener("click", async event => {
+              event.preventDefault();
+              event.stopPropagation();
+              const from = ids.indexOf(id);
+              const to = from + offset;
+              if (from < 0 || to < 0 || to >= ids.length) return;
+              [ids[from], ids[to]] = [ids[to], ids[from]];
+              hidePreview();
+              render();
+              await persistFavorites();
+              list.querySelector(`[data-item-id="${id}"] .tov-favorite-reorder button:nth-child(${offset < 0 ? 1 : 2})`)?.focus();
+            });
+            controls.append(move);
+          }
+          row.append(controls);
+        }
         row.addEventListener("contextmenu", async event => {
           event.preventDefault();
           if (!actor.isOwner) return;
@@ -1072,7 +1114,7 @@ Hooks.on("renderApplicationV2", (app, html) => {
           if (!confirmed) return;
           ids = ids.filter(saved => saved !== id);
           render();
-          await save();
+          await persistFavorites();
         });
         // Native Black Flag hover cards are exposed by its item components.
         // Provide a standalone equivalent for custom sidebar entries.
@@ -1124,23 +1166,31 @@ Hooks.on("renderApplicationV2", (app, html) => {
         row.addEventListener("mouseleave", hidePreview);
         row.addEventListener("dragstart", hidePreview, { once: true });
         row.addEventListener("dragstart", event => {
-          event.dataTransfer.setData("text/plain", JSON.stringify({
+          if (!actor.isOwner || !event.dataTransfer) return;
+          event.stopPropagation();
+          const payload = JSON.stringify({
             type: "ToVFavorite", itemId: id
-          }));
+          });
+          event.dataTransfer.setData("application/x-tov-favorite", payload);
+          event.dataTransfer.setData("text/plain", payload);
           event.dataTransfer.effectAllowed = "move";
         });
+        row.addEventListener("dragend", () => favorites.classList.remove("tov-favorites-dragover"));
         list.append(row);
       }
       // Keep a visible drop target even when favorites are populated.
       hint.hidden = false;
-      hint.textContent = ids.length ? "DROP FAVORITE" : "Drag a weapon, spell, or feature here to pin it.";
+      hint.textContent = ids.length ? "Drag to reorder · ↑ ↓ to move · Drop here to move last" : "Drag a weapon, spell, or feature here to pin it.";
     };
     render();
     if (actor.isOwner) {
       favorites.addEventListener("dragover", event => {
-        if (!["text/plain", "application/json"].some(type => event.dataTransfer?.types.includes(type))) return;
+        const types = Array.from(event.dataTransfer?.types ?? []);
+        if (!["application/x-tov-favorite", "text/plain", "application/json"].some(type => types.includes(type))) return;
         event.preventDefault();
-        event.dataTransfer.dropEffect = "copy";
+        event.stopPropagation();
+        // A move-only drag cannot be dropped on a copy-only target.
+        event.dataTransfer.dropEffect = types.includes("application/x-tov-favorite") ? "move" : "copy";
         favorites.classList.add("tov-favorites-dragover");
       });
       favorites.addEventListener("dragleave", event => {
@@ -1148,12 +1198,14 @@ Hooks.on("renderApplicationV2", (app, html) => {
       });
       favorites.addEventListener("drop", async event => {
         event.preventDefault();
+        event.stopPropagation();
         favorites.classList.remove("tov-favorites-dragover");
         let data;
         try {
           // Foundry uses text/plain for document drags; some components also
           // publish application/json. Accept both without requiring either.
-          const raw = event.dataTransfer.getData("text/plain")
+          const raw = event.dataTransfer.getData("application/x-tov-favorite")
+            || event.dataTransfer.getData("text/plain")
             || event.dataTransfer.getData("application/json");
           data = JSON.parse(raw);
         } catch (error) {
@@ -1164,8 +1216,11 @@ Hooks.on("renderApplicationV2", (app, html) => {
           const from = ids.indexOf(data.itemId);
           if (from < 0) return;
           const target = event.target.closest(".tov-favorite-row")?.dataset.itemId;
-          const to = target ? ids.indexOf(target) : ids.length - 1;
+          if (target === data.itemId) return;
           ids.splice(from, 1);
+          // Resolve the insertion point after removal so row drops always
+          // insert before the target, while non-row drops append to the list.
+          const to = target ? ids.indexOf(target) : ids.length;
           ids.splice(Math.min(Math.max(to, 0), ids.length), 0, data.itemId);
         } else {
           if (data?.type !== "Item") return;
@@ -1186,10 +1241,71 @@ Hooks.on("renderApplicationV2", (app, html) => {
           ids.push(item.id);
         }
         render();
-        await save();
+        await persistFavorites();
       });
     }
   }
 
   sheet.classList.add("tov-enhanced-ready");
 });
+
+// Keep the native weapon activity chooser, but make all its attack choices
+// open the roll dialog without posting a preliminary action card. Consumption
+// and activation hooks still run through Black Flag before the roll opens.
+(() => {
+  Hooks.on("blackFlag.preActivateActivity", (activity, config, dialog, message) => {
+    if (activity.item?.type !== "weapon" || activity.type !== "attack"
+      || typeof activity.rollAttack !== "function") return;
+    config.tovDirectAttack = true;
+    config.subsequentActions = false;
+    message.create = false;
+  });
+  Hooks.on("blackFlag.postActivateActivity", (activity, config) => {
+    if (!config.tovDirectAttack) return;
+    // postActivateActivity is reached only after native consumption succeeds.
+    // Disable the native subsequent action above to prevent a second roll.
+    activity.rollAttack({ event: config.event }, {}, {
+      data: { flags: { "tov-enhanced-sheet": { directAttack: true } } }
+    }).catch(error => {
+      console.error("ToV weapon attack roll failed", error);
+      ui.notifications?.error("Could not roll weapon attack. Check the console for details.");
+    });
+  });
+  const renderFavoriteAttack = (message, html) => {
+    const root = html instanceof HTMLElement ? html : html?.[0];
+    if (!root || !(message.getFlag("tov-enhanced-sheet", "directAttack")
+      || message.getFlag("tov-enhanced-sheet", "favoriteAttack"))
+      || message.getFlag("black-flag", "roll.type") !== "attack"
+      || root.querySelector(".tov-favorite-damage")) return;
+    const activity = message.getAssociatedActivity?.();
+    if (!activity?.hasDamage || typeof activity.rollDamage !== "function"
+      || !(game.user.isGM || activity.actor?.isOwner)) return;
+    const content = root.querySelector(".message-content");
+    if (!content) return;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "light-button tov-favorite-damage";
+    button.textContent = game.i18n.localize("BF.DAMAGE.Label");
+    button.addEventListener("click", async event => {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      if (button.disabled || !(game.user.isGM || activity.actor?.isOwner)) return;
+      button.disabled = true;
+      try {
+        const attackMode = message.getFlag("black-flag", "roll.attackMode");
+        const ammunition = activity.actor?.items.get(message.getFlag("black-flag", "roll.ammunition"));
+        await activity.rollDamage({ event, attackMode, ammunition }, {}, {
+          data: { "flags.black-flag.originatingMessage": message.id }
+        });
+      } catch (error) {
+        console.error("ToV Favorites damage roll failed", error);
+        ui.notifications?.error("Could not roll weapon damage. Check the console for details.");
+      } finally {
+        button.disabled = false;
+      }
+    });
+    content.append(button);
+  };
+  Hooks.on("renderChatMessageHTML", renderFavoriteAttack);
+  Hooks.on("renderChatMessage", renderFavoriteAttack);
+})();
