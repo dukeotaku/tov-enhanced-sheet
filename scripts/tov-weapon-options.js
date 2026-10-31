@@ -26,6 +26,111 @@ const proficiency = actor => {
  const level=numeric(s?.progression?.level ?? s?.details?.level ?? s?.level);
  return level>0?Math.ceil(level/4)+1:null;
 };
+const directSaveKeys = ["disarm", "pinningShot", "trip"];
+const escapeHTML = value => String(value).replace(/&/g, "&amp;")
+ .replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+const normalize = value => String(value ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
+const saveOption = activity => {
+ if (activity?.item?.type !== "weapon" || activity.type !== "attack") return null;
+ return directSaveKeys.find(key => {
+  const config = CONFIG.BlackFlag?.weaponOptions?.[key];
+  const localized = config?.label ? game.i18n.localize(config.label) : "";
+  return [key, label(key), localized].filter(Boolean)
+   .some(name => normalize(name) === normalize(activity.name));
+ }) ?? null;
+};
+const saveDetails = activity => {
+ const key = saveOption(activity);
+ if (!key) return null;
+ const actor = activity.actor ?? activity.item.actor;
+ const pb = proficiency(actor);
+ const dcs = pb === null ? [] : ["strength", "dexterity"].flatMap(id => {
+  const mod = ability(actor, id);
+  return mod === null ? [] : [{ ability: id, dc: 8 + pb + mod }];
+ });
+ return { key, dcs, preferred: activity.ability };
+};
+// Record DC choices with the attack so later stat changes don't alter its save.
+Hooks.on("blackFlag.preRollAttack", (config, dialog, message) => {
+ const details = saveDetails(config.subject);
+ if (!details) return;
+ message.data ??= {};
+ message.data.flags ??= {};
+ message.data.flags["tov-enhanced-sheet"] ??= {};
+ message.data.flags["tov-enhanced-sheet"].weaponSave = details;
+});
+async function promptWeaponSave(message, details, event) {
+ // A defender can select their token; a GM can target the affected token.
+ const targeted = [...(game.user.targets ?? [])];
+ const tokens = targeted.length ? targeted : [...(canvas.tokens?.controlled ?? [])];
+ const eligible = tokens.filter(token => token.actor
+  && (game.user.isGM || token.actor.isOwner)
+  && typeof token.actor.rollAbilitySave === "function");
+ if (!eligible.length) {
+  ui.notifications?.warn("Target a token you can roll for, or select your own token. The GM can roll for other targets.");
+  return;
+ }
+ if (!details.dcs?.length) {
+  ui.notifications?.warn("Cannot determine this weapon option's save DC from its attacker.");
+  return;
+ }
+ const content = `<p>After resolving the hit, choose the attacker's DC. The defender chooses STR or DEX for the save.</p>
+  <label>Save for <select name="tov-save-target">${eligible.map((token, index) =>
+   `<option value="${index}">${escapeHTML(token.name ?? token.actor.name)}</option>`).join("")}</select></label>
+  <label>Attacker's DC <select name="tov-save-dc">${details.dcs.map((entry, index) =>
+   `<option value="${index}" ${entry.ability === details.preferred ? "selected" : ""}>${escapeHTML(entry.ability.toUpperCase())}: DC ${entry.dc}</option>`).join("")}</select></label>
+  ${details.key === "trip" ? "<p>Large or smaller targets. Mounted targets have advantage; choose Advantage in the roll window.</p>"
+   : details.key === "pinningShot" ? "<p>Large or smaller targets.</p>" : ""}`;
+ const selection = await new Promise(resolve => {
+  const choose = (html, saveAbility) => {
+   const root = html instanceof HTMLElement ? html : html[0];
+   resolve({ target: Number(root.querySelector('[name="tov-save-target"]').value),
+    dc: Number(root.querySelector('[name="tov-save-dc"]').value), saveAbility });
+  };
+  new Dialog({ title: `${label(details.key)} — Save vs`, content,
+   buttons: {
+    strength: { label: "STR Save", callback: html => choose(html, "strength") },
+    dexterity: { label: "DEX Save", callback: html => choose(html, "dexterity") }
+   }, close: () => resolve(null)
+  }).render(true);
+ });
+ if (!selection) return;
+ const token = eligible[selection.target];
+ const dc = details.dcs[selection.dc]?.dc;
+ if (!token?.actor || !(game.user.isGM || token.actor.isOwner) || !Number.isFinite(dc)) return;
+ await token.actor.rollAbilitySave({ ability: selection.saveAbility, target: dc, event }, {}, {
+  data: { speaker: ChatMessage.getSpeaker({ actor: token.actor, token: token.document }),
+   "flags.black-flag.originatingMessage": message.id }
+ });
+}
+function renderWeaponSave(message, html) {
+ const root = html instanceof HTMLElement ? html : html?.[0];
+ if (!root || message.getFlag?.("black-flag", "roll.type") !== "attack"
+  || root.querySelector(".tov-weapon-save")) return;
+ const details = message.getFlag("tov-enhanced-sheet", "weaponSave")
+  ?? saveDetails(message.getAssociatedActivity?.());
+ if (!details || !directSaveKeys.includes(details.key)) return;
+ const content = root.querySelector(".message-content");
+ if (!content) return;
+ const button = document.createElement("button");
+ button.type = "button";
+ button.className = "light-button tov-weapon-save";
+ button.textContent = "Save vs — STR / DEX";
+ button.title = `${label(details.key)}: defender chooses Strength or Dexterity`;
+ button.addEventListener("click", async event => {
+  event.preventDefault(); event.stopImmediatePropagation();
+  if (button.disabled) return;
+  button.disabled = true;
+  try { await promptWeaponSave(message, details, event); }
+  catch (error) {
+   console.error("ToV weapon option save", error);
+   ui.notifications?.error("Unable to roll weapon option save.");
+  } finally { button.disabled = false; }
+ });
+ content.append(button);
+}
+Hooks.on("renderChatMessageHTML", renderWeaponSave);
+Hooks.on("renderChatMessage", renderWeaponSave);
 function render(message,html){
  const root=html instanceof HTMLElement?html:html?.[0];
  if(!root||root.querySelector(".tov-weapon-options"))return;
