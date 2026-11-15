@@ -650,9 +650,31 @@ Hooks.on("renderApplicationV2", (app, html) => {
   const speedValue = speedRaw.match(/\d+/)?.[0] ?? speedRaw;
 
   vitals.innerHTML = `
-    <div class="tov-vital"><span class="tov-vital-value">${initValue}</span><span class="tov-vital-label">Initiative</span></div>
+    <button type="button" class="tov-vital tov-vital-initiative" aria-label="Roll initiative" title="Roll initiative"><span class="tov-vital-value">${initValue}</span><span class="tov-vital-label">Initiative</span></button>
     <div class="tov-vital tov-vital-speed"><span class="tov-vital-value">${speedValue}</span><span class="tov-vital-label">Speed</span></div>
     <div class="tov-vital"><span class="tov-vital-value">${profValue}</span><span class="tov-vital-label">Proficiency</span></div>`;
+
+  // Use Black Flag's native initiative action where available. The original
+  // control remains in the hidden native Main layout with its event handlers.
+  vitals.querySelector(".tov-vital-initiative")?.addEventListener("click", async event => {
+    event.preventDefault();
+    event.stopPropagation();
+    const nativeRoll = initSource?.querySelector('[data-action="rollInitiative"], button[data-action], button.roll, button');
+    if (nativeRoll) {
+      nativeRoll.click();
+      return;
+    }
+    const actor = app.actor ?? app.document;
+    if (typeof actor?.rollInitiative === "function") {
+      try { await actor.rollInitiative({ createCombatants: true }); }
+      catch (error) {
+        console.error("ToV initiative roll failed", error);
+        ui.notifications?.error("Could not roll initiative. Check the console.");
+      }
+    } else {
+      ui.notifications?.warn("Native initiative rolling is unavailable for this character.");
+    }
+  });
 
   const luckSource = main?.querySelector(".luck");
   let filledLuck = 0;

@@ -3093,3 +3093,55 @@ body > .tov-favorite-preview .tov-favorite-preview-text {
   position: relative;
   z-index: 8;
 }
+
+/* Repair batch 2026-11-14: portrait, skills, initiative, progression. */
+/* Lengthen the portrait beneath the overlapping AC shield without shifting the
+   shield or the rest of the permanent sidebar downward. */
+.application.sheet.black-flag.actor.pc .tov-static-portrait {
+  height: 255px !important;
+}
+.application.sheet.black-flag.actor.pc .tov-static-primary {
+  margin-top: -49px;
+}
+/* Remove only the Skills fieldset's inset gold stroke. */
+.application.sheet.black-flag.actor.pc .tov-main-skills > fieldset.skills {
+  border-color: transparent !important;
+}
+/* The initiative tile is an actual button; retain its original diamond shape. */
+.application.sheet.black-flag.actor.pc .tov-vital-initiative {
+  appearance: none;
+  width: 100%;
+  border: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.application.sheet.black-flag.actor.pc .tov-vital-initiative:hover {
+  filter: brightness(1.17);
+}
+.application.sheet.black-flag.actor.pc .tov-vital-initiative:focus-visible {
+  outline: 2px solid #e7d29b;
+  outline-offset: 2px;
+}
+/* Restrict progression and all other tabs to the grid's available body height.
+   Scroll only the right-hand sheet body, never the persistent portrait rail. */
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready > .window-content {
+  min-height: 0;
+  height: 100%;
+}
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-body {
+  height: 100%;
+  min-height: 0;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready .sheet-body > .tab.active:not([data-tab="main"]) {
+  min-height: 0;
+}
+/* Some Black Flag releases mount the progression view directly in the grid. */
+.application.sheet.black-flag.actor.pc.tov-enhanced-ready > .window-content > .progression {
+  min-height: 0;
+  max-height: 100%;
+  overflow-y: auto;
+}
